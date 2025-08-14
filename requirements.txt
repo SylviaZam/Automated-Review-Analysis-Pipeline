@@ -4,3 +4,4 @@ openai>=1.30
 python-dotenv>=1.0
 langdetect>=1.0.9
 vaderSentiment>=3.3.2
+XlsxWriter>=3.0.0
