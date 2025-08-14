@@ -1,25 +1,18 @@
 #!/usr/bin/env python3
 """
-Analyze customer survey answers and export a wide-format Excel report.
+Analyze customer survey answers and export a wide-format Excel report
+with polished per-product pie charts (one pie per question).
 
-Wide format:
-- One row per (Response × Product).
-- For each question (detected after the first three columns), the sheet includes:
-  Qx_Answer, Qx_Sentiment, Qx_Category.
-
-Extras:
-- One worksheet per Product with wrapped text and auto-sized columns.
-- One "Charts - <Product>" worksheet per product with a stacked column chart of
-  sentiment counts per question (Positive, Neutral, Negative, Mixed).
+Output:
+- One worksheet per Product (wide columns: Qx_Answer / Qx_Sentiment / Qx_Category),
+  with wrapped text and auto-sized columns.
+- One worksheet "Charts - <Product>" containing a grid of pie charts, one per question,
+  showing percentages of Positive / Neutral / Negative / Mixed.
 - A "Summary" worksheet aggregating counts per Product × Question × Sentiment.
 
 Modes:
-- Demo Mode (no OPENAI_API_KEY): offline analysis via VADER and keyword rules.
-- OpenAI Mode (with OPENAI_API_KEY): calls OpenAI for sentiment & category.
-
-Expected CSV columns:
-[Email, Name, Products, Q1, Q2, Q3, Q4, Q5, ...]
-"Products" may be a comma-separated list.
+- Demo Mode (no OPENAI_API_KEY): offline analysis via VADER + keyword rules.
+- OpenAI Mode (OPENAI_API_KEY set): calls OpenAI for sentiment/category.
 """
 
 import argparse
@@ -33,13 +26,13 @@ from typing import Dict, List, Optional, Tuple
 import pandas as pd
 from dotenv import load_dotenv
 
-# Optional: language detection (just for logging info)
+# Optional: language detection (info log only)
 try:
     from langdetect import detect  # type: ignore
 except Exception:
     detect = None
 
-# Optional: OpenAI SDK path
+# Optional: OpenAI SDK
 try:
     from openai import OpenAI  # type: ignore
 except Exception:
@@ -52,16 +45,19 @@ try:
 except Exception:
     _VADER_ANALYZER = None
 
-# openpyxl for formatting and charts
+# openpyxl for formatting & charts
 from openpyxl.utils import get_column_letter
-from openpyxl.styles import Alignment
-from openpyxl.chart import BarChart, Reference
+from openpyxl.styles import Alignment, Font
+from openpyxl.chart import PieChart, Reference
+from openpyxl.chart.label import DataLabelList
 from openpyxl.workbook.workbook import Workbook
 
+# Treat these as "no feedback"
 FILLER_VALUES = {
     "", "n/a", "na", "no", "none", "null", "nan", "sin comentarios", "ninguno", "-", " "
 }
 
+# Simple keyword categories for Demo Mode (EN + ES)
 DEMO_KEYWORDS = [
     ("Price",    ["price", "expensive", "too expensive", "cheap", "cost", "pricing", "value", "caro", "barato", "precio"]),
     ("Shipping", ["ship", "shipping", "delivery", "arrive", "delay", "delayed", "late", "envío", "envio", "tarde", "demor", "entrega"]),
@@ -71,6 +67,8 @@ DEMO_KEYWORDS = [
     ("Support",  ["support", "help", "service", "refund", "return", "soporte", "atención", "atencion", "reembolso", "devolución", "devolucion"]),
 ]
 
+
+# ---------------- Basic helpers ----------------
 
 def clean_text(s: str) -> str:
     """Trim, remove astral-plane emoji, collapse whitespace."""
@@ -88,7 +86,7 @@ def is_filler(s: str) -> bool:
 
 
 def get_question_columns(df: pd.DataFrame) -> List[str]:
-    """Assume first three columns are Email, Name, Products."""
+    """Assume first three columns are Email, Name, Products; rest are questions."""
     return list(df.columns[3:]) if df.shape[1] > 3 else []
 
 
@@ -109,14 +107,16 @@ def normalize_sentiment(s: str) -> str:
     return mapping.get(t, "Neutral")
 
 
-def demo_category(answer_lower: str) -> str:
+# ---------------- Demo-mode analyzer ----------------
+
+def _demo_category(answer_lower: str) -> str:
     for cat, kws in DEMO_KEYWORDS:
         if any(k in answer_lower for k in kws):
             return cat
     return "General"
 
 
-def demo_sentiment(answer_text: str, answer_lower: str) -> str:
+def _demo_sentiment(answer_text: str, answer_lower: str) -> str:
     if _VADER_ANALYZER is not None:
         try:
             score = _VADER_ANALYZER.polarity_scores(answer_text)["compound"]
@@ -146,8 +146,10 @@ def demo_sentiment(answer_text: str, answer_lower: str) -> str:
 def demo_analyze_answer(answer: str) -> Tuple[str, str]:
     text = (answer or "").strip()
     low = text.lower()
-    return demo_sentiment(text, low), demo_category(low)
+    return _demo_sentiment(text, low), _demo_category(low)
 
+
+# ---------------- OpenAI path ----------------
 
 def call_openai_analyze(industry: str, question: str, answer: str, client: "OpenAI", model: str = "gpt-4o-mini") -> Tuple[str, str]:
     """Ask OpenAI for JSON {sentiment, category}. Returns (sentiment, category)."""
@@ -184,6 +186,8 @@ def call_openai_analyze(industry: str, question: str, answer: str, client: "Open
             delay *= 2
     return "Neutral", "No Feedback"
 
+
+# ---------------- Data shaping ----------------
 
 def analyze_dataframe_wide(df: pd.DataFrame, industry: str, client: Optional["OpenAI"]) -> pd.DataFrame:
     """Build wide-format table with Qx_Answer, Qx_Sentiment, Qx_Category."""
@@ -291,9 +295,10 @@ def sanitize_sheet_name(name: str) -> str:
     return s[:31] or "Sheet"
 
 
+# ---------------- Formatting helpers ----------------
+
 def _autofit_and_wrap(ws, wrap_answer_columns_only: bool = True):
-    """Auto-size columns heuristically and wrap text for *_Answer columns."""
-    # Find which columns are *_Answer
+    """Auto-size columns and wrap text for *_Answer columns."""
     header = [cell.value if cell.value is not None else "" for cell in ws[1]]
     answer_col_idx = set(i for i, h in enumerate(header, start=1) if isinstance(h, str) and h.endswith("_Answer"))
 
@@ -302,72 +307,79 @@ def _autofit_and_wrap(ws, wrap_answer_columns_only: bool = True):
         max_len = 0
         for row in ws.iter_rows(min_col=col_idx, max_col=col_idx, min_row=1, max_row=ws.max_row):
             v = row[0].value
-            if v is None:
-                l = 0
-            else:
-                s = str(v)
-                l = len(s)
-            if l > max_len:
-                max_len = l
+            l = len(str(v)) if v is not None else 0
+            max_len = max(max_len, l)
 
-            # Wrap text if this is an Answer column or if we want global wrap
             if (not wrap_answer_columns_only) or (col_idx in answer_col_idx):
                 row[0].alignment = Alignment(wrap_text=True, vertical="top")
 
-        # Heuristic width (bounded)
-        width = min(max(10, max_len * 0.9), 60)
+        width = min(max(12, int(max_len * 0.9)), 60)
         ws.column_dimensions[col_letter].width = width
 
 
-def _write_product_chart_sheet(wb: Workbook, product: str, prod_summary_df: pd.DataFrame):
+def _write_product_pie_charts(wb: Workbook, product: str, prod_summary_df: pd.DataFrame, charts_per_row: int = 2):
     """
-    Create a new sheet "Charts - <Product>" with a stacked bar chart of
-    sentiments per question. Also write the small summary table that drives the chart.
+    Create a new sheet "Charts - <Product>" with a grid of pie charts:
+    one pie per question, showing sentiment proportions.
     """
     title = f"Charts - {product}"
     sheet_name = sanitize_sheet_name(title)
-    # Ensure uniqueness
     base = sheet_name
-    suffix = 1
+    i = 1
     while sheet_name in wb.sheetnames:
-        sheet_name = sanitize_sheet_name(f"{base} ({suffix})")
-        suffix += 1
-
+        sheet_name = sanitize_sheet_name(f"{base} ({i})")
+        i += 1
     ws = wb.create_sheet(sheet_name)
 
-    # Write table header
+    # Header row with sentiment labels (for consistent categories)
     headers = ["Question", "Positive", "Neutral", "Negative", "Mixed"]
     for j, h in enumerate(headers, start=1):
-        ws.cell(row=1, column=j, value=h)
+        cell = ws.cell(row=1, column=j, value=h)
+        cell.font = Font(bold=True)
 
-    # Write rows
-    for i, (_, row) in enumerate(prod_summary_df.iterrows(), start=2):
-        ws.cell(row=i, column=1, value=row["Question"])
-        ws.cell(row=i, column=2, value=int(row.get("Positive", 0)))
-        ws.cell(row=i, column=3, value=int(row.get("Neutral", 0)))
-        ws.cell(row=i, column=4, value=int(row.get("Negative", 0)))
-        ws.cell(row=i, column=5, value=int(row.get("Mixed", 0)))
+    # Write the compact table that drives the charts
+    for r_idx, (_, row) in enumerate(prod_summary_df.iterrows(), start=2):
+        ws.cell(row=r_idx, column=1, value=row["Question"])
+        ws.cell(row=r_idx, column=2, value=int(row.get("Positive", 0)))
+        ws.cell(row=r_idx, column=3, value=int(row.get("Neutral", 0)))
+        ws.cell(row=r_idx, column=4, value=int(row.get("Negative", 0)))
+        ws.cell(row=r_idx, column=5, value=int(row.get("Mixed", 0)))
 
-    # Build stacked bar chart
-    chart = BarChart()
-    chart.type = "col"
-    chart.grouping = "stacked"
-    chart.title = f"Sentiment by Question - {product}"
-    chart.y_axis.title = "Responses"
-    chart.x_axis.title = "Question"
+    # Create one pie per row (question)
+    num_rows = len(prod_summary_df)
+    chart_w, chart_h = 17, 12  # inches*10 roughly; good proportions in Excel
+    start_col_letters = ["H", "O", "V", "AC"]  # supports up to 4 charts per row if needed
 
-    data = Reference(ws, min_col=2, max_col=5, min_row=1, max_row=1 + len(prod_summary_df))
-    cats = Reference(ws, min_col=1, max_col=1, min_row=2, max_row=1 + len(prod_summary_df))
-    chart.add_data(data, titles_from_data=True)
-    chart.set_categories(cats)
-    chart.height = 15
-    chart.width = 28
+    for idx in range(num_rows):
+        data_row = 2 + idx
+        # Data: the row for this question (counts)
+        data = Reference(ws, min_col=2, max_col=5, min_row=data_row, max_row=data_row)
+        # Categories: the header with sentiment names
+        cats = Reference(ws, min_col=2, max_col=5, min_row=1, max_row=1)
+        total = sum(int(ws.cell(row=data_row, column=c).value or 0) for c in range(2, 6))
+        q_label = str(ws.cell(row=data_row, column=1).value)
 
-    ws.add_chart(chart, "H2")
+        pie = PieChart()
+        pie.title = f"{q_label} – Sentiment Mix (n={total})"
+        pie.add_data(data, titles_from_data=False)
+        pie.set_categories(cats)
+        pie.dataLabels = DataLabelList()
+        pie.dataLabels.showPercent = True
+        pie.dataLabels.showCatName = True
 
-    # Format the small table
+        # Place in a grid
+        row_block = idx // charts_per_row
+        col_block = idx % charts_per_row
+        anchor_col = start_col_letters[min(col_block, len(start_col_letters)-1)]
+        anchor_row = 2 + row_block * 18  # vertical spacing between rows of charts
+        ws.add_chart(pie, f"{anchor_col}{anchor_row}")
+        pie.width = chart_w
+        pie.height = chart_h
+
     _autofit_and_wrap(ws, wrap_answer_columns_only=False)
 
+
+# ---------------- Excel writer ----------------
 
 def write_excel_wide(wide: pd.DataFrame, out_path: str) -> None:
     summary_all = build_summary_from_wide(wide)
@@ -386,29 +398,33 @@ def write_excel_wide(wide: pd.DataFrame, out_path: str) -> None:
         if summary_all is not None and not summary_all.empty:
             summary_all.to_excel(writer, index=False, sheet_name="Summary")
 
-        # Access sheets and format columns
-        for prod in wide["Product"].unique():
+        # Format product sheets
+        for prod in wide["Product"].unique() if not wide.empty else []:
             sheet = sanitize_sheet_name(str(prod))
             if sheet in writer.sheets:
                 ws = writer.sheets[sheet]
                 _autofit_and_wrap(ws, wrap_answer_columns_only=True)
 
-        # For each product, create a chart sheet using the product-specific summary
+        # Add pie charts per product
         if summary_all is not None and not summary_all.empty:
             for prod, prod_df in summary_all.groupby("Product"):
                 prod_df_sorted = prod_df.sort_values("Question")
-                _write_product_chart_sheet(wb, str(prod), prod_df_sorted)
+                _write_product_pie_charts(wb, str(prod), prod_df_sorted)
 
     print(f"[ok] Wrote Excel report to {out_path}")
 
 
+# ---------------- Main ----------------
+
 def main():
     load_dotenv()
 
-    parser = argparse.ArgumentParser(description="Analyze customer survey answers and export a wide-format Excel report with charts.")
+    parser = argparse.ArgumentParser(
+        description="Analyze customer survey answers and export a wide-format Excel report with per-question pie charts."
+    )
     parser.add_argument("--input", required=True, help="Path to input CSV.")
-    parser.add_argument("--industry", required=True, help="Industry context, for example 'Fashion'.")
-    parser.add_argument("--output", required=False, help="Output Excel path. Defaults to <input>_analysis.xlsx")
+    parser.add_argument("--industry", required=True, help="Industry context, e.g., 'Fashion'.")
+    parser.add_argument("--output", required=False, help="Output Excel path. Defaults to 'data analysis output.xlsx'")
     args = parser.parse_args()
 
     # Client selection (Demo vs OpenAI)
@@ -434,7 +450,8 @@ def main():
         print("[error] Need at least 4 columns: Email, Name, Products, and one question column.", file=sys.stderr)
         sys.exit(1)
 
-    out_path = args.output or re.sub(r"\.csv$", "", args.input) + "_analysis.xlsx"
+    out_path = args.output or "data analysis output.xlsx"
+
     wide = analyze_dataframe_wide(df, args.industry, client)
     write_excel_wide(wide, out_path)
 
