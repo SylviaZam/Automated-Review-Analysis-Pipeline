@@ -1,99 +1,116 @@
 Automated Review Analysis Pipeline
 
-Turn a survey CSV into a polished Excel report for CX analytics: sentiment per answer, theme classification, per-product tabs, and per-question pie charts. Works in two modes:
+Turn survey CSVs into a polished Excel report with product-level insights for VoC/CX analytics.
 
-Demo Mode (no API key, zero cost)
+What it does
 
-API Mode (OpenAI classification with question context)
+Ingests a CSV of survey responses.
 
-What this is for
+Classifies each answer by:
 
-Rapidly analyze customer feedback across products and dimensions (fit and sizing, price and value, shipping and delivery, support and returns, design and aesthetics, quality and durability). Useful for CX, product, ops, and growth teams to spot drivers of churn, NPS shifts, and logistics issues.
+Sentiment: Positive, Neutral, Negative, Mixed
 
-CSV format (required)
+Category: short theme such as Price, Shipping, Quality, Fit, Design, Support
 
-Columns in this order:
+Exports an Excel workbook for BI/VoC workflows:
 
-Email, Name, Products, Q1, Q2, Q3, Q4, Q5
+One sheet per Product in wide format: <Question>_Answer, <Question>_Sentiment, <Question>_Category
 
+Summary sheet with counts by Product × Question × Sentiment
 
-Rules:
+Charts – <Product> sheet with one pie per question (labels + percentages)
 
-All columns after the first three are treated as questions.
+In API mode the model reads the exact question text from your CSV headers, so analysis respects each question’s business context (e.g., Fit and sizing, Price and value, Shipping and delivery).
 
-Use real question text as headers if you want the model to use that context in API Mode. Example:
-Email,Name,Products,Fit and sizing,Price and value,Shipping and delivery,Support and returns,Design and aesthetics
+CSV format
 
-Products can be comma-separated. Example: Alpha Jacket, Gamma Backpack.
+Minimum columns, in this order:
 
-Output
-
-One worksheet per Product (wide format): Qx_Answer, Qx_Sentiment (Positive, Neutral, Negative, Mixed), Qx_Category (short theme).
-
-A Summary sheet with counts by Product x Question x Sentiment.
-
-A Charts - <Product> sheet with one pie per question showing sentiment proportions.
-
-Install
-python3 -m venv .venv
-source .venv/bin/activate          # Windows: .venv\Scripts\Activate.ps1
-pip install -r requirements.txt
-
-Run in Demo Mode (zero cost)
-
-Uses VADER + keyword themes. Good for portfolio demos and local testing.
-
-source .venv/bin/activate
-python3 survey_analysis.py --input example_survey_large.csv --industry "Apparel"
-# creates: data analysis output.xlsx
-
-
-Limitations in Demo Mode:
-
-Sentiment is lexicon-based, not model-based.
-
-Category is keyword-driven (EN/ES). Subtle themes may be missed.
-
-Run in API Mode (OpenAI)
-
-Enables model classification with your real question headers as context.
-
-# set your key in .env or export it
-# .env: OPENAI_API_KEY=sk-********************************
-source .venv/bin/activate
-pip install -r requirements.txt
-python3 survey_analysis.py --input example_survey_large.csv --industry "Apparel" --cache .analysis_cache.json
+Email, Name, Products, <Question 1>, <Question 2>, ...
 
 
 Notes:
 
-The script passes each question header to the model, so headers like
-"Shipping and delivery" or "Precio y valor" influence the analysis.
+All columns after the first three are treated as questions.
 
-Results are cached on disk so repeated texts do not re-call the API.
+Put your real question text in the headers (recommended).
 
-Long answers are truncated and max_tokens is capped to control spend.
+Products may contain multiple items separated by commas, e.g. Alpha Jacket, Gamma Backpack.
 
-For rate limits and retries, see OpenAI docs. 
-OpenAI Platform
-+1
+Quick start (Demo mode, zero cost)
 
-Approximate API cost
+Uses VADER for sentiment and simple keywords for category. No API key required.
 
-Pricing is per million tokens and can change. Check OpenAI pricing for current rates. 
-OpenAI Platform
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
 
-Example estimate for 3,000 reviews with 5 questions each (about 15,000 answers), using a cost-efficient model:
+python3 survey_analysis.py --input example_survey_large.csv --industry "Apparel"
+# Output: data analysis output.xlsx
 
-Assume about 120 input tokens and 6 output tokens per answer (short JSON).
 
-With gpt-5-mini class pricing, this is typically low single-digit USD for this volume. Always confirm against the live pricing table. 
-OpenAI Platform
+Open the Excel:
 
-Requirements for API Mode:
+macOS: open "data analysis output.xlsx"
 
-OpenAI account and API key
+Windows: start "" "data analysis output.xlsx"
 
-openai Python package (installed via requirements.txt)
+Demo limitations
 
-Reasonable token caps and caching enabled (already built in)
+Sentiment is lexicon-based; category is keyword-based.
+
+Good for portfolios, demos, and smoke tests.
+
+For nuanced, multilingual, or domain-heavy feedback, use API mode.
+
+OpenAI API mode
+
+Higher-fidelity classification that leverages your CSV question headers as context.
+
+Set your API key (shell or .env):
+
+OPENAI_API_KEY=sk-************************
+
+
+Run the pipeline:
+
+source .venv/bin/activate
+pip install -r requirements.txt
+# Optional: clear cache to force a fresh run
+rm -f .analysis_cache.json
+
+python3 survey_analysis.py --input example_survey_large.csv --industry "Apparel"
+
+
+What happens in API mode
+
+Sends the exact question header text to the model for each answer.
+
+Truncates very long answers and caps max_tokens to control spend.
+
+Uses an on-disk cache so duplicates and re-runs stay inexpensive.
+
+Approximate costs and requirements
+
+Requirements: OpenAI account, API key, and the openai Python package.
+
+Cost depends on model and tokens. With a compact classification model, thousands of short answers typically land in low USD totals; higher-tier models cost more. Always check current pricing and confirm with token logs.
+
+Output structure
+
+Per-product sheets (wide layout):
+
+ResponseID | Product | <Question>_Answer | <Question>_Sentiment | <Question>_Category | ...
+
+
+Summary sheet: sentiment counts per Product × Question.
+
+Charts – <Product>: one pie per question with labels and percentages.
+
+Notes for recruiters and stakeholders
+
+Built for Voice of Customer, NPS follow-ups, and SKU-level feedback triage.
+
+Works with English and Spanish responses. PII columns are not used in analysis.
+
+Output is Excel-ready for quick insight sharing or downstream BI ingestion.
