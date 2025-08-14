@@ -134,7 +134,6 @@ def analyze_dataframe_wide(df: pd.DataFrame, industry: str, client: Optional["Op
     results: List[Dict[str,str]] = []
     qcols = get_question_columns(df)
 
-    # optional language log
     if qcols:
         samples = []
         for q in qcols:
@@ -214,7 +213,12 @@ def _autofit_and_wrap(ws, wrap_answer_columns_only: bool=True):
         ws.column_dimensions[letter].width = min(max(12, int(max_len*0.9)), 60)
 
 def _write_product_pie_charts(wb: Workbook, product: str, prod_summary_df: pd.DataFrame, charts_per_row: int=2):
-    # Sheet
+    """
+    Create a new sheet "Charts - <Product>" with a grid of pie charts:
+    one pie per question. To ensure compatibility across Excel versions,
+    we write a tiny helper table (labels+counts) vertically per question and
+    point the pie to that vertical block.
+    """
     title = f"Charts - {product}"
     name = sanitize_sheet_name(title)
     base,i = name,1
@@ -222,42 +226,64 @@ def _write_product_pie_charts(wb: Workbook, product: str, prod_summary_df: pd.Da
         name = sanitize_sheet_name(f"{base} ({i})"); i += 1
     ws = wb.create_sheet(name)
 
-    # Header row (sentiment labels)
+    # Left-side compact summary table (for reference)
     headers = ["Question","Positive","Neutral","Negative","Mixed"]
     for j,h in enumerate(headers, start=1):
         cell = ws.cell(row=1, column=j, value=h); cell.font = Font(bold=True)
-
-    # Table + charts
-    start_cols = ["H","O","V","AC"]  # positions for charts across the row
-    chart_w, chart_h = 17, 12
-    for idx, (_, row) in enumerate(prod_summary_df.iterrows(), start=2):
-        # Question label (force "Q" prefix if numeric)
+    for r_idx, (_, row) in enumerate(prod_summary_df.iterrows(), start=2):
         q = str(row["Question"])
         if re.fullmatch(r"\d+", q): q = f"Q{q}"
-        ws.cell(row=idx, column=1, value=q)
-        # counts
-        p = int(row.get("Positive",0)); n = int(row.get("Neutral",0)); g = int(row.get("Negative",0)); m = int(row.get("Mixed",0))
-        ws.cell(row=idx, column=2, value=p)
-        ws.cell(row=idx, column=3, value=n)
-        ws.cell(row=idx, column=4, value=g)
-        ws.cell(row=idx, column=5, value=m)
+        ws.cell(row=r_idx, column=1, value=q)
+        ws.cell(row=r_idx, column=2, value=int(row.get("Positive",0)))
+        ws.cell(row=r_idx, column=3, value=int(row.get("Neutral",0)))
+        ws.cell(row=r_idx, column=4, value=int(row.get("Negative",0)))
+        ws.cell(row=r_idx, column=5, value=int(row.get("Mixed",0)))
 
-        # Pie chart: read counts across the row -> need from_rows=True
-        data = Reference(ws, min_col=2, max_col=5, min_row=idx, max_row=idx)
-        cats = Reference(ws, min_col=2, max_col=5, min_row=1,  max_row=1)
-        total = p + n + g + m
+    # Hidden helper columns for vertical pie data, placed far right
+    helper_col_labels = "AG"   # labels
+    helper_col_values = "AH"   # values
+    ws.column_dimensions[helper_col_labels].hidden = True
+    ws.column_dimensions[helper_col_values].hidden = True
+
+    sentiments = ["Positive","Neutral","Negative","Mixed"]
+    chart_w, chart_h = 17, 12
+    start_cols = ["H","O","V","AC"]  # chart anchors across the row
+
+    for idx, (_, row) in enumerate(prod_summary_df.iterrows(), start=0):
+        q_label = str(row["Question"])
+        if re.fullmatch(r"\d+", q_label):
+            q_label = f"Q{q_label}"
+
+        # write helper block vertically (4 rows) starting at a unique offset
+        block_start = 2 + idx*6  # some spacing between blocks
+        for k, snt in enumerate(sentiments):
+            ws[f"{helper_col_labels}{block_start+k}"] = snt
+            ws[f"{helper_col_values}{block_start+k}"] = int(row.get(snt, 0))
+
+        # Build the pie referencing the vertical helper block
+        data = Reference(ws,
+                         min_col=ws[helper_col_values][0].column,
+                         max_col=ws[helper_col_values][0].column,
+                         min_row=block_start,
+                         max_row=block_start+len(sentiments)-1)
+        cats = Reference(ws,
+                         min_col=ws[helper_col_labels][0].column,
+                         max_col=ws[helper_col_labels][0].column,
+                         min_row=block_start,
+                         max_row=block_start+len(sentiments)-1)
+        total = sum(int(row.get(s,0)) for s in sentiments)
 
         pie = PieChart()
-        pie.add_data(data, titles_from_data=False, from_rows=True)  # <-- critical fix
+        pie.add_data(data, titles_from_data=False)
         pie.set_categories(cats)
-        pie.title = f"{q} – Sentiment Mix (n={total})"
+        pie.title = f"{q_label} – Sentiment Mix (n={total})"
         pie.dataLabels = DataLabelList()
         pie.dataLabels.showPercent = True
         pie.dataLabels.showCatName = True
 
-        # place in grid
-        rblock = (idx-2)//charts_per_row
-        cblock = (idx-2)%charts_per_row
+        # Place in grid
+        rblock = idx // charts_per_row
+        cblock = idx % charts_per_row
         anchor_col = start_cols[min(cblock, len(start_cols)-1)]
         anchor_row = 2 + rblock*18
         ws.add_chart(pie, f"{anchor_col}{anchor_row}")
@@ -278,7 +304,8 @@ def write_excel_wide(wide: pd.DataFrame, out_path: str) -> None:
             summary_all.to_excel(writer, index=False, sheet_name="Summary")
         for prod in wide["Product"].unique() if not wide.empty else []:
             sheet = sanitize_sheet_name(str(prod))
-            if sheet in writer.sheets: _autofit_and_wrap(writer.sheets[sheet], wrap_answer_columns_only=True)
+            if sheet in writer.sheets:
+                _autofit_and_wrap(writer.sheets[sheet], wrap_answer_columns_only=True)
         if summary_all is not None and not summary_all.empty:
             for prod, dfp in summary_all.groupby("Product"):
                 _write_product_pie_charts(wb, str(prod), dfp.sort_values("Question"))
