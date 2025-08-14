@@ -134,7 +134,7 @@ ResponseID | Product | <Question>_Answer | <Question>_Sentiment | <Question>_Cat
 - Sentiment counts per Product × Question.
 
 **Charts**
-- On each `<Product>` sheet: one pie per question with labels and percentages.
+- On each `<Product>` sheet: one pie per question with sentiment analytics.
 
 ---
 
