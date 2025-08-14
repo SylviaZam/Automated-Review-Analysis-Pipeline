@@ -3,7 +3,7 @@
 Analyze customer survey answers.
 
 Demo-friendly:
-- If OPENAI_API_KEY is not set, the script runs without API calls and marks results as Neutral/Needs Review.
+- If OPENAI_API_KEY is not set, the script runs without API calls and uses an offline analyzer.
 - Reads CSV with columns [Email, Name, Products, Q*...].
 - Writes an Excel report: one sheet per product plus a Summary sheet.
 """
@@ -18,13 +18,13 @@ from typing import List, Optional, Tuple
 import pandas as pd
 from dotenv import load_dotenv
 
-# Optional dependency
+# Optional dependency: language detection
 try:
     from langdetect import detect  # type: ignore
 except Exception:
     detect = None
 
-# OpenAI SDK (optional)
+# Optional dependency: OpenAI SDK
 try:
     from openai import OpenAI  # type: ignore
 except Exception:
@@ -33,7 +33,7 @@ except Exception:
 FILLER_VALUES = {"", "n/a", "na", "no", "none", "null", "nan", "sin comentarios", "ninguno", "-", " "}
 
 def clean_text(s: str) -> str:
-    """Trim, drop emojis and very high code points, collapse whitespace."""
+    """Trim, drop emojis and high code points, collapse whitespace."""
     if not isinstance(s, str):
         return ""
     s = s.strip()
@@ -63,6 +63,65 @@ def normalize_sentiment(s: str) -> str:
     t = (s or "").strip().lower()
     return mapping.get(t, "Neutral")
 
+# --------------------------
+# Offline demo analyzer
+# --------------------------
+DEMO_KEYWORDS = [
+    ("Price", ["price", "expensive", "cheap", "cost", "pricing", "value", "caro", "barato", "precio"]),
+    ("Shipping", ["ship", "delivery", "arrive", "delay", "late", "envío", "tarde", "demor", "entrega"]),
+    ("Quality", ["quality", "material", "durable", "break", "defect", "calidad", "material", "defecto"]),
+    ("Fit", ["fit", "size", "sizing", "tight", "loose", "talla", "ajuste", "grande", "chico"]),
+    ("Design", ["design", "style", "color", "look", "diseño", "estilo", "color"]),
+    ("Support", ["support", "help", "service", "refund", "return", "soporte", "atención", "reembolso", "devolución"]),
+]
+
+def demo_analyze_answer(answer: str) -> Tuple[str, str]:
+    """
+    Offline analysis for Demo Mode:
+    - Category via keyword hints in English and Spanish.
+    - Sentiment via VADER if available, else tiny lexicon.
+    """
+    text = (answer or "").strip()
+    low = text.lower()
+
+    # Category
+    category = "General"
+    for cat, kws in DEMO_KEYWORDS:
+        if any(k in low for k in kws):
+            category = cat
+            break
+
+    # Sentiment with VADER if present
+    if SentimentIntensityAnalyzer is not None:
+        try:
+            analyzer = SentimentIntensityAnalyzer()
+            score = analyzer.polarity_scores(text)["compound"]
+            if score >= 0.35:
+                return "Positive", category
+            if score <= -0.35:
+                return "Negative", category
+            if any(w in low for w in ["but", "aunque", "pero"]) and abs(score) < 0.35:
+                return "Mixed", category
+            return "Neutral", category
+        except Exception:
+            pass
+
+    # Fallback tiny lexicon
+    pos = ["love", "loved", "great", "good", "excellent", "amazing", "encanta", "bueno", "genial"]
+    neg = ["bad", "poor", "terrible", "awful", "hate", "malo", "expensive", "too expensive", "caro", "tarde", "defecto", "delay", "delayed", "late"]
+    p = sum(w in low for w in pos)
+    n = sum(w in low for w in neg)
+    if p and n:
+        return "Mixed", category
+    if p:
+        return "Positive", category
+    if n:
+        return "Negative", category
+    return "Neutral", category
+
+# --------------------------
+# OpenAI path
+# --------------------------
 def call_openai_analyze(industry: str, question: str, answer: str, client: "OpenAI", model: str = "gpt-4o-mini") -> Tuple[str, str]:
     """Return (sentiment, category). Robust parsing with retries."""
     sys_prompt = "You are an assistant that analyzes customer feedback."
@@ -100,11 +159,14 @@ def call_openai_analyze(industry: str, question: str, answer: str, client: "Open
             delay *= 2
     return "Neutral", "No Feedback"
 
+# --------------------------
+# Main pipeline
+# --------------------------
 def analyze_dataframe(df: pd.DataFrame, industry: str, client: Optional["OpenAI"]) -> pd.DataFrame:
     rows = []
     qcols = get_question_columns(df)
 
-    # Optional language info
+    # Optional language log
     if qcols:
         first_nonempty = []
         for q in qcols:
@@ -126,7 +188,7 @@ def analyze_dataframe(df: pd.DataFrame, industry: str, client: Optional["OpenAI"
                 sentiment, category = "Neutral", "No Feedback"
             else:
                 if client is None:
-                    sentiment, category = "Neutral", "Needs Review"
+                    sentiment, category = demo_analyze_answer(answer)
                 else:
                     sentiment, category = call_openai_analyze(industry, qtext, answer, client)
 
@@ -182,7 +244,7 @@ def main():
             sys.exit(1)
         client = OpenAI(api_key=api_key)
     else:
-        print("[info] OPENAI_API_KEY not set. Running in Demo Mode with no API calls.", file=sys.stderr)
+        print("[info] OPENAI_API_KEY not set. Running in Demo Mode with offline analyzer.", file=sys.stderr)
 
     try:
         df = pd.read_csv(args.input)
