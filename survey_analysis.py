@@ -36,13 +36,6 @@ try:
 except Exception:
     _VADER_ANALYZER = None
 
-# openpyxl for formatting & charts
-from openpyxl.utils import get_column_letter
-from openpyxl.styles import Alignment, Font
-from openpyxl.chart import PieChart, Reference
-from openpyxl.chart.label import DataLabelList
-from openpyxl.workbook.workbook import Workbook
-
 FILLER_VALUES = {"", "n/a", "na", "no", "none", "null", "nan", "sin comentarios", "ninguno", "-", " "}
 DEMO_KEYWORDS = [
     ("Price",    ["price","expensive","too expensive","cheap","cost","pricing","value","caro","barato","precio"]),
@@ -53,7 +46,7 @@ DEMO_KEYWORDS = [
     ("Support",  ["support","help","service","refund","return","soporte","atención","atencion","reembolso","devolución","devolucion"]),
 ]
 
-# ---------- helpers ----------
+# ---------------- helpers ----------------
 def clean_text(s: str) -> str:
     if not isinstance(s, str): return ""
     s = s.strip()
@@ -77,11 +70,12 @@ def detect_language(sample_answers: List[str]) -> Optional[str]:
 def normalize_sentiment(s: str) -> str:
     return {"positive":"Positive","neutral":"Neutral","negative":"Negative","mixed":"Mixed"}.get((s or "").strip().lower(),"Neutral")
 
-# ---------- demo analyzer ----------
+# ---------------- demo analyzer ----------------
 def _demo_category(low: str) -> str:
     for cat,kws in DEMO_KEYWORDS:
         if any(k in low for k in kws): return cat
     return "General"
+
 def _demo_sentiment(txt: str, low: str) -> str:
     if _VADER_ANALYZER is not None:
         try:
@@ -96,11 +90,12 @@ def _demo_sentiment(txt: str, low: str) -> str:
     neg = ["bad","poor","terrible","awful","hate","malo","expensive","too expensive","caro","tarde","defecto","delay","delayed","late"]
     p = sum(w in low for w in pos); n = sum(w in low for w in neg)
     return "Mixed" if (p and n) else "Positive" if p else "Negative" if n else "Neutral"
+
 def demo_analyze_answer(ans: str) -> Tuple[str,str]:
     txt = (ans or "").strip(); low = txt.lower()
     return _demo_sentiment(txt,low), _demo_category(low)
 
-# ---------- OpenAI path ----------
+# ---------------- OpenAI path ----------------
 def call_openai_analyze(industry: str, question: str, answer: str, client: "OpenAI", model: str="gpt-4o-mini") -> Tuple[str,str]:
     sys_prompt = "You are an assistant that analyzes customer feedback."
     user_prompt = ("Respond ONLY as JSON with keys 'sentiment' and 'category'.\n"
@@ -129,7 +124,7 @@ def call_openai_analyze(industry: str, question: str, answer: str, client: "Open
             time.sleep(delay); delay *= 2
     return "Neutral","No Feedback"
 
-# ---------- shaping ----------
+# ---------------- shaping ----------------
 def analyze_dataframe_wide(df: pd.DataFrame, industry: str, client: Optional["OpenAI"]) -> pd.DataFrame:
     results: List[Dict[str,str]] = []
     qcols = get_question_columns(df)
@@ -195,126 +190,103 @@ def build_summary_from_wide(wide: pd.DataFrame) -> pd.DataFrame:
     remainder = [c for c in pivot.columns if c not in existing]
     return pivot[existing + remainder]
 
-def sanitize_sheet_name(name: str) -> str:
-    return (re.sub(r"[:\\/?*\[\]]"," ", str(name)))[:31] or "Sheet"
+def _column_widths_from_df(df: pd.DataFrame, min_w=12, max_w=60):
+    widths = []
+    for col in df.columns:
+        max_len = max([len(str(col))] + [len(str(x)) for x in df[col].astype(str).values[:1000]])
+        widths.append(min(max(min_w, int(max_len * 0.9)), max_w))
+    return widths
 
-# ---------- formatting & charts ----------
-def _autofit_and_wrap(ws, wrap_answer_columns_only: bool=True):
-    header = [cell.value if cell.value is not None else "" for cell in ws[1]]
-    answer_cols = {i for i,h in enumerate(header, start=1) if isinstance(h,str) and h.endswith("_Answer")}
-    for c in range(1, ws.max_column+1):
-        letter = get_column_letter(c)
-        max_len = 0
-        for cell in ws.iter_cols(min_col=c, max_col=c, min_row=1, max_row=ws.max_row)[0]:
-            v = cell.value; l = len(str(v)) if v is not None else 0
-            max_len = max(max_len, l)
-            if (not wrap_answer_columns_only) or (c in answer_cols):
-                cell.alignment = Alignment(wrap_text=True, vertical="top")
-        ws.column_dimensions[letter].width = min(max(12, int(max_len*0.9)), 60)
-
-def _write_product_pie_charts(wb: Workbook, product: str, prod_summary_df: pd.DataFrame, charts_per_row: int=2):
-    """
-    Create a new sheet "Charts - <Product>" with a grid of pie charts:
-    one pie per question. To ensure compatibility across Excel versions,
-    we write a tiny helper table (labels+counts) vertically per question and
-    point the pie to that vertical block.
-    """
-    title = f"Charts - {product}"
-    name = sanitize_sheet_name(title)
-    base,i = name,1
-    while name in wb.sheetnames:
-        name = sanitize_sheet_name(f"{base} ({i})"); i += 1
-    ws = wb.create_sheet(name)
-
-    # Left-side compact summary table (for reference)
-    headers = ["Question","Positive","Neutral","Negative","Mixed"]
-    for j,h in enumerate(headers, start=1):
-        cell = ws.cell(row=1, column=j, value=h); cell.font = Font(bold=True)
-    for r_idx, (_, row) in enumerate(prod_summary_df.iterrows(), start=2):
-        q = str(row["Question"])
-        if re.fullmatch(r"\d+", q): q = f"Q{q}"
-        ws.cell(row=r_idx, column=1, value=q)
-        ws.cell(row=r_idx, column=2, value=int(row.get("Positive",0)))
-        ws.cell(row=r_idx, column=3, value=int(row.get("Neutral",0)))
-        ws.cell(row=r_idx, column=4, value=int(row.get("Negative",0)))
-        ws.cell(row=r_idx, column=5, value=int(row.get("Mixed",0)))
-
-    # Hidden helper columns for vertical pie data, placed far right
-    helper_col_labels = "AG"   # labels
-    helper_col_values = "AH"   # values
-    ws.column_dimensions[helper_col_labels].hidden = True
-    ws.column_dimensions[helper_col_values].hidden = True
-
-    sentiments = ["Positive","Neutral","Negative","Mixed"]
-    chart_w, chart_h = 17, 12
-    start_cols = ["H","O","V","AC"]  # chart anchors across the row
-
-    for idx, (_, row) in enumerate(prod_summary_df.iterrows(), start=0):
-        q_label = str(row["Question"])
-        if re.fullmatch(r"\d+", q_label):
-            q_label = f"Q{q_label}"
-
-        # write helper block vertically (4 rows) starting at a unique offset
-        block_start = 2 + idx*6  # some spacing between blocks
-        for k, snt in enumerate(sentiments):
-            ws[f"{helper_col_labels}{block_start+k}"] = snt
-            ws[f"{helper_col_values}{block_start+k}"] = int(row.get(snt, 0))
-
-        # Build the pie referencing the vertical helper block
-        data = Reference(ws,
-                         min_col=ws[helper_col_values][0].column,
-                         max_col=ws[helper_col_values][0].column,
-                         min_row=block_start,
-                         max_row=block_start+len(sentiments)-1)
-        cats = Reference(ws,
-                         min_col=ws[helper_col_labels][0].column,
-                         max_col=ws[helper_col_labels][0].column,
-                         min_row=block_start,
-                         max_row=block_start+len(sentiments)-1)
-        total = sum(int(row.get(s,0)) for s in sentiments)
-
-        pie = PieChart()
-        pie.add_data(data, titles_from_data=False)
-        pie.set_categories(cats)
-        pie.title = f"{q_label} – Sentiment Mix (n={total})"
-        pie.dataLabels = DataLabelList()
-        pie.dataLabels.showPercent = True
-        pie.dataLabels.showCatName = True
-
-        # Place in grid
-        rblock = idx // charts_per_row
-        cblock = idx % charts_per_row
-        anchor_col = start_cols[min(cblock, len(start_cols)-1)]
-        anchor_row = 2 + rblock*18
-        ws.add_chart(pie, f"{anchor_col}{anchor_row}")
-        pie.width, pie.height = chart_w, chart_h
-
-    _autofit_and_wrap(ws, wrap_answer_columns_only=False)
-
-# ---------- writer ----------
+# ---------------- writer (XlsxWriter) ----------------
 def write_excel_wide(wide: pd.DataFrame, out_path: str) -> None:
     summary_all = build_summary_from_wide(wide)
-    with pd.ExcelWriter(out_path, engine="openpyxl") as writer:
-        wb = writer.book
+
+    with pd.ExcelWriter(out_path, engine="xlsxwriter") as writer:
+        wb  = writer.book
+
+        # Format objects
+        wrap_top = wb.add_format({"text_wrap": True, "valign": "top"})
+        bold     = wb.add_format({"bold": True})
+
+        # Per-product data sheets
         if not wide.empty:
             for prod, sub in wide.groupby("Product"):
-                sheet = sanitize_sheet_name(str(prod))
-                sub.sort_values("ResponseID").to_excel(writer, index=False, sheet_name=sheet)
+                sheet = re.sub(r"[:\\/?*\[\]]", " ", str(prod))[:31] or "Product"
+                sub_sorted = sub.sort_values("ResponseID")
+                sub_sorted.to_excel(writer, index=False, sheet_name=sheet)
+                ws = writer.sheets[sheet]
+
+                # Auto width + wrap answers
+                widths = _column_widths_from_df(sub_sorted)
+                for idx, w in enumerate(widths):
+                    col_letter = idx
+                    header = str(sub_sorted.columns[idx])
+                    is_answer_col = header.endswith("_Answer")
+                    ws.set_column(col_letter, col_letter, w, wrap_top if is_answer_col else None)
+
+        # Summary sheet
         if summary_all is not None and not summary_all.empty:
             summary_all.to_excel(writer, index=False, sheet_name="Summary")
-        for prod in wide["Product"].unique() if not wide.empty else []:
-            sheet = sanitize_sheet_name(str(prod))
-            if sheet in writer.sheets:
-                _autofit_and_wrap(writer.sheets[sheet], wrap_answer_columns_only=True)
+            ws_sum = writer.sheets["Summary"]
+            wsum = _column_widths_from_df(summary_all, min_w=10, max_w=40)
+            for idx, w in enumerate(wsum):
+                ws_sum.set_column(idx, idx, w)
+
+        # Chart sheets (one per product)
         if summary_all is not None and not summary_all.empty:
-            for prod, dfp in summary_all.groupby("Product"):
-                _write_product_pie_charts(wb, str(prod), dfp.sort_values("Question"))
+            sentiments = ["Positive", "Neutral", "Negative", "Mixed"]
+            charts_per_row = 2  # layout grid
+
+            for prod, prod_df in summary_all.groupby("Product"):
+                sheet = f"Charts - {prod}"
+                sheet = re.sub(r"[:\\/?*\[\]]", " ", sheet)[:31] or "Charts"
+                ws = wb.add_worksheet(sheet)
+
+                # Title
+                ws.write(0, 0, f"Sentiment Mix per Question — {prod}", bold)
+
+                # For each question, write a vertical helper block and insert a pie
+                for i, (_, row) in enumerate(prod_df.sort_values("Question").iterrows()):
+                    q_label = str(row["Question"])
+                    if re.fullmatch(r"\d+", q_label):
+                        q_label = f"Q{q_label}"
+
+                    # helper block position (far right, hidden area)
+                    helper_col_labels = 50  # AY-ish
+                    helper_col_values = 51  # AZ-ish
+                    start_r = 2 + i * 6
+
+                    for k, snt in enumerate(sentiments):
+                        ws.write(start_r + k, helper_col_labels, snt)
+                        ws.write(start_r + k, helper_col_values, int(row.get(snt, 0)))
+
+                    # create pie referencing helper block
+                    chart = wb.add_chart({"type": "pie"})
+                    chart.add_series({
+                        "name":     f"{q_label} – Sentiment Mix",
+                        "categories": [sheet, start_r, helper_col_labels, start_r + len(sentiments) - 1, helper_col_labels],
+                        "values":     [sheet, start_r, helper_col_values, start_r + len(sentiments) - 1, helper_col_values],
+                        "data_labels": {"percentage": True, "category": True},
+                    })
+                    total = sum(int(row.get(s, 0)) for s in sentiments)
+                    chart.set_title({"name": f"{q_label} – Sentiment Mix (n={total})"})
+                    chart.set_size({"width": 480, "height": 320})
+
+                    # place in grid
+                    rblock = i // charts_per_row
+                    cblock = i % charts_per_row
+                    insert_row = 2 + rblock * 20
+                    insert_col = 1 + cblock * 9
+                    ws.insert_chart(insert_row, insert_col, chart)
+
+        # done; writer saves on exit
+
     print(f"[ok] Wrote Excel report to {out_path}")
 
-# ---------- main ----------
+# ---------------- main ----------------
 def main():
     load_dotenv()
-    ap = argparse.ArgumentParser(description="Survey analysis to wide Excel with per-question pie charts.")
+    ap = argparse.ArgumentParser(description="Survey analysis to wide Excel with per-question pie charts (XlsxWriter).")
     ap.add_argument("--input", required=True)
     ap.add_argument("--industry", required=True)
     ap.add_argument("--output", help="Output Excel path. Defaults to 'data analysis output.xlsx'")
