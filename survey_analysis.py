@@ -3,14 +3,25 @@
 Analyze survey answers and export a wide-format Excel with per-product sheets
 and per-question pie charts.
 
+How it identifies questions:
+- The script assumes the first three columns are: Email, Name, Products.
+- Every column after those is treated as a question.
+- The actual CSV header text for each question is passed to the OpenAI API as context.
+  Example: if your header is "Fit and sizing", the model sees that string.
+  No separate mapping file is required.
+
 Modes
 - Demo Mode: no OPENAI_API_KEY required (VADER + keywords).
-- API Mode: structured JSON from OpenAI Chat Completions.
+- API Mode: structured JSON from OpenAI Chat Completions with response_format='json_object'.
 
-Question context
-- If CSV headers are full question texts, they are passed directly to the API.
-- If CSV headers are Q1, Q2, ... you can provide a JSON map via --qmap so the API
-  sees a friendly label, e.g. {"Q1": "Fit and sizing", "Q2": "Price and value"}.
+Output
+- One worksheet per Product, in wide format with columns like:
+  QBase_Answer, QBase_Sentiment, QBase_Category
+  where QBase is a sanitized version of the original header (spaces -> underscores).
+- Summary sheet with sentiment counts.
+- Charts - <Product> sheet with one pie per question (labels + percentages).
+
+Default output filename: data analysis output.xlsx
 """
 
 import argparse
@@ -58,10 +69,9 @@ DEMO_KEYWORDS = [
     ("Support",  ["support", "help", "service", "refund", "return", "soporte", "atención", "atencion", "reembolso", "devolución", "devolucion"]),
 ]
 
-# XlsxWriter for charts
-# (pandas will use it when engine="xlsxwriter")
-# Ensure requirements.txt includes: XlsxWriter
-# ---------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
+# Basic helpers
+# -----------------------------------------------------------------------------
 
 def clean_text(s: str) -> str:
     if not isinstance(s, str):
@@ -74,7 +84,7 @@ def is_filler(s: str) -> bool:
     return (s or "").strip().lower() in FILLER_VALUES
 
 def get_question_columns(df: pd.DataFrame) -> List[str]:
-    # Assume first three columns are Email, Name, Products; rest are questions
+    # Assume first three columns are Email, Name, Products; the rest are questions
     return list(df.columns[3:]) if df.shape[1] > 3 else []
 
 def normalize_sentiment(s: str) -> str:
@@ -92,7 +102,12 @@ def detect_language(sample_answers: List[str]) -> Optional[str]:
                 pass
     return None
 
-# ---------------- Demo analyzer ----------------
+def sanitize_base(header: str) -> str:
+    return re.sub(r"\s+", "_", str(header).strip())
+
+# -----------------------------------------------------------------------------
+# Demo analyzer
+# -----------------------------------------------------------------------------
 
 def _demo_category(low: str) -> str:
     for cat, kws in DEMO_KEYWORDS:
@@ -125,7 +140,9 @@ def demo_analyze_answer(answer: str) -> Tuple[str, str]:
     low = txt.lower()
     return _demo_sentiment(txt, low), _demo_category(low)
 
-# ---------------- Cache ----------------
+# -----------------------------------------------------------------------------
+# Cache
+# -----------------------------------------------------------------------------
 
 def load_cache(path: Optional[str]) -> Dict[str, Tuple[str, str]]:
     if not path or not os.path.exists(path):
@@ -146,53 +163,16 @@ def save_cache(path: Optional[str], cache: Dict[str, Tuple[str, str]]) -> None:
     except Exception:
         pass
 
-def cache_key(industry: str, question: str, answer: str) -> str:
-    return f"{industry}|||{question}|||{answer}"
+def cache_key(industry: str, question_text: str, answer: str) -> str:
+    return f"{industry}|||{question_text}|||{answer}"
 
-# ---------------- Question labels ----------------
-
-def load_qmap(path: Optional[str]) -> Dict[str, str]:
-    """
-    Load a header -> friendly label map from JSON.
-    Keys can be either the raw CSV header (e.g. 'Q1') or its sanitized form ('Q1').
-    Values should be the friendly label shown to the model and used in chart titles.
-    """
-    if not path:
-        return {}
-    try:
-        with open(path, "r", encoding="utf-8") as f:
-            data = json.load(f)
-            if isinstance(data, dict):
-                return {str(k).strip(): str(v).strip() for k, v in data.items()}
-            return {}
-    except Exception as e:
-        print(f"[warn] Could not load qmap file: {e}", file=sys.stderr)
-        return {}
-
-def sanitize_base(header: str) -> str:
-    return re.sub(r"\s+", "_", str(header).strip())
-
-def build_label_map(question_headers: List[str], qmap: Dict[str, str]) -> Dict[str, str]:
-    """
-    Returns a map from sanitized header -> display label.
-    Priority:
-      1) qmap[raw header] if present
-      2) qmap[sanitized header] if present
-      3) else the raw header itself (works when header is the full question text)
-    """
-    out = {}
-    for h in question_headers:
-        raw = str(h).strip()
-        san = sanitize_base(raw)
-        label = qmap.get(raw) or qmap.get(san) or raw
-        out[san] = label
-    return out
-
-# ---------------- OpenAI path ----------------
+# -----------------------------------------------------------------------------
+# OpenAI path
+# -----------------------------------------------------------------------------
 
 def call_openai_analyze(
     industry: str,
-    question_context: str,
+    question_text: str,
     answer: str,
     client: "OpenAI",
     model: str = "gpt-4o-mini",
@@ -205,7 +185,7 @@ def call_openai_analyze(
     sys_prompt = "You are an assistant that analyzes customer feedback."
     user_prompt = (
         "Respond ONLY as JSON with keys 'sentiment' and 'category'.\n"
-        f"Industry: {industry}\nQuestion: {question_context}\nAnswer: {answer}\n"
+        f"Industry: {industry}\nQuestion: {question_text}\nAnswer: {answer}\n"
         "Sentiment must be one of: Positive, Neutral, Negative, Mixed. Category should be 1 to 3 words."
     )
 
@@ -238,7 +218,9 @@ def call_openai_analyze(
             time.sleep(delay)
             delay = min(delay * 2, 8.0)
 
-# ---------------- Analysis ----------------
+# -----------------------------------------------------------------------------
+# Core analysis
+# -----------------------------------------------------------------------------
 
 def analyze_dataframe_wide(
     df: pd.DataFrame,
@@ -246,15 +228,20 @@ def analyze_dataframe_wide(
     client: Optional["OpenAI"],
     cache_path: Optional[str],
     max_chars: int,
-    label_map: Dict[str, str],
-) -> pd.DataFrame:
+) -> Tuple[pd.DataFrame, Dict[str, str]]:
     """
-    Build a wide-format table with Qx_Answer, Qx_Sentiment, Qx_Category.
-    Uses on-disk cache to avoid duplicate calls.
-    Uses label_map to give the API a better question context when headers are Q1...Qn.
+    Build a wide-format table with QBase_Answer, QBase_Sentiment, QBase_Category.
+    Returns (wide_df, base_to_display_label), where base_to_display_label maps
+    the sanitized base name to the original header text for charts/titles.
     """
     results: List[Dict[str, str]] = []
     qcols = get_question_columns(df)
+
+    # Map base -> original header for chart titles
+    base_to_display: Dict[str, str] = {}
+    for q in qcols:
+        raw = str(q).strip()
+        base_to_display[sanitize_base(raw)] = raw
 
     # Optional language info
     if qcols:
@@ -273,18 +260,16 @@ def analyze_dataframe_wide(
     flush_every = 200
     calls_since_flush = 0
 
-    def get_sent_cat(q_header: str, ans: str) -> Tuple[str, str]:
+    def get_sent_cat(q_header_text: str, ans: str) -> Tuple[str, str]:
         nonlocal dirty, calls_since_flush
-        san = sanitize_base(q_header)
-        question_for_model = label_map.get(san, q_header)  # friendly label or raw header
-        k = cache_key(industry, question_for_model, ans)
+        k = cache_key(industry, q_header_text, ans)
         if k in cache_dict:
             return cache_dict[k]
         if client is None:
             sent, cat = demo_analyze_answer(ans)
         else:
             ans_for_api = ans[:max_chars]
-            sent, cat = call_openai_analyze(industry, question_for_model, ans_for_api, client)
+            sent, cat = call_openai_analyze(industry, q_header_text, ans_for_api, client)
         cache_dict[k] = (sent, cat)
         dirty = True
         calls_since_flush += 1
@@ -297,16 +282,18 @@ def analyze_dataframe_wide(
         products_raw = str(row.get(df.columns[2], "")).strip()
         products = [p.strip() for p in products_raw.split(",") if p.strip()] or ["Unspecified"]
 
+        # Analyze each question for this response
         q_triplets: Dict[str, Tuple[str, str, str]] = {}
         for q in qcols:
-            raw_header = str(q).strip()
+            q_header_text = str(q).strip()           # full header text as question context
             ans = clean_text(str(row.get(q, "")))
             if is_filler(ans):
                 sent, cat = "Neutral", "No Feedback"
             else:
-                sent, cat = get_sent_cat(raw_header, ans)
-            q_triplets[raw_header] = (ans, sent, cat)
+                sent, cat = get_sent_cat(q_header_text, ans)
+            q_triplets[q_header_text] = (ans, sent, cat)
 
+        # Emit one row per product
         for prod in products:
             out: Dict[str, str] = {"ResponseID": str(idx + 1), "Product": prod[:100]}
             for q in qcols:
@@ -322,7 +309,7 @@ def analyze_dataframe_wide(
         save_cache(cache_path, cache_dict)
 
     if not results:
-        return pd.DataFrame(columns=["Product"])
+        return pd.DataFrame(columns=["Product"]), base_to_display
 
     # Column order
     cols = ["ResponseID", "Product"]
@@ -333,9 +320,11 @@ def analyze_dataframe_wide(
     wide = pd.DataFrame(results)
     existing = [c for c in cols if c in wide.columns]
     remainder = [c for c in wide.columns if c not in existing]
-    return wide[existing + remainder]
+    return wide[existing + remainder], base_to_display
 
-# ---------------- Summary ----------------
+# -----------------------------------------------------------------------------
+# Summary
+# -----------------------------------------------------------------------------
 
 def build_summary_from_wide(wide: pd.DataFrame) -> pd.DataFrame:
     """Aggregate sentiment counts per Product x Question (Question is the sanitized base)."""
@@ -370,7 +359,9 @@ def build_summary_from_wide(wide: pd.DataFrame) -> pd.DataFrame:
     remainder = [c for c in pivot.columns if c not in existing]
     return pivot[existing + remainder]
 
-# ---------------- Excel (XlsxWriter) ----------------
+# -----------------------------------------------------------------------------
+# Excel (XlsxWriter)
+# -----------------------------------------------------------------------------
 
 def _column_widths_from_df(df: pd.DataFrame, min_w=12, max_w=60):
     widths = []
@@ -382,7 +373,7 @@ def _column_widths_from_df(df: pd.DataFrame, min_w=12, max_w=60):
 def sanitize_sheet_name(s: str) -> str:
     return (re.sub(r"[:\\/?*\[\]]", " ", str(s)))[:31] or "Sheet"
 
-def write_excel_wide(wide: pd.DataFrame, out_path: str, label_map: Dict[str, str]) -> None:
+def write_excel_wide(wide: pd.DataFrame, out_path: str, base_to_display: Dict[str, str]) -> None:
     """Write data sheets per product + Summary + per-question pie charts using XlsxWriter."""
     summary_all = build_summary_from_wide(wide)
 
@@ -427,8 +418,8 @@ def write_excel_wide(wide: pd.DataFrame, out_path: str, label_map: Dict[str, str
                 ws.write(0, 0, f"Sentiment Mix per Question — {prod}", bold)
 
                 for i, (_, row) in enumerate(prod_df.sort_values("Question").iterrows()):
-                    q_base = str(row["Question"])           # sanitized base used in data
-                    display_label = label_map.get(q_base, q_base)  # show friendly name if available
+                    q_base = str(row["Question"])               # sanitized base name
+                    display_label = base_to_display.get(q_base, q_base)  # original header for title
 
                     # helper block columns (far right)
                     helper_col_labels = 50  # AY-ish
@@ -460,7 +451,9 @@ def write_excel_wide(wide: pd.DataFrame, out_path: str, label_map: Dict[str, str
 
     print(f"[ok] Wrote Excel report to {out_path}")
 
-# ---------------- Main ----------------
+# -----------------------------------------------------------------------------
+# Main
+# -----------------------------------------------------------------------------
 
 def main():
     load_dotenv()
@@ -471,7 +464,6 @@ def main():
     ap.add_argument("--output", help="Output Excel path. Defaults to 'data analysis output.xlsx'")
     ap.add_argument("--cache", default=".analysis_cache.json", help="Path to JSON cache file.")
     ap.add_argument("--max-chars", type=int, default=600, help="Max characters of answer sent to API.")
-    ap.add_argument("--qmap", help="Optional JSON file mapping headers like 'Q1' to friendly labels used for API and charts.")
     args = ap.parse_args()
 
     # Load CSV
@@ -485,14 +477,6 @@ def main():
     if df.shape[1] < 4:
         print("[error] Need at least 4 columns: Email, Name, Products, and one question column.", file=sys.stderr)
         sys.exit(1)
-
-    # Build label map so API sees question context
-    q_headers = get_question_columns(df)
-    raw_qmap = load_qmap(args.qmap)
-    label_map = build_label_map(q_headers, raw_qmap)
-    mapped = sum(1 for h in q_headers if label_map.get(sanitize_base(h), h) != h)
-    if mapped:
-        print(f"[info] Applied {mapped} friendly question label(s) from qmap.", file=sys.stderr)
 
     # Select mode (Demo vs API)
     api_key = os.getenv("OPENAI_API_KEY")
@@ -508,15 +492,14 @@ def main():
 
     # Analyze and export
     out_path = args.output or "data analysis output.xlsx"
-    wide = analyze_dataframe_wide(
+    wide, base_to_display = analyze_dataframe_wide(
         df=df,
         industry=args.industry,
         client=client,
         cache_path=args.cache,
         max_chars=args.max_chars,
-        label_map=label_map,
     )
-    write_excel_wide(wide, out_path, label_map)
+    write_excel_wide(wide, out_path, base_to_display)
 
 if __name__ == "__main__":
     main()
