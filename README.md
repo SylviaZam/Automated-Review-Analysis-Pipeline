@@ -138,7 +138,7 @@ ResponseID | Product | <Question>_Answer | <Question>_Sentiment | <Question>_Cat
 
 ---
 
-## Notes for Recruiters and Stakeholders
+## Notes
 
 - Built for Voice of Customer, NPS follow-ups, and SKU-level feedback triage.
 - Works with English and Spanish responses. PII columns are not used in analysis.
