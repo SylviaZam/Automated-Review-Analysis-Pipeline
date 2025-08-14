@@ -30,7 +30,7 @@ try:
 except Exception:
     OpenAI = None
 
-FILLER_VALUES = {"", "n/a", "na", "no", "none", "null", "sin comentarios", "ninguno", "-", " "}
+FILLER_VALUES = {"", "n/a", "na", "no", "none", "null", "nan", "sin comentarios", "ninguno", "-", " "}
 
 def clean_text(s: str) -> str:
     """Trim, drop emojis and very high code points, collapse whitespace."""
