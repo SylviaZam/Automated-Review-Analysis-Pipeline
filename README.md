@@ -4,7 +4,7 @@
 
 ---
 
-## Real-world usage (Unmade (ecommerce consulting) services)
+## Real-world usage - Unmade (ecommerce consulting) services
 
 This pipeline was operationalized at **Unmade** and used across **all clients who purchased the Customer Data Analytics report** within our scope of services. It ingests survey exports and produces a stakeholder-ready Excel with per-product tabs and a roll-up summary.
 
