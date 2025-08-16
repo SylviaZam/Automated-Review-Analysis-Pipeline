@@ -4,6 +4,39 @@
 
 ---
 
+## Real-world usage (Unmade services)
+
+This pipeline was operationalized at **Unmade** and used across **all clients who purchased the Customer Data Analytics report** within our scope of services. It ingests survey exports and produces a stakeholder-ready Excel with per-product tabs and a roll-up summary.
+
+**Data collection (Shopify)**
+- Survey answers were collected directly from Shopify via **Zigpoll** and **KNO** apps (post-purchase and CRM prompts).
+- Analysts exported CSVs from each app per store, then dropped them into the pipeline’s `--input` path.
+
+**Workflow**
+1. **Ingest & clean**: trims/normalizes answers, handles empty responses, and maps **question text from the CSV columns (Q1…Qn)** so each answer is analyzed **in the context of its specific question**.
+2. **Classification**:  
+   - **Demo mode (free)**: offline rules for sentiment + lightweight topic tags.  
+   - **API mode (client-funded)**: OpenAI-based classification, multilingual, higher accuracy.
+3. **Outputs**:  
+   - Excel with **one sheet per product** (Question, Answer, Sentiment, Category)  
+   - **Summary sheet** with aggregated counts by sentiment/category and product  
+   - Optional charts for quick readouts
+
+**Where this helped**
+- Turned thousands of free-text survey responses into an actionable theme map for **roadmap, CX, ecommerce stores UI redesigns, marketing and merchandising**.
+- Made it easy to highlight **top complaint themes** and **drivers of delight** per product and market.
+
+**Privacy / scope**
+- Client names and PII are not stored in this repo.  
+- API usage (when enabled) was **billed to client engagements**; costs vary by model and volume (see README notes).  
+- The public sample here runs in **Demo mode** so reviewers can reproduce end-to-end with zero spend.
+
+**Replicate the pattern**
+- Use your own Shopify (Zigpoll/KNO or other) CSV exports with the same column structure (Email, Name, Products, Q1…Qn).  
+- For **API mode**, set `OPENAI_API_KEY` and re-run; the script automatically uses the **question text from your CSV** to evaluate each answer with correct context.
+
+---
+
 ## Table of Contents
 - [What It Does](#what-it-does)
 - [CSV Format](#csv-format)
