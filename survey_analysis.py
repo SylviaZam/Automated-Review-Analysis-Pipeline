@@ -139,11 +139,9 @@ def demo_analyze_answer(answer: str) -> Tuple[str, str]:
     txt = (answer or "").strip()
     low = txt.lower()
     return _demo_sentiment(txt, low), _demo_category(low)
-
 # -----------------------------------------------------------------------------
 # Cache
 # -----------------------------------------------------------------------------
-
 def load_cache(path: Optional[str]) -> Dict[str, Tuple[str, str]]:
     if not path or not os.path.exists(path):
         return {}
