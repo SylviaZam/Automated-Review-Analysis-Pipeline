@@ -84,7 +84,7 @@ def is_filler(s: str) -> bool:
     return (s or "").strip().lower() in FILLER_VALUES
 
 def get_question_columns(df: pd.DataFrame) -> List[str]:
-    # Assume first three columns are Email, Name, Products; the rest are questions
+    # Remember first three columns have to be email, name, and product(s) purchased; the rest are questions
     return list(df.columns[3:]) if df.shape[1] > 3 else []
 
 def normalize_sentiment(s: str) -> str:
