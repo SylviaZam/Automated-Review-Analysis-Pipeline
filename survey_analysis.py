@@ -186,6 +186,7 @@ def call_openai_analyze(
         "Sentiment must be one of: Positive, Neutral, Negative, Mixed. Category should be 1 to 3 words."
     )
 
+# backoff retry of up to 5 attempts
     delay = 1.0
     for attempt in range(5):
         try:
