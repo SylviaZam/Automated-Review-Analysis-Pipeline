@@ -178,7 +178,6 @@ def call_openai_analyze(
 ) -> Tuple[str, str]:
     """
     Ask OpenAI for JSON {sentiment, category}. Uses response_format='json_object'.
-    Retries with exponential backoff on transient errors/rate limits.
     """
     sys_prompt = "You are an assistant that analyzes customer feedback."
     user_prompt = (
