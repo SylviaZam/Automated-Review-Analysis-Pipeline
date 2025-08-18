@@ -179,7 +179,7 @@ def call_openai_analyze(
     """
     Ask OpenAI for JSON {sentiment, category}. Uses response_format='json_object'.
     """
-    sys_prompt = "You are an assistant that analyzes customer feedback."
+    sys_prompt = "You are an expert CRM assistant that analyzes online customer feedback."
     user_prompt = (
         "Respond ONLY as JSON with keys 'sentiment' and 'category'.\n"
         f"Industry: {industry}\nQuestion: {question_text}\nAnswer: {answer}\n"
