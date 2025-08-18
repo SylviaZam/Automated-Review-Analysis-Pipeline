@@ -59,7 +59,7 @@ SENTIMENT_ORDER = ["Positive", "Neutral", "Negative", "Mixed"]
 # Treat these as "no feedback"
 FILLER_VALUES = {"", "n/a", "na", "no", "none", "null", "nan", "sin comentarios", "ninguno", "-", " "}
 
-# Simple keyword categories for Demo Mode (EN + ES)
+# Simple keyword categories for Demo Mode (EN + ES), modify as u need
 DEMO_KEYWORDS = [
     ("Price",    ["price", "expensive", "too expensive", "cheap", "cost", "pricing", "value", "caro", "barato", "precio"]),
     ("Shipping", ["ship", "shipping", "delivery", "arrive", "delay", "delayed", "late", "envío", "envio", "tarde", "demor", "entrega"]),
