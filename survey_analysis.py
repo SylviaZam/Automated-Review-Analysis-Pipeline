@@ -128,7 +128,7 @@ def _demo_sentiment(txt: str, low: str) -> str:
             return "Neutral"
         except Exception:
             pass
-    # Tiny fallback lexicon
+    # Tiny fallback lexicon (edit as needed)
     pos = ["love", "loved", "great", "good", "excellent", "amazing", "encanta", "bueno", "genial", "excelente"]
     neg = ["bad", "poor", "terrible", "awful", "hate", "malo", "expensive", "too expensive", "caro", "tarde", "defecto", "delay", "delayed", "late"]
     p = sum(w in low for w in pos)
