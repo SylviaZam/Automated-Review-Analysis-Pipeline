@@ -56,7 +56,7 @@ except Exception:
 # Sentiment constants
 SENTIMENT_ORDER = ["Positive", "Neutral", "Negative", "Mixed"]
 
-# Treat these as "no feedback"
+# Use these as meaning "no feedback" from customer
 FILLER_VALUES = {"", "n/a", "na", "no", "none", "null", "nan", "sin comentarios", "ninguno", "-", " "}
 
 # Simple keyword categories for Demo Mode (EN + ES), modify as u need
