@@ -106,7 +106,7 @@ def sanitize_base(header: str) -> str:
     return re.sub(r"\s+", "_", str(header).strip())
 
 # -----------------------------------------------------------------------------
-# Demo analyzer
+# Demo analyzer (if no OpenAI api key was given)
 # -----------------------------------------------------------------------------
 
 def _demo_category(low: str) -> str:
