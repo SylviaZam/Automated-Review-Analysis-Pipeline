@@ -321,7 +321,7 @@ def analyze_dataframe_wide(
 # -----------------------------------------------------------------------------
 
 def build_summary_from_wide(wide: pd.DataFrame) -> pd.DataFrame:
-    """Aggregate sentiment counts per Product x Question (Question is the sanitized base)."""
+    """Aggregate the sentiment counts of each product and question (question is the sanitized version)."""
     if wide.empty:
         return pd.DataFrame()
 
