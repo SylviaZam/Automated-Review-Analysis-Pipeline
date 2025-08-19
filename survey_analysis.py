@@ -227,11 +227,7 @@ def analyze_dataframe_wide(
     cache_path: Optional[str],
     max_chars: int,
 ) -> Tuple[pd.DataFrame, Dict[str, str]]:
-    """
-    Build a wide-format table with QBase_Answer, QBase_Sentiment, QBase_Category.
-    Returns (wide_df, base_to_display_label), where base_to_display_label maps
-    the sanitized base name to the original header text for charts/titles.
-    """
+
     results: List[Dict[str, str]] = []
     qcols = get_question_columns(df)
 
