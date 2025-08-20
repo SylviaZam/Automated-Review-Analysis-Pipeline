@@ -4,22 +4,22 @@ Analyze survey answers and export a wide-format Excel with per-product sheets
 and per-question pie charts.
 
 How it identifies questions:
-- The script assumes the first three columns are: Email, Name, Products.
-- Every column after those is treated as a question.
-- The actual CSV header text for each question is passed to the OpenAI API as context.
-  Example: if your header is "Fit and sizing", the model sees that string.
-  No separate mapping file is required.
+- The script assumes the first three columns are: Email, Name, Products
+- Every column after those is treated as a question
+- The actual CSV header text for each question is passed to the OpenAI API as context
+  Example: if your header is "Fit and sizing", the model sees that string
+  No separate mapping file is required
 
 Modes
-- Demo Mode: no OPENAI_API_KEY required (VADER + keywords).
-- API Mode: structured JSON from OpenAI Chat Completions with response_format='json_object'.
+- Demo Mode: no OPENAI_API_KEY required (VADER + keywords)
+- API Mode: structured JSON from OpenAI Chat Completions with response_format='json_object'
 
 Output
 - One worksheet per Product, in wide format with columns like:
   QBase_Answer, QBase_Sentiment, QBase_Category
-  where QBase is a sanitized version of the original header (spaces -> underscores).
-- Summary sheet with sentiment counts.
-- Charts - <Product> sheet with one pie per question (labels + percentages).
+  where QBase is a sanitized version of the original header (spaces -> underscores)
+- Summary sheet with sentiment counts
+- Charts - <Product> sheet with one pie per question (labels + percentages)
 
 Default output filename: data analysis output.xlsx
 """
