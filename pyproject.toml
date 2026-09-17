@@ -37,3 +37,5 @@ voc = ["codebook.json", "vocab_es_en.txt"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+# Import `voc` from the repo root whether tests run as `pytest` or `python -m pytest`.
+pythonpath = ["."]
