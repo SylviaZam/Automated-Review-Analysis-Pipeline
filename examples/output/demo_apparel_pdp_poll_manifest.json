@@ -1,0 +1,33 @@
+{
+  "tool": "voc-pipeline 2.0.0",
+  "run_at": "2026-09-17T09:35:38",
+  "label": "Demo apparel PDP poll",
+  "source_sha256": "08ac8e2a6c0aa0f7b2e051cffb57d65c0642a2ca5c76fcc698265bbd20bbbbd7",
+  "source_encoding": "utf-8",
+  "rows": 900,
+  "pii_columns_dropped": 1,
+  "questions": [
+    {
+      "text": "¡Hola! ¿Tienes alguna inquietud o duda que te dificulte comprar?",
+      "role": "pdp_gate",
+      "kind": "gate"
+    },
+    {
+      "text": "Cuéntanos, ¿cuál es?",
+      "role": "pdp_blocker",
+      "kind": "text"
+    }
+  ],
+  "backend": "rules",
+  "model": null,
+  "codebook_version": "2.0.1",
+  "text_answers_received": 121,
+  "text_answers_coded": 120,
+  "junk_removed": {
+    "test_or_greeting": 1
+  },
+  "answers_with_typo_fixes": 5,
+  "failed": 0,
+  "min_n": 30,
+  "notes": []
+}

@@ -1,0 +1,51 @@
+{
+  "tool": "voc-pipeline 2.0.0",
+  "run_at": "2026-09-17T09:35:37",
+  "label": "Demo wellness post-purchase",
+  "source_sha256": "3eefcbd93a5944189a461c5833413f04e448e6dd55fe0a571a2112a4657261c4",
+  "source_encoding": "utf-8",
+  "rows": 1200,
+  "pii_columns_dropped": 3,
+  "questions": [
+    {
+      "text": "¿Cuál es el problema más importante que esperas resolver con nuestros productos?",
+      "role": "purchase_reason",
+      "kind": "text"
+    },
+    {
+      "text": "¿Qué te hizo comprar con nosotros antes que otra marca?",
+      "role": "choice_driver",
+      "kind": "text"
+    },
+    {
+      "text": "¿Qué te causaba incertidumbre antes de comprar con nosotros?",
+      "role": "hesitation",
+      "kind": "text"
+    },
+    {
+      "text": "¿Cómo nos conociste por primera vez?",
+      "role": "discovery",
+      "kind": "choice"
+    },
+    {
+      "text": "¿Y qué te trajo a nuestra página hoy?",
+      "role": "visit_trigger",
+      "kind": "choice"
+    },
+    {
+      "text": "¿Dónde estaba el anuncio?",
+      "role": "ad_location",
+      "kind": "choice"
+    }
+  ],
+  "backend": "rules",
+  "model": null,
+  "codebook_version": "2.0.1",
+  "text_answers_received": 3099,
+  "text_answers_coded": 3099,
+  "junk_removed": {},
+  "answers_with_typo_fixes": 109,
+  "failed": 0,
+  "min_n": 30,
+  "notes": []
+}

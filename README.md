@@ -1,178 +1,177 @@
-# Automated Review Analysis Pipeline
+# Listening at Scale: Voice-of-Customer Pipeline v2
 
-> Turn survey CSVs into a polished Excel report with product-level insights for VoC/CX analytics.
+Turn Spanish-language survey and review exports into cleaned, coded themes and a privacy-safe insight report.
 
----
+I built v1 of this pipeline while working as a UX researcher at an e-commerce consultancy in Monterrey, where post-purchase surveys and reviews from Shopify stores piled up faster than anyone could read them. v2 is the version I rebuilt after testing v1 on the kind of data it was made for and finding that it did not work.
 
-## Real-world usage - Unmade (ecommerce consulting) services
-
-This pipeline was operationalized at **Unmade** and used across **all clients who purchased the Customer Data Analytics report** within our scope of services. It ingests survey exports and produces a stakeholder-ready Excel with per-product tabs and a roll-up summary.
-
-**Data collection (Shopify)**
-- Survey answers were collected directly from Shopify via **Zigpoll** and **KNO** apps (post-purchase and CRM prompts).
-- Analysts exported CSVs from each app per store, then dropped them into the pipeline’s `--input` path.
-
-**Workflow**
-1. **Ingest & clean**: trims/normalizes answers, handles empty responses, and maps **question text from the CSV columns (Q1…Qn)** so each answer is analyzed **in the context of its specific question**.
-2. **Classification**:  
-   - **Demo mode (free)**: offline rules for sentiment + lightweight topic tags.  
-   - **API mode (client-funded)**: OpenAI-based classification, multilingual, higher accuracy.
-3. **Outputs**:  
-   - Excel with **one sheet per product** (Question, Answer, Sentiment, Category)  
-   - **Summary sheet** with aggregated counts by sentiment/category and product  
-   - Optional charts for quick readouts
-
-**Where this helped**
-- Turned thousands of free-text survey responses into an actionable theme map for **roadmap, CX, ecommerce stores UI redesigns, marketing and merchandising**.
-- Made it easy to highlight **top complaint themes** and **drivers of delight** per product and market.
-
-**Privacy / scope**
-- Client names and PII are not stored in this repo.  
-- API usage (when enabled) was **billed to client engagements**; costs vary by model and volume (see README notes).  
-- The public sample here runs in **Demo mode** so reviewers can reproduce end-to-end with zero spend.
-
-**Replicate the pattern**
-- Use your own Shopify (Zigpoll/KNO or other) CSV exports with the same column structure (Email, Name, Products, Q1…Qn).  
-- For **API mode**, set `OPENAI_API_KEY` and re-run; the script automatically uses the **question text from your CSV** to evaluate each answer with correct context.
+[![ci](https://github.com/SylviaZam/Automated-Review-Analysis-Pipeline/actions/workflows/ci.yml/badge.svg?branch=v2)](https://github.com/SylviaZam/Automated-Review-Analysis-Pipeline/actions/workflows/ci.yml)
 
 ---
 
-## Table of Contents
-- [What It Does](#what-it-does)
-- [CSV Format](#csv-format)
-- [Quick Start - Demo Mode](#quick-start---demo-mode)
-- [Demo Limitations](#demo-limitations)
-- [OpenAI API Mode](#openai-api-mode)
-- [What Happens In API Mode](#what-happens-in-api-mode)
-- [Approximate Costs and Requirements](#approximate-costs-and-requirements)
-- [Output Structure](#output-structure)
-- [Notes for Recruiters and Stakeholders](#notes-for-recruiters-and-stakeholders)
+## Why v2 exists
 
----
+v1 classified sentiment with VADER, an English-only lexicon, and sorted answers into six keyword buckets. The customers wrote in Mexican Spanish. When I ran v1 on about 1,300 real, published product reviews from BFit, a Mexican wellness brand (every one rated 4 or 5 stars), this is what came back:
 
-## What It Does
+| On ~1,300 real 4-5 star reviews | v1 (2025) | v2 |
+|---|---|---|
+| Labelled **Positive** | 15.7% | **80.7%** |
+| Labelled **Negative** (all false alarms) | 17.9% | **2.6%** |
+| Left in the catch-all bucket ("General" / "Other") | 82.6% | 35.5% |
 
-- Ingests a CSV of survey responses.
-- Classifies each answer by:
-  - **Sentiment:** Positive, Neutral, Negative, Mixed
-  - **Category:** short theme such as Price, Shipping, Quality, Fit, Design, Support
-- Exports an Excel workbook for BI/VoC workflows:
-  - One sheet per Product in wide format:  
-    `<Question>_Answer`, `<Question>_Sentiment`, `<Question>_Category`
-  - Summary sheet with counts by **Product × Question × Sentiment**
-  - Charts - on each `<Product>` sheet, one pie per question with labels and percentages
+The v1 report looked finished. Its numbers were wrong. v2 fixes the method rather than the formatting:
 
-In API mode the model reads the exact question text from your CSV headers, so analysis respects each question’s business context (for example, Fit and sizing, Price and value, Shipping and delivery).
+| Problem in v1 | What v2 does |
+|---|---|
+| English-only sentiment | Spanish-first lexicon with negation ("no funcionó"), contrast ("pero", "aunque") and emoji |
+| Six generic buckets; the API mode invented its own category names, so brands could not be compared | One **codebook** of 18 themes, consolidated from my manual affinity coding across brands; the model backend must choose from it |
+| Sentiment forced onto every question | Each question gets a **role** (why they bought, what almost stopped them, product-page blocker...). Only opinion questions get sentiment |
+| Typos, texting shorthand and junk answers counted as data | **Cleaning step**: junk detection, shorthand expansion, typo repair (details below) |
+| Broken encodings (`Cu√©ntanos`, `ÀC\x97mo`) | File- and cell-level encoding repair |
+| Names, emails, cities and IPs flowed into outputs and a committed cache | Identifying columns dropped at ingest, contact details masked in free text, spend kept as a band, cache stores hashes only |
+| Failed API calls silently became "Neutral" | Failures are flagged and counted in a run manifest |
+| No way to know if it was right | Evaluation harness with a hand-labelled answer key, per-theme precision/recall and coder agreement (Cohen's kappa) |
 
----
+## What it produces
 
-## CSV Format
+For each export: an Excel workbook for analysts, a one-page HTML summary that is safe to share, and a JSON run manifest.
 
-**Minimum columns, in this order:**
+Open [examples/output/](examples/output/) to see all three for the synthetic demo datasets.
 
-```
-Email, Name, Products, <Question 1>, <Question 2>, ...
+```mermaid
+flowchart LR
+    A[Survey / review export<br>CSV or XLSX] --> B[Ingest<br>encoding repair<br>drop identifying columns]
+    B --> C[Question roles<br>text · choice · yes/no gate]
+    C --> D[Clean<br>junk · shorthand · typos]
+    D --> E[Code<br>codebook themes<br>+ sentiment where it applies]
+    E --> F[Summaries<br>small bases suppressed]
+    F --> G[Excel workbook]
+    F --> H[HTML summary]
+    F --> I[Run manifest]
 ```
 
-**Notes**
-- All columns after the first three are treated as questions.
-- Put your real question text in the headers (recommended).
-- `Products` may contain multiple items separated by commas, for example: `Alpha Jacket, Gamma Backpack`.
-
----
-
-## Quick Start - Demo Mode (zero cost)
-
-Uses VADER for sentiment and simple keywords for category. No API key required.
+## Quick start (offline, no API key)
 
 ```bash
-python3 -m venv .venv
-source .venv/bin/activate
+python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 
-python3 survey_analysis.py --input example_survey_large.csv --industry "Apparel"
-# Output: data analysis output.xlsx
+python -m voc synth                     # writes synthetic demo data to data/synthetic
+python -m voc run data/synthetic/wellness_post_purchase.csv --label "Demo wellness" --out output
+python -m voc eval data/synthetic/gold_labels.csv   # v1 vs v2 on the synthetic answer key
 ```
 
-Open the Excel:
+Commands:
 
-**macOS**
-```bash
-open "data analysis output.xlsx"
-```
+| Command | Purpose |
+|---|---|
+| `voc run <export>` | Analyse one export. `--label` sets the dataset name used in outputs. `--quotes` adds cleaned answers to the Excel for internal use only. |
+| `voc eval <gold.csv>` | Score backends (`v1`, `rules`, `claude`, `openai`) against a hand-labelled answer key. |
+| `voc label-kit <export>` | Sample real answers into a labelling sheet that stays on your machine. |
+| `voc synth` | Regenerate the synthetic demo datasets and their answer key. |
 
-**Windows**
-```bat
-start "" "data analysis output.xlsx"
-```
+### Model backends (optional)
 
----
-
-## Demo Limitations
-
-- Sentiment is lexicon-based. Category is keyword-based.
-- Great for portfolios, demos, and smoke tests.
-- For nuanced, multilingual, or domain-heavy feedback, use API mode.
-
----
-
-## OpenAI API Mode
-
-Higher-fidelity classification that leverages your CSV question headers as context.
-
-Set your API key (shell or `.env`):
+Keyword rules miss answers that carry meaning without trigger words. For those, a language model can do the coding. Both model backends send answers in batches of 20, with the codebook as a JSON schema, so every label is a valid theme id rather than a made-up category. Results are cached by SHA-256 hash (no answer text is stored), and failed batches are flagged instead of being counted.
 
 ```bash
-# Example (Unix shells)
-export OPENAI_API_KEY="sk-************************"
+pip install anthropic          # or: pip install openai
+python -m voc run export.csv --backend claude --label "BFit post-purchase"
+python -m voc eval gold.csv --backends v1 rules claude   # measure before trusting it
 ```
 
-Run the pipeline:
+| Backend | Credentials | Default model | Notes |
+|---|---|---|---|
+| `claude` | `ANTHROPIC_API_KEY` (or an `ant auth login` profile) | `claude-opus-5` at low effort | Structured outputs (`output_config.format`); the codebook sits in a cached system prompt; server-side refusal fallback on Opus 5. Change with `--model` / `VOC_CLAUDE_MODEL`, and effort with `VOC_CLAUDE_EFFORT`. |
+| `openai` | `OPENAI_API_KEY` | `gpt-4o-mini` | Strict JSON-schema response format. Change with `--model` / `VOC_OPENAI_MODEL`. |
 
-```bash
-source .venv/bin/activate
-pip install -r requirements.txt
-# Optional: clear cache to force a fresh run
-rm -f .analysis_cache.json
+Put keys in `.env` (see `.env.example`), never in code. The offline `rules` backend is the default and is what the numbers on this page describe. The model backends have not yet been scored on the real hand-labelled set.
 
-python3 survey_analysis.py --input example_survey_large.csv --industry "Apparel"
+## Supported exports
+
+Detected from the headers, no configuration needed:
+
+- **Post-purchase surveys** (KNO, Fairing, Zigpoll): one column per question. Question roles are recognised from Spanish or English wording, for example "¿Qué te causaba incertidumbre antes de comprar?" → `hesitation`.
+- **Product-page polls**: a yes/no gate ("¿Tienes alguna duda que te dificulte comprar?") plus an open follow-up. The report shows the share of visitors who had a blocker and what the blockers were.
+- **Review exports**: `title`, `body`, `rating`, `product_handle`. The title is merged into the body, and rating-based sentiment is kept alongside text sentiment.
+- **v1 format**: `Email, Name, Products, Q1..Qn`.
+
+Unusual exports: `--roles roles.json` maps column headers to roles. `--extra-keywords extra.json` adds brand-specific terms (product or influencer names) to a theme without editing the shared codebook.
+
+## Cleaning: typos and junk answers
+
+Real survey answers are messy. `voc/clean.py` runs before coding:
+
+- **Junk is removed from every base** and counted by reason: empty, digits or punctuation only, single letters, "test"/"hola", repeated characters, keyboard mashing. "No", "nada" and "N/A" are kept, because "nothing worried me" is an answer. So are "10/10" and emoji-only reviews.
+- **Shorthand is expanded**: `q` → que, `xq` → porque, `tmb` → también.
+- **Stretched words are collapsed**: `encantaaaa` → encanta.
+- **Typos are repaired conservatively.** A word is changed only when all of these hold:
+  - it is not a known Spanish or English word form (checked against [wordfreq](https://github.com/rspeer/wordfreq) lists, which include conjugations and unaccented spellings);
+  - it is one physical slip from a known word (missing letter, extra letter, swapped letters, or a neighbouring key);
+  - the first letter is unchanged;
+  - the change is not just a different word ending (endings are usually inflections, not typos).
+  
+  The export itself also works as a dictionary, so product names that customers spell consistently are learned rather than "fixed".
+
+The original answer is always kept next to the cleaned one.
+
+On six real exports (about 7,700 responses and 10,800 open answers), cleaning removed 73 junk answers and repaired typos in 305 answers. Typical fixes: `calidsd` → calidad, `prodcutos` → productos, `etrega` → entrega, `ninguo` → ninguno. An early version was too aggressive (`hago` → pago, `premios` → precios); the rules above came from reviewing those errors.
+
+## Evaluation
+
+Two layers, reported separately on purpose:
+
+1. **Real exports, aggregate only** (the table at the top). Star ratings act as a partial answer key for sentiment. For themes, I compared v2 against my own manual tally of Divain's post-purchase survey (113 buyers). v2 agreed with me on the top two reasons for choosing the brand (quality and longevity, then price) and on the top two worries (quality and longevity, then not knowing or trusting the brand). It undercounted product variety (5 answers against my 13) and left about a quarter of answers as "Other" (curiosity, a specific scent). Closing those gaps is what the model backend and codebook extensions are for.
+2. **Synthetic development set** ([docs/evaluation_synthetic.md](docs/evaluation_synthetic.md)): 400 generated answers with known labels.
+
+   | | Theme accuracy | Theme macro-F1 | Sentiment accuracy |
+   |---|---|---|---|
+   | v1 | 20.0% | 0.16 | 37.5% |
+   | v2 rules | 93.0% | 0.86 | 100% (n=56) |
+
+   These v2 numbers are optimistic. I wrote both the templates and the rules, and I fixed general gaps after reading the errors. Treat this as a regression test, not a benchmark.
+
+The benchmark that matters is a **hand-labelled sample of real answers**, and it is the next step: `voc label-kit` has sampled 200 real answers, which I am labelling blind. I will then re-label 50 of them a week later to measure my own consistency (Cohen's kappa), and `voc eval` will score each backend against those labels. Results will be added here as aggregates. See [docs/evaluation.md](docs/evaluation.md).
+
+## Privacy by design
+
+Client data never enters this repository. The public demo runs on synthetic data, and [scripts/check_no_pii.py](scripts/check_no_pii.py) runs in CI to block:
+- real email addresses and IP addresses;
+- API-key shaped strings;
+- any names added to the blocklist (compared by SHA-256, so the list itself reveals nothing).
+
+When the pipeline runs on real data:
+- identifying columns are dropped before analysis;
+- contact details typed into answers are masked;
+- spend is banded;
+- shares are only charted for bases of 30 or more, and counts under 5 print as "<5";
+- the HTML summary never contains verbatim answers.
+
+Details: [docs/privacy.md](docs/privacy.md).
+
+## Repository layout
+
+```
+voc/                 pipeline package (ingest, questions, clean, codebook, sentiment, classify, pipeline, reports, evaluate, synth, cli)
+voc/codebook.json    the 18-theme codebook
+data/synthetic/      generated demo exports + answer key (no real people)
+examples/output/     reports generated from the synthetic data
+docs/                method, privacy, evaluation, codebook
+legacy/              v1 script and its example input/output, kept for comparison
+scripts/             privacy guard
+tests/               106 tests
 ```
 
----
+## Limitations
 
-## What Happens In API Mode
+- Keyword rules miss meaning without trigger words ("que fuera puro marketing" reads as an ingredients comment). The model backends are built for these cases; measure them with `voc eval` before trusting them.
+- Sentiment is a lexicon, not a model. Sarcasm fails.
+- Typo repair skips words shorter than four letters and can still pick the wrong neighbour for rare words.
+- Theme shares describe the people who answered an optional survey, not all customers.
 
-- Sends the exact question header text to the model for each answer.
-- Truncates very long answers and caps `max_tokens` to control spend.
-- Uses an on-disk cache so duplicates and re-runs stay inexpensive.
+## History
 
----
+- **2023-2024**: manual affinity coding in spreadsheets, then prompt prototypes, while running customer-data analysis for e-commerce clients.
+- **2025, v1**: packaged the workflow as a public script (see `legacy/`).
+- **2026, v2**: audited v1 on real data, then rebuilt the method and added cleaning, privacy controls and evaluation. v2 was built with AI coding assistance (Claude). The codebook themes come from my manual coding of client data.
 
-## Approximate Costs and Requirements
-
-- **Requirements:** OpenAI account, API key, and the `openai` Python package.
-- **Cost:** depends on model and tokens. With a compact classification model, thousands of short answers typically land in low USD totals. Higher-tier models cost more. Always check current pricing and confirm with token logs.
-
----
-
-## Output Structure
-
-**Per-product sheets (wide layout)**
-
-```
-ResponseID | Product | <Question>_Answer | <Question>_Sentiment | <Question>_Category | ...
-```
-
-**Summary sheet**
-- Sentiment counts per Product × Question.
-
-**Charts**
-- On each `<Product>` sheet: one pie per question with sentiment analytics.
-
----
-
-## Notes
-
-- Built for Voice of Customer, NPS follow-ups, and SKU-level feedback triage.
-- Works with English and Spanish responses. PII columns are not used in analysis.
-- Output is Excel-ready for quick insight sharing or downstream BI ingestion.
+MIT License.

@@ -1,7 +1,13 @@
-pandas>=2.0
+pandas>=1.5
 openpyxl>=3.1
-openai>=1.30
+XlsxWriter>=3.0
+ftfy>=6.1
+wordfreq>=3.0
 python-dotenv>=1.0
-langdetect>=1.0.9
+tabulate>=0.9
+# legacy v1 comparison in `voc eval`
 vaderSentiment>=3.3.2
-XlsxWriter>=3.0.0
+# optional: --backend claude
+anthropic>=0.125
+# optional: --backend openai
+openai>=1.40

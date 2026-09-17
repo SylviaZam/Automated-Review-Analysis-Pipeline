@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+*.egg-info/
+build/
+dist/
+.venv/
+venv/
+
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Caches and local runs
+.voc_cache.json
+/output/
+
+# Real client data never belongs in this repository.
+# Only synthetic data (data/synthetic) and generated demo reports (examples/) are tracked.
+private/
+data/*
+!data/synthetic/
+*.xlsx
+!examples/output/*.xlsx
+!legacy/v1_example_output.xlsx
+
+# OS
+.DS_Store
