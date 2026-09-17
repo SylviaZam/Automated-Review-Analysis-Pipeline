@@ -65,13 +65,26 @@ Commands:
 | Command | Purpose |
 |---|---|
 | `voc run <export>` | Analyse one export. `--label` sets the dataset name used in outputs. `--quotes` adds cleaned answers to the Excel for internal use only. |
-| `voc eval <gold.csv>` | Score backends against a hand-labelled answer key. |
+| `voc eval <gold.csv>` | Score backends (`v1`, `rules`, `claude`, `openai`) against a hand-labelled answer key. |
 | `voc label-kit <export>` | Sample real answers into a labelling sheet that stays on your machine. |
 | `voc synth` | Regenerate the synthetic demo datasets and their answer key. |
 
-### Model backend (optional)
+### Model backends (optional)
 
-`--backend openai` sends batches of 20 answers with the codebook as a strict JSON schema, so every label is a valid theme id. Results are cached by SHA-256 hash. Set `OPENAI_API_KEY` in `.env` (see `.env.example`). The default model is `gpt-4o-mini`; override it with `--model` or `VOC_OPENAI_MODEL`. The offline `rules` backend is the default and is what the numbers on this page describe.
+Keyword rules miss answers that carry meaning without trigger words. For those, a language model can do the coding. Both model backends send answers in batches of 20, with the codebook as a JSON schema, so every label is a valid theme id rather than a made-up category. Results are cached by SHA-256 hash (no answer text is stored), and failed batches are flagged instead of being counted.
+
+```bash
+pip install anthropic          # or: pip install openai
+python -m voc run export.csv --backend claude --label "BFit post-purchase"
+python -m voc eval gold.csv --backends v1 rules claude   # measure before trusting it
+```
+
+| Backend | Credentials | Default model | Notes |
+|---|---|---|---|
+| `claude` | `ANTHROPIC_API_KEY` (or an `ant auth login` profile) | `claude-opus-5` at low effort | Structured outputs (`output_config.format`); the codebook sits in a cached system prompt; server-side refusal fallback on Opus 5. Change with `--model` / `VOC_CLAUDE_MODEL`, and effort with `VOC_CLAUDE_EFFORT`. |
+| `openai` | `OPENAI_API_KEY` | `gpt-4o-mini` | Strict JSON-schema response format. Change with `--model` / `VOC_OPENAI_MODEL`. |
+
+Put keys in `.env` (see `.env.example`), never in code. The offline `rules` backend is the default and is what the numbers on this page describe. The model backends have not yet been scored on the real hand-labelled set.
 
 ## Supported exports
 
@@ -145,12 +158,12 @@ examples/output/     reports generated from the synthetic data
 docs/                method, privacy, evaluation, codebook
 legacy/              v1 script and its example input/output, kept for comparison
 scripts/             privacy guard
-tests/               99 tests
+tests/               106 tests
 ```
 
 ## Limitations
 
-- Keyword rules miss meaning without trigger words ("que fuera puro marketing" reads as an ingredients comment). The model backend handles these better; measure it with `voc eval` before trusting it.
+- Keyword rules miss meaning without trigger words ("que fuera puro marketing" reads as an ingredients comment). The model backends are built for these cases; measure them with `voc eval` before trusting them.
 - Sentiment is a lexicon, not a model. Sarcasm fails.
 - Typo repair skips words shorter than four letters and can still pick the wrong neighbour for rare words.
 - Theme shares describe the people who answered an optional survey, not all customers.

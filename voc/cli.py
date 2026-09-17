@@ -28,7 +28,15 @@ def cmd_run(args) -> int:
     ds = ingest.load(args.input, label=args.label, sheet=args.sheet, role_overrides=overrides)
     kwargs = {"model": args.model, "cache_path": args.cache} if args.backend != "rules" else {}
     classifier = make_classifier(args.backend, codebook, args.industry, **kwargs)
-    an = pipeline.run(ds, classifier, codebook, min_n=args.min_n)
+    try:
+        an = pipeline.run(ds, classifier, codebook, min_n=args.min_n)
+    except RuntimeError as exc:
+        print(f"[error] {exc}", file=sys.stderr)
+        return 1
+    if an.manifest["text_answers_coded"] and an.manifest["failed"] == an.manifest["text_answers_coded"]:
+        print(f"[error] every answer failed to classify with '{an.backend}'; no report written. "
+              "Check credentials, model id and network.", file=sys.stderr)
+        return 1
 
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
@@ -61,9 +69,13 @@ def cmd_eval(args) -> int:
         if backend == "v1":
             scores.append(evaluate.score(gold, evaluate.V1DemoClassifier(), clean=False))
             continue
-        kwargs = {"cache_path": args.cache} if backend != "rules" else {}
-        clf = make_classifier(backend, codebook, args.industry, **kwargs)
-        scores.append(evaluate.score(gold, clf, corpus=corpus))
+        kwargs = {"model": args.model, "cache_path": args.cache} if backend != "rules" else {}
+        try:
+            clf = make_classifier(backend, codebook, args.industry, **kwargs)
+            scores.append(evaluate.score(gold, clf, corpus=corpus))
+        except RuntimeError as exc:
+            print(f"[error] {backend}: {exc}", file=sys.stderr)
+            return 1
     md = evaluate.markdown(scores, args.title)
     if args.out:
         Path(args.out).parent.mkdir(parents=True, exist_ok=True)
@@ -121,8 +133,8 @@ def build_parser() -> argparse.ArgumentParser:
     r.add_argument("--label", help="dataset name shown in reports, e.g. 'BFit post-purchase'")
     r.add_argument("--title", help="report heading")
     r.add_argument("--industry", default="e-commerce")
-    r.add_argument("--backend", choices=["rules", "openai"], default="rules")
-    r.add_argument("--model", help="model id for the openai backend (default: $VOC_OPENAI_MODEL or gpt-4o-mini)")
+    r.add_argument("--backend", choices=["rules", "claude", "openai"], default="rules")
+    r.add_argument("--model", help="model id for a model backend (claude: $VOC_CLAUDE_MODEL or claude-opus-5; openai: $VOC_OPENAI_MODEL or gpt-4o-mini)")
     r.add_argument("--cache", default=".voc_cache.json")
     r.add_argument("--sheet", help="sheet name for XLSX inputs")
     r.add_argument("--roles", help="JSON file mapping column header -> role, for unusual exports")
@@ -134,7 +146,8 @@ def build_parser() -> argparse.ArgumentParser:
 
     e = sub.add_parser("eval", help="score backends against a gold file")
     e.add_argument("gold")
-    e.add_argument("--backends", nargs="+", default=["v1", "rules"], choices=["v1", "rules", "openai"])
+    e.add_argument("--backends", nargs="+", default=["v1", "rules"], choices=["v1", "rules", "claude", "openai"])
+    e.add_argument("--model", help="model id for the model backend(s)")
     e.add_argument("--industry", default="e-commerce")
     e.add_argument("--cache", default=".voc_cache.json")
     e.add_argument("--codebook")

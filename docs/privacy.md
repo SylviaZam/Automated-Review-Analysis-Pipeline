@@ -16,7 +16,7 @@ This pipeline was built for customer data that belongs to someone else: the bran
 | Ingest | Name, email, phone, address, city, province, IP, user agent, referrer/landing URLs, and order and customer ids are dropped before analysis. |
 | Ingest | Total spent is converted to a band (`<500`, `500-999`, ...). |
 | Ingest | Emails, phone numbers, URLs, @handles and order numbers typed inside answers are masked. |
-| Model backend | Only the question text and the masked answer (truncated to 600 characters) are sent. The cache stores SHA-256 keys and labels, never text. |
+| Model backends (Claude, OpenAI) | Only the question text and the masked answer (truncated to 600 characters) are sent, never names or metadata. The cache stores SHA-256 keys and labels, never text. Check the provider's data-retention terms before sending client data. |
 | Reports | `--label` sets the dataset name shown in outputs. Bases under 30 are not charted; counts under 5 print as `<5`. The HTML summary has no verbatims. |
 | Labelling kit | Masked real answers, kept on the analyst's machine; the file header says so. |
 

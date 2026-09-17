@@ -30,7 +30,7 @@ Junk answers are removed by the cleaning step before scoring. They count as `oth
 1. `voc label-kit <export> --out private/labels.csv -n 200` samples answers (repeat per brand, then combine).
 2. Label `gold_theme` and `gold_sentiment` without looking at any model output.
 3. A week later, label the first 50 rows again in `gold_theme_2` without looking at the first labels.
-4. Run `voc eval private/labels.csv --backends v1 rules openai --corpus <exports...> --out private/eval.md`.
+4. Run `voc eval private/labels.csv --backends v1 rules claude --corpus <exports...> --out private/eval.md`.
 5. Publish only the aggregate table.
 
 ## Results so far

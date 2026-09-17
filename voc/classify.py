@@ -1,15 +1,18 @@
 """Classifier backends.
 
-Both backends return the same shape, so reports and evaluation do not care
+Every backend returns the same shape, so reports and evaluation do not care
 which one ran:
 
     Result(themes=[primary, ...], sentiment="Positive" | ... | "n/a", status="ok" | "failed")
 
 `rules`  - offline, free, deterministic. Codebook keywords + bilingual lexicon.
-`openai` - optional. The model must pick theme ids from the codebook enum
-           (JSON-schema structured output), so categories stay comparable
-           across brands. Failed calls are marked `failed` and counted in the
-           run manifest instead of silently becoming "Neutral".
+`claude` - optional (voc/classify_claude.py). Anthropic Messages API.
+`openai` - optional. OpenAI chat completions.
+
+Both model backends must pick theme ids from the codebook enum (JSON-schema
+structured output), so categories stay comparable across brands. Failed calls
+are marked `failed` and counted in the run manifest instead of silently
+becoming "Neutral".
 """
 from __future__ import annotations
 
@@ -64,23 +67,61 @@ class RulesClassifier:
         return out
 
 
-class OpenAIClassifier:
-    """Batched structured-output classification with an on-disk cache.
+def coding_schema(codebook: Codebook) -> dict:
+    """JSON schema shared by the model backends: theme ids must come from the codebook."""
+    return {
+        "type": "object",
+        "additionalProperties": False,
+        "required": ["results"],
+        "properties": {
+            "results": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "additionalProperties": False,
+                    "required": ["index", "themes", "sentiment"],
+                    "properties": {
+                        "index": {"type": "integer"},
+                        "themes": {"type": "array", "items": {"type": "string", "enum": codebook.ids}},
+                        "sentiment": {"type": "string", "enum": list(senti.LABELS) + ["n/a"]},
+                    },
+                },
+            }
+        },
+    }
 
-    The cache is keyed by a SHA-256 of (codebook version, role, question, answer)
-    and stores only labels, never answer text.
+
+def coding_instructions(codebook: Codebook, industry: str) -> str:
+    return (
+        f"You code customer feedback for a {industry} e-commerce brand. Answers are mostly Mexican Spanish.\n"
+        "For each answer, return 1-3 theme ids from this codebook, most important first:\n"
+        f"{codebook.prompt_table()}\n"
+        "Use no_concern only when the customer says they had no concern or nothing to add.\n"
+        "Read each answer in the context of its question. Give a sentiment only when the question asks "
+        "for an opinion (role review or open_feedback); otherwise return n/a.\n"
+        "Return one result per input item, using the item's index."
+    )
+
+
+def batch_payload(batch: list[Item]) -> str:
+    rows = [{"index": i, "role": it.role, "question": it.question, "answer": it.answer[:600]} for i, it in enumerate(batch)]
+    return json.dumps(rows, ensure_ascii=False)
+
+
+class LLMClassifier:
+    """Batching, caching and failure handling shared by the model backends.
+
+    Subclasses implement `_call(batch) -> {index: Result}` and set `name`/`model`.
+    The cache is keyed by a SHA-256 of (backend, codebook version, model, role,
+    question, answer) and stores only labels, never answer text.
     """
 
-    name = "openai"
+    name = "llm"
+    model = "?"
     batch_size = 20
+    max_attempts = 4
 
-    def __init__(self, codebook: Codebook, industry: str, model: str | None = None, cache_path: str | None = ".voc_cache.json"):
-        from openai import OpenAI  # imported lazily so the offline mode has no API dependency
-
-        if not os.getenv("OPENAI_API_KEY"):
-            raise RuntimeError("OPENAI_API_KEY is not set; use --backend rules for offline mode.")
-        self.client = OpenAI()
-        self.model = model or os.getenv("VOC_OPENAI_MODEL", "gpt-4o-mini")
+    def __init__(self, codebook: Codebook, industry: str, cache_path: str | None = ".voc_cache.json"):
         self.codebook = codebook
         self.industry = industry
         self.cache_path = Path(cache_path) if cache_path else None
@@ -89,53 +130,23 @@ class OpenAIClassifier:
             self.cache = json.loads(self.cache_path.read_text(encoding="utf-8"))
 
     def _key(self, item: Item) -> str:
-        raw = "|".join([self.codebook.version, self.model, item.role, item.question, item.answer])
+        raw = "|".join([self.name, self.codebook.version, self.model, item.role, item.question, item.answer])
         return hashlib.sha256(raw.encode("utf-8")).hexdigest()
 
-    def _schema(self) -> dict:
-        return {
-            "type": "object",
-            "additionalProperties": False,
-            "required": ["results"],
-            "properties": {
-                "results": {
-                    "type": "array",
-                    "items": {
-                        "type": "object",
-                        "additionalProperties": False,
-                        "required": ["index", "themes", "sentiment"],
-                        "properties": {
-                            "index": {"type": "integer"},
-                            "themes": {"type": "array", "items": {"type": "string", "enum": self.codebook.ids}},
-                            "sentiment": {"type": "string", "enum": list(senti.LABELS) + ["n/a"]},
-                        },
-                    },
-                }
-            },
-        }
+    def _call(self, batch: list[Item]) -> dict[int, Result]:  # pragma: no cover - abstract
+        raise NotImplementedError
 
-    def _call(self, batch: list[Item]) -> dict[int, Result]:
-        system = (
-            f"You code customer feedback for a {self.industry} e-commerce brand. Answers are mostly Mexican Spanish.\n"
-            "For each answer, return 1-3 theme ids from this codebook, most important first:\n"
-            f"{self.codebook.prompt_table()}\n"
-            "Use no_concern only when the customer says they had no concern or nothing to add.\n"
-            "Read each answer in the context of its question. Give a sentiment only when the question asks "
-            "for an opinion (role review or open_feedback); otherwise return n/a."
-        )
-        payload = [{"index": i, "role": it.role, "question": it.question, "answer": it.answer[:600]} for i, it in enumerate(batch)]
-        resp = self.client.chat.completions.create(
-            model=self.model,
-            temperature=0,
-            messages=[{"role": "system", "content": system}, {"role": "user", "content": json.dumps(payload, ensure_ascii=False)}],
-            response_format={"type": "json_schema", "json_schema": {"name": "coding", "strict": True, "schema": self._schema()}},
-        )
-        parsed = json.loads(resp.choices[0].message.content or "{}")
+    def _results_from_rows(self, rows: list[dict]) -> dict[int, Result]:
         results = {}
-        for row in parsed.get("results", []):
-            themes = [t for t in row["themes"] if t in self.codebook.ids] or [OTHER]
-            results[int(row["index"])] = Result(themes, row["sentiment"], sentiment_source="model" if row["sentiment"] != "n/a" else "n/a")
+        for row in rows:
+            themes = [t for t in row.get("themes", []) if t in self.codebook.ids] or [OTHER]
+            sentiment = row.get("sentiment", "n/a")
+            results[int(row["index"])] = Result(themes, sentiment, sentiment_source="model" if sentiment != "n/a" else "n/a")
         return results
+
+    def _is_fatal(self, exc: Exception) -> bool:
+        """Errors that retrying cannot fix (bad credentials, bad request)."""
+        return False
 
     def classify(self, items: list[Item]) -> list[Result]:
         out: list[Result | None] = [None] * len(items)
@@ -150,14 +161,17 @@ class OpenAIClassifier:
             idx = pending[start:start + self.batch_size]
             batch = [items[i] for i in idx]
             got: dict[int, Result] = {}
-            for attempt in range(4):
+            for attempt in range(self.max_attempts):
                 try:
                     got = self._call(batch)
                     break
                 except Exception as exc:  # network, rate limit, malformed output
-                    if attempt == 3:
-                        print(f"[warn] batch failed after retries: {type(exc).__name__}", file=sys.stderr)
-                    time.sleep(2 ** attempt)
+                    if self._is_fatal(exc):
+                        raise
+                    if attempt == self.max_attempts - 1:
+                        print(f"[warn] {self.name} batch failed after retries: {type(exc).__name__}", file=sys.stderr)
+                    else:
+                        time.sleep(2 ** attempt)
             for local, i in enumerate(idx):
                 res = got.get(local)
                 if res is None:
@@ -172,9 +186,39 @@ class OpenAIClassifier:
         return [r for r in out if r is not None]
 
 
+class OpenAIClassifier(LLMClassifier):
+    """OpenAI chat completions with a strict JSON-schema response format."""
+
+    name = "openai"
+
+    def __init__(self, codebook: Codebook, industry: str, model: str | None = None, cache_path: str | None = ".voc_cache.json"):
+        from openai import OpenAI  # imported lazily so the offline mode has no API dependency
+
+        if not os.getenv("OPENAI_API_KEY"):
+            raise RuntimeError("OPENAI_API_KEY is not set; use --backend rules for offline mode.")
+        super().__init__(codebook, industry, cache_path)
+        self.client = OpenAI()
+        self.model = model or os.getenv("VOC_OPENAI_MODEL", "gpt-4o-mini")
+
+    def _call(self, batch: list[Item]) -> dict[int, Result]:
+        resp = self.client.chat.completions.create(
+            model=self.model,
+            temperature=0,
+            messages=[{"role": "system", "content": coding_instructions(self.codebook, self.industry)},
+                      {"role": "user", "content": batch_payload(batch)}],
+            response_format={"type": "json_schema", "json_schema": {"name": "coding", "strict": True, "schema": coding_schema(self.codebook)}},
+        )
+        parsed = json.loads(resp.choices[0].message.content or "{}")
+        return self._results_from_rows(parsed.get("results", []))
+
+
 def make_classifier(backend: str, codebook: Codebook, industry: str, **kwargs):
     if backend == "rules":
         return RulesClassifier(codebook)
     if backend == "openai":
         return OpenAIClassifier(codebook, industry, **kwargs)
+    if backend == "claude":
+        from .classify_claude import ClaudeClassifier
+
+        return ClaudeClassifier(codebook, industry, **kwargs)
     raise ValueError(f"unknown backend {backend!r}")

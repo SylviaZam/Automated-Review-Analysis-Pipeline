@@ -7,5 +7,7 @@ python-dotenv>=1.0
 tabulate>=0.9
 # legacy v1 comparison in `voc eval`
 vaderSentiment>=3.3.2
+# optional: --backend claude
+anthropic>=0.125
 # optional: --backend openai
 openai>=1.40

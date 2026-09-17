@@ -161,3 +161,98 @@ def test_cli_run_and_eval(tmp_path, synthetic, capsys):
     assert manifest["backend"] == "rules" and manifest["rows"] == 700
     assert main(["eval", str(synthetic["gold_labels.csv"]), "--out", str(tmp_path / "eval.md")]) == 0
     assert "rules" in Path(tmp_path / "eval.md").read_text()
+
+
+# --- Claude backend ----------------------------------------------------------------
+class _Block:
+    def __init__(self, type_, text=""):
+        self.type, self.text = type_, text
+
+
+class _FakeClaudeMessages:
+    def __init__(self, payload=None, stop_reason="end_turn", error=None):
+        self.payload, self.stop_reason, self.error = payload, stop_reason, error
+        self.calls = []
+
+    def create(self, **kwargs):
+        self.calls.append(kwargs)
+        if self.error is not None:
+            raise self.error
+        resp = type("Resp", (), {})()
+        resp.stop_reason = self.stop_reason
+        resp.content = [_Block("thinking"), _Block("text", json.dumps(self.payload or {}))]
+        return resp
+
+
+def _fake_claude(tmp_path, messages, model=None):
+    from voc.classify_claude import ClaudeClassifier
+
+    client = type("Client", (), {"beta": type("Beta", (), {"messages": messages})()})()
+    return ClaudeClassifier(CB, "wellness", model=model, cache_path=str(tmp_path / "c.json"), client=client)
+
+
+def test_claude_request_shape_and_parsing(tmp_path):
+    payload = {"results": [{"index": 0, "themes": ["efficacy_results"], "sentiment": "n/a"},
+                           {"index": 1, "themes": ["quality"], "sentiment": "Positive"}]}
+    messages = _FakeClaudeMessages(payload)
+    clf = _fake_claude(tmp_path, messages)
+    res = clf.classify([Item("hesitation", "¿Qué te preocupaba?", "que no funcione"),
+                        Item("review", "body", "excelente calidad")])
+    assert [r.themes for r in res] == [["efficacy_results"], ["quality"]]
+    assert res[1].sentiment == "Positive"
+    (call,) = messages.calls
+    assert call["model"] == "claude-opus-5"
+    assert call["output_config"]["effort"] == "low"
+    fmt = call["output_config"]["format"]
+    assert fmt["type"] == "json_schema"
+    assert "quality" in fmt["schema"]["properties"]["results"]["items"]["properties"]["themes"]["items"]["enum"]
+    assert call["fallbacks"] == "default" and call["betas"] == ["server-side-fallback-2026-07-01"]
+    assert call["system"][0]["cache_control"] == {"type": "ephemeral"}
+    assert "temperature" not in call
+
+
+def test_claude_haiku_omits_effort_and_fallbacks(tmp_path):
+    messages = _FakeClaudeMessages({"results": [{"index": 0, "themes": ["other"], "sentiment": "n/a"}]})
+    _fake_claude(tmp_path, messages, model="claude-haiku-4-5").classify([Item("hesitation", "q", "algo")])
+    (call,) = messages.calls
+    assert "effort" not in call["output_config"]
+    assert "fallbacks" not in call and "betas" not in call
+
+
+@pytest.mark.parametrize("stop_reason", ["refusal", "max_tokens"])
+def test_claude_unparseable_batches_are_failed(tmp_path, stop_reason):
+    clf = _fake_claude(tmp_path, _FakeClaudeMessages({}, stop_reason=stop_reason))
+    (res,) = clf.classify([Item("review", "body", "excelente")])
+    assert res.status == "failed"
+
+
+def test_claude_auth_errors_are_not_retried(tmp_path, monkeypatch):
+    import anthropic
+
+    err = anthropic.AuthenticationError.__new__(anthropic.AuthenticationError)
+    messages = _FakeClaudeMessages(error=err)
+    monkeypatch.setattr("voc.classify.time.sleep", lambda s: None)
+    with pytest.raises(anthropic.AuthenticationError):
+        _fake_claude(tmp_path, messages).classify([Item("review", "body", "excelente")])
+    assert len(messages.calls) == 1
+
+
+def test_claude_missing_credentials_is_fatal(tmp_path):
+    messages = _FakeClaudeMessages(error=TypeError("Could not resolve authentication method."))
+    with pytest.raises(RuntimeError, match="ANTHROPIC_API_KEY"):
+        _fake_claude(tmp_path, messages).classify([Item("review", "body", "excelente")])
+    assert len(messages.calls) == 1
+
+
+def test_cli_fails_loudly_when_every_answer_fails(tmp_path, synthetic, monkeypatch, capsys):
+    class AlwaysFails:
+        name = "broken"
+
+        def classify(self, items):
+            from voc.classify import Result
+            return [Result(["other"], "n/a", status="failed") for _ in items]
+
+    monkeypatch.setattr("voc.cli.make_classifier", lambda *a, **k: AlwaysFails())
+    assert main(["run", str(synthetic["apparel_pdp_poll.csv"]), "--out", str(tmp_path / "o")]) == 1
+    assert "every answer failed" in capsys.readouterr().err
+    assert not (tmp_path / "o").exists()
