@@ -1,0 +1,26 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.9", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - run: pip install -r requirements-dev.txt
+      - name: Privacy guard
+        run: python scripts/check_no_pii.py
+      - run: pytest -q
+      - name: Demo runs end to end
+        run: |
+          python -m voc synth --out /tmp/synthetic
+          python -m voc run /tmp/synthetic/wellness_post_purchase.csv --out /tmp/out --label "CI demo"
+          python -m voc eval /tmp/synthetic/gold_labels.csv --out /tmp/out/eval.md

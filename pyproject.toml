@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "voc-pipeline"
+version = "2.0.0"
+description = "Spanish-first voice-of-customer pipeline: survey and review exports to cleaned, coded themes and privacy-safe reports."
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.9"
+authors = [{ name = "Sylvia Zamora" }]
+dependencies = [
+  "pandas>=1.5",
+  "openpyxl>=3.1",
+  "XlsxWriter>=3.0",
+  "ftfy>=6.1",
+  "wordfreq>=3.0",
+  "python-dotenv>=1.0",
+  "tabulate>=0.9",
+  "vaderSentiment>=3.3.2",
+]
+
+[project.optional-dependencies]
+openai = ["openai>=1.40"]
+dev = ["pytest>=7"]
+
+[project.scripts]
+voc = "voc.cli:main"
+
+[tool.setuptools]
+packages = ["voc"]
+
+[tool.setuptools.package-data]
+voc = ["codebook.json", "vocab_es_en.txt"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

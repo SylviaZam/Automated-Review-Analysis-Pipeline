@@ -1,0 +1,701 @@
+title,body,rating,reviewer_name,reviewer_email,product_handle
+,Huele delicioso y dura muchisimo.,5,Valeria Prueba,review+0001@example.com,eau-de-toilette-cedro-100ml
+,"aroma dulce, fijacion normal",3,Pablo Ficticio,review+0002@example.com,eau-de-parfum-flor-50ml
+,Llegó rapidísimo y bien empacado,5,María Prueba,review+0003@example.com,eau-de-toilette-cedro-100ml
+,Me encanta 😍,5,Fernanda Ficticio,review+0004@example.com,eau-de-parfum-ambar-100ml
+Excelente,"llegó antes de lo esperado, gracias",4,Daniela Prueba,review+0005@example.com,eau-de-parfum-ambar-100ml
+,Nunca llegó mi pedido,1,Jorge Demo,review+0006@example.com,body-mist-coco
+Excelente,"excelente calidad, la fragancia dura todo el dia",5,Jorge Ficticio,review+0007@example.com,eau-de-parfum-flor-50ml
+,Me lo recomendo mi amiga y me encanto,5,Luis Ejemplo,review+0008@example.com,eau-de-toilette-cedro-100ml
+,Excelente precio para lo que es,5,Lucía Prueba,review+0009@example.com,eau-de-parfum-ambar-100ml
+,me lo recomendo mi amiga y me encanto,5,Ana Ficticio,review+0010@example.com,eau-de-parfum-flor-50ml
+,Perfecto,5,Pablo Muestra,review+0011@example.com,eau-de-parfum-flor-50ml
+Reseña,"excelente producto, solo que el envío fue lento.",5,Pablo Prueba,review+0012@example.com,eau-de-parfum-flor-50ml
+,"Muy buena fijación, igualito al original",5,Sofía Prueba,review+0013@example.com,eau-de-toilette-cedro-100ml
+Excelente,Excelente precio para lo que es.,5,Ana Ficticio,review+0014@example.com,eau-de-toilette-cedro-100ml
+Excelente,Perfecto.,5,Daniela Muestra,review+0015@example.com,eau-de-parfum-ambar-100ml
+Me encantó,Excelente precio para lo que es,5,Valeria Muestra,review+0016@example.com,eau-de-parfum-ambar-100ml
+,"Excelente calidad, la fragancia dura todo el dia",5,Diego Ficticio,review+0017@example.com,body-mist-coco
+,10/10,4,Pablo Demo,review+0018@example.com,eau-de-parfum-ambar-100ml
+Excelente,Me encanta 😍,5,Valeria Demo,review+0019@example.com,eau-de-parfum-ambar-100ml
+,Perfecto,5,Carlos Demo,review+0020@example.com,eau-de-toilette-cedro-100ml
+Mi opinión,Es el de 100 ml,3,Lucía Ejemplo,review+0021@example.com,eau-de-toilette-cedro-100ml
+Me encantó,Excelete precio para lo que es,5,Ana Ejemplo,review+0022@example.com,eau-de-parfum-flor-50ml
+Reseña,"es para regalo, todavía no lo abro.",3,María Ejemplo,review+0023@example.com,eau-de-toilette-cedro-100ml
+,10/10,5,Sofía Muestra,review+0024@example.com,eau-de-toilette-cedro-100ml
+,"Excelente calidad, la fragancia dura todo el día",4,María Muestra,review+0025@example.com,eau-de-parfum-ambar-100ml
+,"Me gusto mucho el frasco, muy bonito",5,Fernanda Prueba,review+0026@example.com,eau-de-parfum-flor-50ml
+,Pedí un cambio y nadie me respondió,2,María Demo,review+0027@example.com,eau-de-parfum-flor-50ml
+Excelente,"great quality, lasts all day",4,Ana Muestra,review+0028@example.com,eau-de-parfum-flor-50ml
+Me encantó,Súper recomendado.,5,María Muestra,review+0029@example.com,eau-de-toilette-cedro-100ml
+,llegó rapidísimo y bien empacado,5,Ana Ficticio,review+0030@example.com,body-mist-coco
+,"Excelente producto, solo que el envío fue lento",5,Sofía Muestra,review+0031@example.com,eau-de-parfum-flor-50ml
+Excelente,Muy buen perfume y súper barato,5,Jorge Prueba,review+0032@example.com,body-mist-coco
+,"Llegó antes de lo esperado, gracias",4,Sofía Prueba,review+0033@example.com,eau-de-parfum-ambar-100ml
+Excelente,"Muy buen fijación, igualito al original",4,Luis Muestra,review+0034@example.com,eau-de-toilette-cedro-100ml
+Mi opinión,Nunca llegó mi pedido,1,María Muestra,review+0035@example.com,eau-de-parfum-ambar-100ml
+Me encantó,"excelente calidad, la fragancia dura todo el día",5,Ana Muestra,review+0036@example.com,eau-de-toilette-cedro-100ml
+,Llegó rapidísimo y bien empacado.,5,Valeria Demo,review+0037@example.com,eau-de-toilette-cedro-100ml
+,mi favorito,5,Carlos Prueba,review+0038@example.com,eau-de-parfum-ambar-100ml
+Mi opinión,Buen aroma aunque la fijación es regular,3,Diego Ficticio,review+0039@example.com,eau-de-toilette-cedro-100ml
+Me encantó,"vale la pena, buen precio",5,Valeria Muestra,review+0040@example.com,eau-de-parfum-flor-50ml
+Me encantó,"excelente calidad, la fragancia dura todo el dia",5,Lucía Prueba,review+0041@example.com,eau-de-parfum-ambar-100ml
+,"Muy buena fijacion, igualito al original.",4,Daniela Demo,review+0042@example.com,body-mist-coco
+,Excelente precio para lo que es,5,Diego Demo,review+0043@example.com,body-mist-coco
+,"Great quality, lasts all day",5,Ana Ficticio,review+0044@example.com,body-mist-coco
+Reseña,Pedí un cambio y nadie me respondió,2,Valeria Prueba,review+0045@example.com,eau-de-parfum-flor-50ml
+Me encantó,Me encanta 😍,4,Daniela Muestra,review+0046@example.com,eau-de-parfum-flor-50ml
+Excelente,Lo compré por las reseñas y no me arrepiento,5,Valeria Demo,review+0047@example.com,eau-de-parfum-flor-50ml
+,"Excelente calidad, la fragancia dura todo el dia",5,María Ejemplo,review+0048@example.com,eau-de-parfum-ambar-100ml
+,Llegó el frasco roto,2,María Ejemplo,review+0049@example.com,eau-de-toilette-cedro-100ml
+,Lo amo,5,Daniela Ejemplo,review+0050@example.com,eau-de-toilette-cedro-100ml
+Reseña,Pésima atención al cliente,1,Pablo Prueba,review+0051@example.com,body-mist-coco
+Excelente,"Todo perfecto, el envío muy rápido",4,Luis Demo,review+0052@example.com,eau-de-parfum-flor-50ml
+,Pedi un cambio y nadie me respondio,1,Daniela Muestra,review+0053@example.com,eau-de-parfum-ambar-100ml
+,tardo tres semanas en llegar,1,Valeria Ficticio,review+0054@example.com,eau-de-toilette-cedro-100ml
+Reseña,"Aroma dulce, fijacion normal",3,Ana Demo,review+0055@example.com,eau-de-parfum-flor-50ml
+Excelente,"Todo perfecto, el envío muy rápido",5,Sofía Ejemplo,review+0056@example.com,eau-de-parfum-flor-50ml
+Excelente,súper recomendado.,5,Jorge Demo,review+0057@example.com,eau-de-toilette-cedro-100ml
+,"great quality,lasts all day",4,Diego Demo,review+0058@example.com,body-mist-coco
+Excelente,muy buen perfume y súper barato,5,Fernanda Muestra,review+0059@example.com,eau-de-parfum-ambar-100ml
+,Perecto,4,Pablo Ejemplo,review+0060@example.com,eau-de-parfum-flor-50ml
+,Me encanta 😍,4,Jorge Ficticio,review+0061@example.com,eau-de-toilette-cedro-100ml
+Mi opinión,Huele rico pero dura poco.,4,Pablo Ejemplo,review+0062@example.com,eau-de-toilette-cedro-100ml
+Me encantó,Lo compre por las resenas y no me arrepiento,5,Fernanda Ejemplo,review+0063@example.com,eau-de-parfum-ambar-100ml
+,Mi favorito,5,Carlos Ficticio,review+0064@example.com,body-mist-coco
+Me encantó,Mi favorito,5,Daniela Ficticio,review+0065@example.com,body-mist-coco
+Reseña,el olor no se parece al original,2,Pablo Muestra,review+0066@example.com,eau-de-toilette-cedro-100ml
+,Perfecto,4,Jorge Muestra,review+0067@example.com,eau-de-parfum-ambar-100ml
+,"Me gustó mucho el frasco, muy bonito",5,Luis Ficticio,review+0068@example.com,body-mist-coco
+,Mi favorito,5,Carlos Muestra,review+0069@example.com,eau-de-parfum-ambar-100ml
+Mi opinión,El olor no se parece al original,2,Jorge Prueba,review+0070@example.com,eau-de-parfum-flor-50ml
+,"me encanto, el aroma se mantiene horas",5,María Ficticio,review+0071@example.com,eau-de-toilette-cedro-100ml
+Excelente,"Me encantó, el aroma se mantiene horas.",5,Jorge Ejemplo,review+0072@example.com,eau-de-parfum-flor-50ml
+,Súper recomendado.,4,Ana Ficticio,review+0073@example.com,eau-de-toilette-cedro-100ml
+,Me encanta 😍,5,Carlos Ejemplo,review+0074@example.com,eau-de-toilette-cedro-100ml
+,"Vale la pena, buen precio.",5,Valeria Muestra,review+0075@example.com,body-mist-coco
+Excelente,lo amo,5,Daniela Prueba,review+0076@example.com,eau-de-parfum-flor-50ml
+Excelente,"Todo perfecto, el envío muy rápido",5,Carlos Muestra,review+0077@example.com,eau-de-parfum-flor-50ml
+Reseña,es el de 100 ml.,3,Luis Muestra,review+0078@example.com,body-mist-coco
+Reseña,El olor no se parece al original.,2,Ana Demo,review+0079@example.com,eau-de-parfum-ambar-100ml
+Me encantó,"Excelente calidad, la fragancia dura todo el dia",5,María Ejemplo,review+0080@example.com,eau-de-parfum-ambar-100ml
+Me encantó,Perfecto,5,Lucía Ficticio,review+0081@example.com,eau-de-parfum-ambar-100ml
+Excelente,10/10,5,Jorge Prueba,review+0082@example.com,eau-de-parfum-flor-50ml
+,Huele rico pero dura poco,5,Sofía Ficticio,review+0083@example.com,body-mist-coco
+,"Me encantó, el aroma se mantiene horas",5,Luis Prueba,review+0084@example.com,eau-de-toilette-cedro-100ml
+Reseña,Tardó tres semanas en llegar,1,Ana Ficticio,review+0085@example.com,body-mist-coco
+Excelente,"Me encanto, el aroma se mantiene horas.",5,Jorge Prueba,review+0086@example.com,body-mist-coco
+Excelente,"me encantó, el aroma se mantiene horas",4,Valeria Ejemplo,review+0087@example.com,eau-de-parfum-ambar-100ml
+,Perfecto,5,Lucía Prueba,review+0088@example.com,eau-de-parfum-flor-50ml
+,"Muy buena fijación, igualito al original",5,Luis Demo,review+0089@example.com,eau-de-parfum-ambar-100ml
+,"Great quality, lasts all day",5,Diego Prueba,review+0090@example.com,eau-de-parfum-ambar-100ml
+Excelente,Huele delicioso y dura muchísimo,5,Valeria Ejemplo,review+0091@example.com,eau-de-parfum-ambar-100ml
+,"llegó antes de lo esperado, graias",5,Daniela Demo,review+0092@example.com,body-mist-coco
+Me encantó,"me gusto mucho el frasco, muy bonito",5,Jorge Ejemplo,review+0093@example.com,body-mist-coco
+,"Great quality, lasts all day",5,Jorge Prueba,review+0094@example.com,body-mist-coco
+,Mi favorito,5,Sofía Demo,review+0095@example.com,eau-de-parfum-flor-50ml
+Excelente,"Todo perfecto, el envio uy rapido",5,Daniela Demo,review+0096@example.com,body-mist-coco
+,Huele rico pero dura poco,3,Valeria Prueba,review+0097@example.com,body-mist-coco
+Mi opinión,el olor no se parece al original,1,Pablo Ficticio,review+0098@example.com,body-mist-coco
+,"Excelente calidad, la fragancia dura todo el día",5,Lucía Muestra,review+0099@example.com,eau-de-parfum-flor-50ml
+Mi opinión,"no dura nada, a la hora ya no huele",1,María Ejemplo,review+0100@example.com,eau-de-parfum-flor-50ml
+,Llegó rapidísimo y bien empacado,4,Jorge Demo,review+0101@example.com,body-mist-coco
+,"Me encantó, el aroma se mantiene horas",4,Diego Ficticio,review+0102@example.com,body-mist-coco
+Me encantó,"Llegó antes de lo esperado, gracias",5,Lucía Ejemplo,review+0103@example.com,eau-de-toilette-cedro-100ml
+Excelente,La presentación está hermosa,4,Valeria Demo,review+0104@example.com,eau-de-parfum-ambar-100ml
+Excelente,perfecto.,5,Diego Ejemplo,review+0105@example.com,eau-de-toilette-cedro-100ml
+,Mi favorito,5,Luis Prueba,review+0106@example.com,eau-de-parfum-ambar-100ml
+,"Great quality, lasts all day",5,Ana Muestra,review+0107@example.com,eau-de-toilette-cedro-100ml
+Mi opinión,Buen aroma aunque la fijación es regular,5,Lucía Ficticio,review+0108@example.com,eau-de-parfum-ambar-100ml
+,Tardó tres semanas en llegar,1,Luis Ficticio,review+0109@example.com,eau-de-parfum-flor-50ml
+,la presentación está hermosa,5,Pablo Ejemplo,review+0110@example.com,eau-de-toilette-cedro-100ml
+,"vale la pena, buen precio",5,Valeria Ficticio,review+0111@example.com,eau-de-parfum-flor-50ml
+,"llegó antes de lo esperado, gracias",5,Luis Ficticio,review+0112@example.com,eau-de-toilette-cedro-100ml
+Me encantó,"me encanto, el aroma se mantiene horas",5,Carlos Ficticio,review+0113@example.com,eau-de-toilette-cedro-100ml
+Me encantó,"Vale la pena, buen precio",5,Daniela Prueba,review+0114@example.com,eau-de-parfum-flor-50ml
+,"me gustó mucho el frasco, muy bonito",5,Luis Demo,review+0115@example.com,eau-de-toilette-cedro-100ml
+Me encantó,"Great quality, lasts all day",5,Diego Ficticio,review+0116@example.com,eau-de-parfum-ambar-100ml
+Mi opinión,Tardo tres semanas en llegar,1,Luis Ficticio,review+0117@example.com,body-mist-coco
+Excelente,Lo compré por las reseñas y no me arrepiento,4,Sofía Demo,review+0118@example.com,eau-de-toilette-cedro-100ml
+,"Great quality, lasts all day.",4,Fernanda Ejemplo,review+0119@example.com,eau-de-parfum-ambar-100ml
+,mi favorito,5,Carlos Ejemplo,review+0120@example.com,eau-de-parfum-ambar-100ml
+,súper recomendado,5,Carlos Muestra,review+0121@example.com,eau-de-parfum-ambar-100ml
+,"muy buena fijación, igualito al original",5,Carlos Prueba,review+0122@example.com,eau-de-parfum-ambar-100ml
+Excelente,"excelente calidad, la fragancia dura todo el dia.",4,Fernanda Ficticio,review+0123@example.com,body-mist-coco
+,"Vale la pena, buen precio.",4,Lucía Muestra,review+0124@example.com,eau-de-toilette-cedro-100ml
+Me encantó,Me encanta 😍,4,Fernanda Demo,review+0125@example.com,eau-de-parfum-flor-50ml
+Me encantó,"Llegó antes de lo esperado, gracias",5,Sofía Ejemplo,review+0126@example.com,eau-de-parfum-flor-50ml
+Reseña,"Aroma dulce, fijacion normal",3,Diego Muestra,review+0127@example.com,eau-de-parfum-flor-50ml
+,"Great quality, lasts all day",4,María Ejemplo,review+0128@example.com,body-mist-coco
+Me encantó,"me encantó, el aroma se mantiene horas",5,Daniela Demo,review+0129@example.com,eau-de-parfum-flor-50ml
+,"Todo perfecto, el envío muy rápido",5,Daniela Muestra,review+0130@example.com,eau-de-parfum-flor-50ml
+Me encantó,"Vale la pena, buen precio.",4,Pablo Demo,review+0131@example.com,eau-de-toilette-cedro-100ml
+,Mi favorito,5,Diego Muestra,review+0132@example.com,body-mist-coco
+Mi opinión,Buen aroma aunque la fijación es regular,4,Pablo Prueba,review+0133@example.com,body-mist-coco
+,es parecido al original,3,Luis Prueba,review+0134@example.com,eau-de-toilette-cedro-100ml
+,"Great quality, lasts all day",5,Fernanda Prueba,review+0135@example.com,eau-de-parfum-flor-50ml
+,tardó tres semanas en llegar.,1,Jorge Muestra,review+0136@example.com,eau-de-parfum-ambar-100ml
+,"me encantó, elaroma se mantiene horas",5,Sofía Prueba,review+0137@example.com,eau-de-toilette-cedro-100ml
+Excelente,"Excelente calidad, la fragancia dura todo el día",5,Fernanda Demo,review+0138@example.com,eau-de-toilette-cedro-100ml
+Excelente,Huele delicioso y dura muchísimo,5,Diego Prueba,review+0139@example.com,eau-de-parfum-ambar-100ml
+Excelente,perfecto,5,María Ficticio,review+0140@example.com,body-mist-coco
+,"Todo perfecto, el envio muy rapido",5,Sofía Demo,review+0141@example.com,eau-de-parfum-flor-50ml
+Reseña,Huele rico pero dura poco,5,Pablo Demo,review+0142@example.com,eau-de-parfum-ambar-100ml
+,Muy buen perfume y super barato,4,Luis Demo,review+0143@example.com,eau-de-toilette-cedro-100ml
+Excelente,Me encanta 😍,5,Fernanda Demo,review+0144@example.com,eau-de-toilette-cedro-100ml
+,Perfecto,5,Ana Prueba,review+0145@example.com,eau-de-parfum-flor-50ml
+,muy buen perfume y súper barato,5,Sofía Ficticio,review+0146@example.com,eau-de-parfum-ambar-100ml
+,"Great quality, lasts all day",5,Jorge Ejemplo,review+0147@example.com,body-mist-coco
+Excelente,Huele delicioso y dura muchísimo.,5,María Ficticio,review+0148@example.com,eau-de-toilette-cedro-100ml
+Reseña,"no dura nada, a la hora ya no huele",1,Daniela Ficticio,review+0149@example.com,body-mist-coco
+Me encantó,"Todo perfecto, el envio muy rapido",5,Lucía Ejemplo,review+0150@example.com,eau-de-toilette-cedro-100ml
+,Llegó rapidísimo y bien empacado.,5,Fernanda Ficticio,review+0151@example.com,eau-de-parfum-flor-50ml
+Me encantó,"Muy buena fijación, igualito al originl.",5,Daniela Demo,review+0152@example.com,eau-de-toilette-cedro-100ml
+,"Great quality, lasts all day",5,Diego Muestra,review+0153@example.com,eau-de-parfum-ambar-100ml
+,Lo compre por las resenas y no me arrepiento.,4,Diego Ejemplo,review+0154@example.com,eau-de-parfum-ambar-100ml
+Excelente,Lo amo,4,María Demo,review+0155@example.com,body-mist-coco
+,Lo compre por las resenas y no me arrepiento,5,Luis Ficticio,review+0156@example.com,body-mist-coco
+Me encantó,Excelente precio para lo que es.,5,Daniela Ficticio,review+0157@example.com,eau-de-toilette-cedro-100ml
+,"Excelente calidad, la fragancia dura todo el día.",5,Lucía Ejemplo,review+0158@example.com,eau-de-parfum-flor-50ml
+,"Vale la pena, buen precio.",5,María Muestra,review+0159@example.com,eau-de-parfum-flor-50ml
+,Huele rico pero dura poco,3,Valeria Ficticio,review+0160@example.com,eau-de-toilette-cedro-100ml
+,huele rico pero dura poco,5,Sofía Ficticio,review+0161@example.com,eau-de-parfum-flor-50ml
+Excelente,Muy buen perfume y súper barato,5,Valeria Prueba,review+0162@example.com,eau-de-toilette-cedro-100ml
+Me encantó,Muy buen perfume y super barato,5,Sofía Ficticio,review+0163@example.com,body-mist-coco
+Me encantó,lo amo,5,María Ficticio,review+0164@example.com,body-mist-coco
+Excelente,"Llego antes de lo esperado, gracias",5,Sofía Muestra,review+0165@example.com,eau-de-parfum-flor-50ml
+,Excelente precio para lo que es,5,Valeria Demo,review+0166@example.com,eau-de-toilette-cedro-100ml
+,Tardó tres semanas en llegar,2,Daniela Muestra,review+0167@example.com,body-mist-coco
+Mi opinión,"Excelente producto, solo que el envío fue lento",3,Sofía Muestra,review+0168@example.com,eau-de-parfum-flor-50ml
+,Lo amo,5,Valeria Ficticio,review+0169@example.com,eau-de-parfum-ambar-100ml
+,Llegó rapidísimo y bien empacado.,5,Carlos Muestra,review+0170@example.com,eau-de-toilette-cedro-100ml
+,Lo compré por las reseñas y no me arrepiento,5,Ana Demo,review+0171@example.com,eau-de-parfum-ambar-100ml
+,Mi favorito,5,Ana Muestra,review+0172@example.com,eau-de-toilette-cedro-100ml
+Excelente,Lo amo.,5,Pablo Ejemplo,review+0173@example.com,eau-de-toilette-cedro-100ml
+Excelente,Súper recomendado,5,Ana Prueba,review+0174@example.com,eau-de-toilette-cedro-100ml
+Me encantó,Perfecto,5,Daniela Prueba,review+0175@example.com,eau-de-toilette-cedro-100ml
+,"Me encantó, el aroma se mantiene horas",5,María Ficticio,review+0176@example.com,eau-de-parfum-ambar-100ml
+,Lo amo,4,Diego Prueba,review+0177@example.com,body-mist-coco
+,llegó rapidísimo y bien empacado.,5,Carlos Prueba,review+0178@example.com,eau-de-parfum-ambar-100ml
+,Mi favorito,4,Jorge Ejemplo,review+0179@example.com,body-mist-coco
+,Lo compre por las resenas y no me arrepiento,5,Valeria Demo,review+0180@example.com,eau-de-parfum-flor-50ml
+Reseña,"No dura nada, a la hora ya no huele",1,Daniela Ficticio,review+0181@example.com,body-mist-coco
+Me encantó,Súper recomendado,5,Sofía Ejemplo,review+0182@example.com,eau-de-parfum-ambar-100ml
+Excelente,"me encanto, el aroma se mantiene horas",5,María Muestra,review+0183@example.com,eau-de-toilette-cedro-100ml
+,Es parecido al original,3,Valeria Demo,review+0184@example.com,body-mist-coco
+,Es el de 100 ml,3,Daniela Muestra,review+0185@example.com,body-mist-coco
+Reseña,Pedi un cambio y nadie me respondio,1,Fernanda Muestra,review+0186@example.com,eau-de-parfum-flor-50ml
+Reseña,"Es para regalo, todavía no lo abro",3,María Muestra,review+0187@example.com,eau-de-toilette-cedro-100ml
+Excelente,"me encantó, el arom se mantiene horas",4,Fernanda Muestra,review+0188@example.com,eau-de-parfum-ambar-100ml
+Me encantó,"Muy buena fijación, igualito al original.",5,Jorge Muestra,review+0189@example.com,eau-de-toilette-cedro-100ml
+,"Me gustó mucho el frasco, muy bonito",4,Luis Demo,review+0190@example.com,body-mist-coco
+Me encantó,"Great quality, lasts all day",5,Lucía Ejemplo,review+0191@example.com,eau-de-parfum-flor-50ml
+Me encantó,Muy buen perfume y súper barato,5,Sofía Ejemplo,review+0192@example.com,eau-de-toilette-cedro-100ml
+Me encantó,"Me encanto, el aroma se mantiene horas",5,Carlos Prueba,review+0193@example.com,eau-de-parfum-ambar-100ml
+,"mala fijació, no lo recomiendo",2,Pablo Muestra,review+0194@example.com,body-mist-coco
+,"Vale la pena, buen precio",4,Sofía Prueba,review+0195@example.com,eau-de-parfum-ambar-100ml
+Me encantó,huele delicioso y dura muchisimo,5,Ana Muestra,review+0196@example.com,eau-de-toilette-cedro-100ml
+,Es el de 100 ml,3,Luis Ejemplo,review+0197@example.com,eau-de-toilette-cedro-100ml
+Excelente,"Me gusto mucho el frasco, muy bonito",5,María Muestra,review+0198@example.com,eau-de-parfum-ambar-100ml
+Mi opinión,"aroma dulce, fijacion normal",3,Luis Prueba,review+0199@example.com,body-mist-coco
+Excelente,10/10,5,Fernanda Ficticio,review+0200@example.com,eau-de-toilette-cedro-100ml
+Reseña,"Mala fijacion, no lo recomindo.",2,Daniela Ficticio,review+0201@example.com,body-mist-coco
+,"Muy buena fijación, igualito al original",4,Diego Ejemplo,review+0202@example.com,eau-de-parfum-ambar-100ml
+Excelente,Súper recomendado,5,Lucía Prueba,review+0203@example.com,body-mist-coco
+,La presentación está hermosa.,5,Diego Muestra,review+0204@example.com,eau-de-parfum-ambar-100ml
+Me encantó,Muy buen perfume y súper barato,4,Luis Ficticio,review+0205@example.com,eau-de-toilette-cedro-100ml
+Excelente,"Me encanto, el aroma se mantiene horas",5,Fernanda Muestra,review+0206@example.com,eau-de-parfum-ambar-100ml
+Mi opinión,Buen aroma aunque la fijacion es regular,5,Daniela Muestra,review+0207@example.com,eau-de-toilette-cedro-100ml
+,Me encanta 😍.,5,Lucía Prueba,review+0208@example.com,eau-de-parfum-ambar-100ml
+Excelente,Muy buen perfume y súper barato.,5,Ana Demo,review+0209@example.com,body-mist-coco
+,"Es para regalo, todavía no lo abro",3,Carlos Demo,review+0210@example.com,eau-de-parfum-ambar-100ml
+,"Vale la pena, buen precio",5,Fernanda Ficticio,review+0211@example.com,eau-de-toilette-cedro-100ml
+Excelente,lo amo,5,Fernanda Demo,review+0212@example.com,eau-de-parfum-flor-50ml
+Mi opinión,Nunca llgó mi pedido,1,Jorge Prueba,review+0213@example.com,eau-de-parfum-flor-50ml
+Mi opinión,Tardo tres semanas en llegar,2,Daniela Demo,review+0214@example.com,eau-de-parfum-flor-50ml
+Reseña,"No dura nada, a la hora ya no hele",1,Diego Ejemplo,review+0215@example.com,eau-de-parfum-ambar-100ml
+Me encantó,Huele delicioso y dura muchisimo,5,Lucía Prueba,review+0216@example.com,eau-de-parfum-flor-50ml
+,el olor no se parece al original,1,Diego Ejemplo,review+0217@example.com,eau-de-parfum-ambar-100ml
+Me encantó,Perfecto,5,Fernanda Prueba,review+0218@example.com,eau-de-parfum-flor-50ml
+,Me encanto el perfume pero tardo mucho en llegar.,3,Luis Muestra,review+0219@example.com,body-mist-coco
+,Me encanta 😍,5,Valeria Muestra,review+0220@example.com,eau-de-parfum-flor-50ml
+Reseña,Tardó tres semanas en llegar,2,Sofía Ejemplo,review+0221@example.com,eau-de-toilette-cedro-100ml
+,buen aroma aunque la fijación es regular,5,Jorge Muestra,review+0222@example.com,eau-de-parfum-ambar-100ml
+,la presentacion esta hermosa.,5,María Ficticio,review+0223@example.com,body-mist-coco
+,mi favorito.,5,Jorge Ficticio,review+0224@example.com,eau-de-parfum-ambar-100ml
+,Perfecto,5,Jorge Muestra,review+0225@example.com,eau-de-parfum-ambar-100ml
+,"Excelente calidad, la fragancia dura todo el día",4,Ana Ejemplo,review+0226@example.com,body-mist-coco
+,Huele delicioso y dura muchísimo,4,Diego Ficticio,review+0227@example.com,eau-de-toilette-cedro-100ml
+Me encantó,"Vale la pena, buen precio.",4,Pablo Ejemplo,review+0228@example.com,eau-de-toilette-cedro-100ml
+,buen aroma aunque la fijación es regular,5,María Ficticio,review+0229@example.com,eau-de-toilette-cedro-100ml
+,Lo compré por las reseñas y no me arrepiento,5,Luis Muestra,review+0230@example.com,body-mist-coco
+Mi opinión,llego el frasco roto,1,Sofía Muestra,review+0231@example.com,eau-de-parfum-ambar-100ml
+Excelente,"Me encanto, el aroma se mantine horas",5,Daniela Demo,review+0232@example.com,body-mist-coco
+,buen aroma aunque la fijacion es regular,5,Ana Ejemplo,review+0233@example.com,eau-de-parfum-flor-50ml
+,Me lo recomendo mi amiga y me encanto,5,Sofía Ficticio,review+0234@example.com,eau-de-toilette-cedro-100ml
+Me encantó,"Todo perfecto, el envio muy rapido",5,Carlos Prueba,review+0235@example.com,eau-de-parfum-ambar-100ml
+,"Mala fijación, no lo recomiendo",2,Luis Demo,review+0236@example.com,body-mist-coco
+Excelente,"great quality, lasts all day",5,Sofía Prueba,review+0237@example.com,body-mist-coco
+Me encantó,La presentacion esta hermosa,5,Daniela Prueba,review+0238@example.com,eau-de-parfum-ambar-100ml
+,Perfecto,5,Valeria Muestra,review+0239@example.com,eau-de-parfum-flor-50ml
+Me encantó,Perfecto,5,Pablo Demo,review+0240@example.com,eau-de-parfum-ambar-100ml
+,Muy buen perfume y súper barato,5,Sofía Demo,review+0241@example.com,body-mist-coco
+,"Excelente calidad, la fragancia dura todo el dia",5,Sofía Demo,review+0242@example.com,body-mist-coco
+,"Excelente calidad, la fragancia dura todo el día",5,Fernanda Muestra,review+0243@example.com,eau-de-parfum-flor-50ml
+Me encantó,huele delicioso y dura muchisimo,5,Sofía Ejemplo,review+0244@example.com,eau-de-parfum-flor-50ml
+,Me encantó el perfume pero tardó mucho en llegar,5,Diego Muestra,review+0245@example.com,eau-de-parfum-ambar-100ml
+,Me encantó el perfume pero tardó mucho en llegar.,3,Lucía Ficticio,review+0246@example.com,body-mist-coco
+Mi opinión,es parecido al original,3,Daniela Prueba,review+0247@example.com,body-mist-coco
+Me encantó,"Me gustó mucho el frasco, muy bonito",5,Daniela Ejemplo,review+0248@example.com,eau-de-toilette-cedro-100ml
+Reseña,Llegó el frasco roto,1,Sofía Ficticio,review+0249@example.com,eau-de-parfum-flor-50ml
+,lo amo,5,Lucía Ficticio,review+0250@example.com,eau-de-toilette-cedro-100ml
+Excelente,Me encanta 😍,5,Luis Muestra,review+0251@example.com,eau-de-parfum-flor-50ml
+,"Me encanto, el aroma se mantiene horas",5,Diego Ficticio,review+0252@example.com,eau-de-parfum-flor-50ml
+Mi opinión,tardótres semanas en llegar,1,Fernanda Ejemplo,review+0253@example.com,eau-de-parfum-ambar-100ml
+Me encantó,lo amo,5,María Prueba,review+0254@example.com,eau-de-parfum-flor-50ml
+Me encantó,muy buen perfume y súper barato,5,Lucía Demo,review+0255@example.com,eau-de-parfum-flor-50ml
+Reseña,Pesima atencion al cliente,1,Luis Muestra,review+0256@example.com,eau-de-parfum-flor-50ml
+,Huele rico pero dura poco,4,Pablo Prueba,review+0257@example.com,eau-de-toilette-cedro-100ml
+Me encantó,Huele delicioso y dura muchísimo.,5,Daniela Ficticio,review+0258@example.com,eau-de-toilette-cedro-100ml
+,Me encanta 😍,5,Luis Ejemplo,review+0259@example.com,eau-de-parfum-ambar-100ml
+,Nunca llegó mipedido,2,Valeria Ejemplo,review+0260@example.com,eau-de-parfum-flor-50ml
+Reseña,Huele rico pero dura poco,4,Daniela Prueba,review+0261@example.com,body-mist-coco
+,"Me encantó, el aroma se mantiene horas",5,Diego Ficticio,review+0262@example.com,eau-de-parfum-flor-50ml
+,"Llegó antes de lo esperado, gracias",5,Lucía Demo,review+0263@example.com,eau-de-toilette-cedro-100ml
+,Lo amo,5,Daniela Prueba,review+0264@example.com,body-mist-coco
+Mi opinión,Pesima atencion al cliente,1,Valeria Ficticio,review+0265@example.com,body-mist-coco
+Me encantó,Llego rapidisimo y bien empacado,4,Jorge Demo,review+0266@example.com,eau-de-parfum-flor-50ml
+Me encantó,Muy buen perfume y súper barato,4,Sofía Demo,review+0267@example.com,eau-de-parfum-ambar-100ml
+Me encantó,muy buen perfume y super barato.,5,Sofía Muestra,review+0268@example.com,eau-de-parfum-flor-50ml
+Me encantó,Huele delicioso y dura muchísimo,5,Lucía Demo,review+0269@example.com,eau-de-parfum-ambar-100ml
+,Mi favorito,5,Carlos Demo,review+0270@example.com,eau-de-toilette-cedro-100ml
+,me encantó el perfume pero tardó mucho en llegar,5,Luis Ficticio,review+0271@example.com,body-mist-coco
+Me encantó,excelente precio para lo que es,5,Ana Demo,review+0272@example.com,eau-de-parfum-ambar-100ml
+Me encantó,"great quality, lasts all day.",5,Daniela Ejemplo,review+0273@example.com,eau-de-parfum-flor-50ml
+Me encantó,mi favorito.,4,Daniela Muestra,review+0274@example.com,eau-de-parfum-flor-50ml
+,Super recomendado,5,María Prueba,review+0275@example.com,body-mist-coco
+Reseña,Decepcionada,1,María Ejemplo,review+0276@example.com,body-mist-coco
+,"Excelente producto, solo que el envio fue lento",3,Pablo Demo,review+0277@example.com,body-mist-coco
+,Huele delicioso y dura muchísimo,4,Diego Ficticio,review+0278@example.com,eau-de-toilette-cedro-100ml
+Excelente,Perfecto.,5,Pablo Ejemplo,review+0279@example.com,eau-de-toilette-cedro-100ml
+,perfecto,5,Lucía Ejemplo,review+0280@example.com,body-mist-coco
+Excelente,"Muy buena fijacion, igualito al original",5,Ana Demo,review+0281@example.com,body-mist-coco
+,Mi favorito,5,Sofía Ficticio,review+0282@example.com,body-mist-coco
+Reseña,Pesima atencion al cliente,2,Jorge Ejemplo,review+0283@example.com,eau-de-parfum-flor-50ml
+Excelente,"Me gustó mucho el frasco, muy bonito.",5,María Ficticio,review+0284@example.com,eau-de-toilette-cedro-100ml
+Me encantó,Huele delicioso y dura muchísimo,5,Diego Prueba,review+0285@example.com,body-mist-coco
+,muy buen erfume y súper barato,5,Jorge Ejemplo,review+0286@example.com,body-mist-coco
+,Excelente precio para lo que es,4,Lucía Ejemplo,review+0287@example.com,body-mist-coco
+,Tardó tres semanas en llegar,1,Diego Muestra,review+0288@example.com,eau-de-parfum-flor-50ml
+,"excelente calidad, la fragancia dura todo el día.",5,María Muestra,review+0289@example.com,eau-de-parfum-ambar-100ml
+,10/10,5,Daniela Ejemplo,review+0290@example.com,body-mist-coco
+Excelente,"Me encantó, el aroma se mantiene horas.",5,Carlos Muestra,review+0291@example.com,eau-de-parfum-flor-50ml
+,Lo amo,5,Valeria Ficticio,review+0292@example.com,eau-de-toilette-cedro-100ml
+Me encantó,Perfecto,5,Jorge Prueba,review+0293@example.com,eau-de-parfum-flor-50ml
+,"Vale la pena, buen precio",4,Pablo Muestra,review+0294@example.com,eau-de-parfum-flor-50ml
+Me encantó,"Meencantó, el aroma se mantiene horas",5,Ana Ejemplo,review+0295@example.com,eau-de-parfum-ambar-100ml
+,Llego rapidisimo y bien empacado,5,Daniela Ejemplo,review+0296@example.com,body-mist-coco
+,El olor no se parece al original,2,Valeria Prueba,review+0297@example.com,eau-de-parfum-ambar-100ml
+,"Excelente calidad, la fragancia dura todo el día.",4,Sofía Muestra,review+0298@example.com,eau-de-parfum-flor-50ml
+Me encantó,"Vale la pena, buen precio",5,Sofía Demo,review+0299@example.com,eau-de-parfum-flor-50ml
+,Super recomendado,5,Sofía Demo,review+0300@example.com,eau-de-toilette-cedro-100ml
+Reseña,Me enantó el perfume pero tardó mucho en llegar,5,Daniela Ficticio,review+0301@example.com,eau-de-parfum-ambar-100ml
+,"me encantó, el aroma se mantiene horas",4,Lucía Muestra,review+0302@example.com,eau-de-toilette-cedro-100ml
+Excelente,"Vale la pena, buen precio",5,Jorge Prueba,review+0303@example.com,eau-de-toilette-cedro-100ml
+Excelente,"Muy buena fijación, igualito al original",4,Ana Prueba,review+0304@example.com,eau-de-toilette-cedro-100ml
+Mi opinión,Me encantó el perfume pero tardó mucho en llegar,3,Carlos Ejemplo,review+0305@example.com,body-mist-coco
+,Lo compré por las reseñas y no me arrepiento,5,Sofía Ejemplo,review+0306@example.com,eau-de-parfum-flor-50ml
+Excelente,llego rapidisimo y bien mpacado,5,Valeria Ejemplo,review+0307@example.com,eau-de-toilette-cedro-100ml
+Reseña,Pedí un cambio y nadie me respondió,1,Fernanda Muestra,review+0308@example.com,eau-de-parfum-ambar-100ml
+Excelente,Llego rapidisimo y bien empacado,4,Luis Muestra,review+0309@example.com,eau-de-toilette-cedro-100ml
+,Pedi un cambio y nadie me repondio,2,Diego Muestra,review+0310@example.com,eau-de-parfum-flor-50ml
+Excelente,"Excelente calidad, la fragancia dura todo el día",5,Fernanda Ficticio,review+0311@example.com,eau-de-parfum-flor-50ml
+,Excelente precio para lo que es.,5,Fernanda Ejemplo,review+0312@example.com,eau-de-parfum-flor-50ml
+,Nunca llego mi pedido,2,Daniela Demo,review+0313@example.com,eau-de-parfum-ambar-100ml
+Excelente,"vale la pena, buen precio",5,Ana Demo,review+0314@example.com,eau-de-toilette-cedro-100ml
+Excelente,"excelente calidad, la fragancia dura todo el día",5,Carlos Prueba,review+0315@example.com,eau-de-parfum-flor-50ml
+Excelente,Huele delicioso y dura muchísimo,4,Valeria Demo,review+0316@example.com,eau-de-parfum-ambar-100ml
+,Excelente precio para lo que es,5,Pablo Demo,review+0317@example.com,eau-de-parfum-flor-50ml
+,"Vale la pena, buen precio",5,Valeria Muestra,review+0318@example.com,eau-de-parfum-flor-50ml
+,Llego rapidisimo y bien empacado,5,Valeria Prueba,review+0319@example.com,eau-de-parfum-ambar-100ml
+Me encantó,"Llego antes de lo esperado, gracias.",5,Diego Muestra,review+0320@example.com,eau-de-parfum-ambar-100ml
+Reseña,"No dura nada, a la hora ya no hule",1,Ana Ejemplo,review+0321@example.com,eau-de-parfum-ambar-100ml
+,Me encantó el perfume pero tardó mucho en llegar,5,Diego Prueba,review+0322@example.com,eau-de-parfum-flor-50ml
+,"Great quality, lasts al day",5,Ana Demo,review+0323@example.com,eau-de-parfum-flor-50ml
+Excelente,Llegó rapidísimo y bien empacado,5,Valeria Ejemplo,review+0324@example.com,eau-de-parfum-ambar-100ml
+Me encantó,Súper recomendado,5,Pablo Ficticio,review+0325@example.com,eau-de-parfum-flor-50ml
+,Pésima atención al cliente,1,Sofía Prueba,review+0326@example.com,body-mist-coco
+,Perfecto,5,Valeria Demo,review+0327@example.com,body-mist-coco
+,Huele rico pero dura poco.,5,Fernanda Muestra,review+0328@example.com,eau-de-parfum-ambar-100ml
+Me encantó,"Excelente calidad, la fragancia dura todo el día",5,Carlos Prueba,review+0329@example.com,eau-de-toilette-cedro-100ml
+,Me encantó el perfume pero tardó mucho en llegar,5,Luis Ejemplo,review+0330@example.com,eau-de-parfum-ambar-100ml
+,buen aroma aunque la fijacion es regular,3,Jorge Ejemplo,review+0331@example.com,eau-de-toilette-cedro-100ml
+Mi opinión,"Es para regalo, todavía no lo abro",3,Ana Prueba,review+0332@example.com,eau-de-parfum-ambar-100ml
+,10/10,5,Sofía Demo,review+0333@example.com,eau-de-parfum-flor-50ml
+,Huele delicioso y dura muchisimo,5,Valeria Muestra,review+0334@example.com,body-mist-coco
+,"me encanto, el aroma se mantiene horas",4,María Ejemplo,review+0335@example.com,eau-de-toilette-cedro-100ml
+Me encantó,"Excelente calidad, la fragancia duratodo el día",5,María Ficticio,review+0336@example.com,body-mist-coco
+,Buen aroma aunque la fijacion es regular,4,Pablo Prueba,review+0337@example.com,body-mist-coco
+,Me encanta 😍.,5,Lucía Muestra,review+0338@example.com,eau-de-parfum-flor-50ml
+,"Excelente calidad, la fragancia dura todo el día",4,Carlos Ejemplo,review+0339@example.com,eau-de-parfum-ambar-100ml
+,"No dura nada, a la hora ya no huele.",1,Diego Muestra,review+0340@example.com,eau-de-parfum-flor-50ml
+Me encantó,huele delicioso y dura muchísimo,5,Pablo Demo,review+0341@example.com,eau-de-toilette-cedro-100ml
+,Huele delicioso y dura muchísimo,5,Lucía Prueba,review+0342@example.com,eau-de-toilette-cedro-100ml
+Me encantó,"Great quality, lasts all day",5,Daniela Prueba,review+0343@example.com,body-mist-coco
+Excelente,Muy buen perfue y super barato,5,Pablo Prueba,review+0344@example.com,eau-de-parfum-flor-50ml
+Excelente,"Todo perfecto, el envío muy rápido",5,Fernanda Ejemplo,review+0345@example.com,eau-de-parfum-ambar-100ml
+,"Mala fijación, o lo recomiendo",1,Sofía Demo,review+0346@example.com,eau-de-parfum-ambar-100ml
+,"excelente calidad, la fragancia dura todo el dia",5,Ana Prueba,review+0347@example.com,eau-de-parfum-ambar-100ml
+,"me encanto, el aroma se mantiene horas",4,Lucía Prueba,review+0348@example.com,body-mist-coco
+,"Excelente producto, solo que el envío fue lento",5,Daniela Muestra,review+0349@example.com,eau-de-toilette-cedro-100ml
+Me encantó,"Me encantó, el aroma se mantiene horas",4,Carlos Demo,review+0350@example.com,body-mist-coco
+,excelente precio para lo que es,5,Pablo Prueba,review+0351@example.com,eau-de-toilette-cedro-100ml
+Me encantó,"excelente calidad, la fragancia dura todo el día",4,Luis Demo,review+0352@example.com,eau-de-parfum-flor-50ml
+,Perfecto.,5,Pablo Ficticio,review+0353@example.com,eau-de-parfum-flor-50ml
+Me encantó,Excelente precio para lo que es.,5,Ana Ficticio,review+0354@example.com,eau-de-toilette-cedro-100ml
+Mi opinión,meh,1,Sofía Muestra,review+0355@example.com,eau-de-parfum-ambar-100ml
+,Perfecto,5,Fernanda Demo,review+0356@example.com,eau-de-parfum-ambar-100ml
+Me encantó,"Todo perfecto, el envio muy rapido",5,Jorge Muestra,review+0357@example.com,body-mist-coco
+,El olor no se parece al original,2,Luis Prueba,review+0358@example.com,body-mist-coco
+,llegó rapidísimo y bien empacado,5,Luis Demo,review+0359@example.com,eau-de-toilette-cedro-100ml
+,El olor no se parece al original,2,Daniela Prueba,review+0360@example.com,eau-de-parfum-flor-50ml
+,"Great quality, lasts all day",5,Carlos Muestra,review+0361@example.com,body-mist-coco
+,Huele rico pero dura poco,5,Pablo Prueba,review+0362@example.com,eau-de-toilette-cedro-100ml
+Me encantó,la presentación está hermosa,5,Valeria Demo,review+0363@example.com,body-mist-coco
+Excelente,súper recomendado,5,Luis Muestra,review+0364@example.com,eau-de-toilette-cedro-100ml
+,"Me encantó, el aroma se mantiene horas",5,Pablo Demo,review+0365@example.com,body-mist-coco
+Excelente,"me encantó, el aroma se mantiene horas.",4,Daniela Demo,review+0366@example.com,eau-de-toilette-cedro-100ml
+,Llego el frasco roto.,2,Ana Ejemplo,review+0367@example.com,eau-de-parfum-ambar-100ml
+Excelente,"Great quality, lasts all day",4,Lucía Muestra,review+0368@example.com,eau-de-toilette-cedro-100ml
+Me encantó,me encanta 😍,5,Diego Ejemplo,review+0369@example.com,eau-de-parfum-ambar-100ml
+Me encantó,"Muy buena fijación, igualito al origial",5,Fernanda Demo,review+0370@example.com,eau-de-toilette-cedro-100ml
+Excelente,great quality lasts all day,4,Pablo Demo,review+0371@example.com,eau-de-parfum-flor-50ml
+Me encantó,"excelente calidad, la fragancia dura todo el día",5,Jorge Muestra,review+0372@example.com,eau-de-parfum-ambar-100ml
+,Lo amo,5,Daniela Prueba,review+0373@example.com,eau-de-parfum-flor-50ml
+Me encantó,Me encanta 😍,4,Carlos Prueba,review+0374@example.com,eau-de-parfum-ambar-100ml
+Excelente,excelente precio para lo que es,4,Valeria Muestra,review+0375@example.com,eau-de-parfum-flor-50ml
+Me encantó,"Me encantó, el aroma se mantiene horas",5,Carlos Muestra,review+0376@example.com,body-mist-coco
+,huele delicioso y dura muchisimo,4,Fernanda Ejemplo,review+0377@example.com,eau-de-parfum-ambar-100ml
+,Muy buen perfume y súper barato,5,Jorge Ejemplo,review+0378@example.com,eau-de-parfum-ambar-100ml
+Me encantó,"Muy buena fijación, igualito al original",5,Pablo Prueba,review+0379@example.com,eau-de-parfum-ambar-100ml
+Mi opinión,"Excelente producto, solo que el envío fue lento",3,Luis Muestra,review+0380@example.com,eau-de-parfum-flor-50ml
+,Me encanta 😍,4,Diego Demo,review+0381@example.com,eau-de-toilette-cedro-100ml
+,Huele delicioso y dura muchisimo,5,Luis Ejemplo,review+0382@example.com,body-mist-coco
+Me encantó,"Muy buena fijación, igualito al original",4,Fernanda Prueba,review+0383@example.com,eau-de-parfum-flor-50ml
+Me encantó,Me lo recomendó mi amiga y me encantó.,5,Daniela Muestra,review+0384@example.com,body-mist-coco
+Me encantó,"Me gustó mucho el frasco, muy bonito",5,Fernanda Muestra,review+0385@example.com,eau-de-parfum-ambar-100ml
+,Huele delicoso y dura muchísimo,4,Valeria Prueba,review+0386@example.com,eau-de-parfum-flor-50ml
+Reseña,Pedí un cambio y nadie me respondió,2,María Ejemplo,review+0387@example.com,eau-de-parfum-ambar-100ml
+,"Me gustó mucho el frasco, muy bonito",5,Lucía Ficticio,review+0388@example.com,eau-de-parfum-flor-50ml
+Mi opinión,Pedí un cambio y nadie me respondió,2,Pablo Prueba,review+0389@example.com,body-mist-coco
+Mi opinión,Esparecido al original,3,Ana Muestra,review+0390@example.com,body-mist-coco
+Me encantó,Llegó rapidísimo y bien empacado,5,Fernanda Muestra,review+0391@example.com,body-mist-coco
+Me encantó,"Todo perfecto, el envío muy rápido",4,Diego Ejemplo,review+0392@example.com,eau-de-parfum-flor-50ml
+Me encantó,"Me encanto, el aroma se mantiene horas",4,Ana Ejemplo,review+0393@example.com,body-mist-coco
+Excelente,"Me gustó mucho el frasco, muy bonito.",4,Lucía Muestra,review+0394@example.com,eau-de-parfum-ambar-100ml
+,Super recomendado.,5,Luis Prueba,review+0395@example.com,eau-de-parfum-flor-50ml
+Reseña,"No dura nada, a la hora ya no huele.",1,Sofía Demo,review+0396@example.com,body-mist-coco
+Me encantó,"Me encanto, el aroma se mantiene horas",4,Lucía Ejemplo,review+0397@example.com,eau-de-toilette-cedro-100ml
+,Huele rico pero dura poco,5,Fernanda Muestra,review+0398@example.com,eau-de-parfum-ambar-100ml
+,10/10.,5,Ana Ejemplo,review+0399@example.com,eau-de-parfum-ambar-100ml
+Excelente,"great quality, lasts all day",5,Sofía Demo,review+0400@example.com,eau-de-parfum-ambar-100ml
+,Huele delicioso y dura muchísimo,5,María Ficticio,review+0401@example.com,eau-de-parfum-ambar-100ml
+,"Llegó antes de lo esperado, gracias",4,Diego Ejemplo,review+0402@example.com,eau-de-parfum-ambar-100ml
+,"es para regalo, todavía no lo aro",3,María Ficticio,review+0403@example.com,body-mist-coco
+,la presentación está hermosa,5,Ana Prueba,review+0404@example.com,eau-de-toilette-cedro-100ml
+Me encantó,Me encanta 😍,5,Pablo Ficticio,review+0405@example.com,eau-de-parfum-ambar-100ml
+Reseña,buen aroma aunqu la fijacion es regular,5,Ana Muestra,review+0406@example.com,body-mist-coco
+,Buen aroma aunque la fijacion es regular,5,Ana Ejemplo,review+0407@example.com,body-mist-coco
+Reseña,No me gustó,2,Valeria Prueba,review+0408@example.com,eau-de-parfum-ambar-100ml
+Me encantó,Huele delicioso y dura muhisimo,5,Carlos Muestra,review+0409@example.com,body-mist-coco
+Excelente,Lo amo,4,Fernanda Prueba,review+0410@example.com,eau-de-parfum-ambar-100ml
+Me encantó,Huele delicioso y dura muchisimo.,4,Carlos Prueba,review+0411@example.com,eau-de-parfum-ambar-100ml
+Mi opinión,Buen aroma aunque la fijacion es regular.,3,Sofía Prueba,review+0412@example.com,eau-de-parfum-ambar-100ml
+,Huele delicioso y dura muchísimo,5,Valeria Ficticio,review+0413@example.com,eau-de-parfum-ambar-100ml
+,Es parecido al original,3,Fernanda Ficticio,review+0414@example.com,eau-de-parfum-flor-50ml
+,nunca llegó mi pedido.,2,Ana Muestra,review+0415@example.com,body-mist-coco
+Excelente,Excelente precio ara lo que es,5,Carlos Ficticio,review+0416@example.com,eau-de-parfum-flor-50ml
+Excelente,"Todo perfecto, el envío muy rápido",5,Carlos Demo,review+0417@example.com,eau-de-parfum-flor-50ml
+Excelente,Llegó rapidísimo y bien empacado,4,Pablo Prueba,review+0418@example.com,eau-de-toilette-cedro-100ml
+Excelente,"Muy buena fijación, igualito al original",5,Lucía Prueba,review+0419@example.com,body-mist-coco
+Excelente,"Great quality, lasts all day",4,Lucía Muestra,review+0420@example.com,eau-de-parfum-flor-50ml
+,"muy buena fijación, igualito al original.",5,Lucía Ejemplo,review+0421@example.com,body-mist-coco
+Excelente,"Vale la pena, buen precio.",5,Carlos Ejemplo,review+0422@example.com,eau-de-parfum-flor-50ml
+Me encantó,"Great quality, lasts all day",5,Luis Demo,review+0423@example.com,eau-de-parfum-ambar-100ml
+Me encantó,"Todo perfecto, el envio muy rapido",5,Fernanda Ejemplo,review+0424@example.com,eau-de-parfum-flor-50ml
+Excelente,"Excelente calidad, la fragancia dura todo el día.",4,Diego Ficticio,review+0425@example.com,body-mist-coco
+Me encantó,me encanta 😍,5,Jorge Ejemplo,review+0426@example.com,eau-de-toilette-cedro-100ml
+,"Me encanto, el aroma se mantiene horas",5,Fernanda Muestra,review+0427@example.com,eau-de-parfum-ambar-100ml
+Mi opinión,Nunca legó mi pedido.,2,Pablo Ficticio,review+0428@example.com,eau-de-toilette-cedro-100ml
+Mi opinión,buen aroma aunque la fijacion es regular,5,Ana Prueba,review+0429@example.com,eau-de-toilette-cedro-100ml
+,"Todo perfecto, el envío muy rápido",5,Lucía Ficticio,review+0430@example.com,eau-de-toilette-cedro-100ml
+Reseña,"mala fijacion, no lo recomiendo",2,Jorge Muestra,review+0431@example.com,body-mist-coco
+Excelente,"great quality, lasts all day",5,Luis Ejemplo,review+0432@example.com,eau-de-parfum-ambar-100ml
+Me encantó,Me lo recomendó mi amiga y me encantó.,4,Jorge Muestra,review+0433@example.com,eau-de-toilette-cedro-100ml
+,Huele delicioso y dura muchisimo,4,Sofía Ejemplo,review+0434@example.com,eau-de-toilette-cedro-100ml
+,Muy buen perfume y súper barato,5,Pablo Prueba,review+0435@example.com,eau-de-toilette-cedro-100ml
+,Nunca llego mi pedido,1,Pablo Muestra,review+0436@example.com,eau-de-toilette-cedro-100ml
+,prfecto,5,Ana Ejemplo,review+0437@example.com,eau-de-parfum-ambar-100ml
+Excelente,"Todo perfecto, el envio muy rapido",5,Luis Ficticio,review+0438@example.com,eau-de-parfum-flor-50ml
+,decepcionada.,1,Valeria Prueba,review+0439@example.com,eau-de-toilette-cedro-100ml
+,10/10.,5,Valeria Muestra,review+0440@example.com,eau-de-parfum-ambar-100ml
+Excelente,Lo compré por las reseñas y no me arrepiento,4,Lucía Muestra,review+0441@example.com,eau-de-parfum-ambar-100ml
+,Llego rapidisimo y bien empacado,5,Diego Ejemplo,review+0442@example.com,eau-de-toilette-cedro-100ml
+Me encantó,"Muy buena fijacion, igualito al original",5,María Prueba,review+0443@example.com,body-mist-coco
+,"Llegó antes de lo esperad, gracias",4,Jorge Muestra,review+0444@example.com,eau-de-toilette-cedro-100ml
+Me encantó,Llego rapidisimo y bien empacado,5,Fernanda Ficticio,review+0445@example.com,body-mist-coco
+,10/10,4,Sofía Prueba,review+0446@example.com,eau-de-parfum-ambar-100ml
+Excelente,Lo amo,5,Sofía Ejemplo,review+0447@example.com,eau-de-toilette-cedro-100ml
+,llego rapidisimo y bien empacado,5,Sofía Demo,review+0448@example.com,eau-de-toilette-cedro-100ml
+Excelente,"Todo perfecto, el envio muy rapido",5,Jorge Ejemplo,review+0449@example.com,body-mist-coco
+,"Excelente producto, solo que el envío fue lento",3,Carlos Prueba,review+0450@example.com,eau-de-toilette-cedro-100ml
+Me encantó,"Muy buena fijación, igualito al original",5,Diego Ejemplo,review+0451@example.com,eau-de-parfum-ambar-100ml
+Reseña,"Mala fijación, no lo recomiendo",1,Lucía Ficticio,review+0452@example.com,eau-de-parfum-flor-50ml
+,El olor no se parece al original,1,Diego Ejemplo,review+0453@example.com,eau-de-parfum-flor-50ml
+,Huele rico pero dura poo,3,Carlos Ficticio,review+0454@example.com,body-mist-coco
+,Llegó el frasco roto,1,Valeria Ejemplo,review+0455@example.com,eau-de-parfum-flor-50ml
+,Nunca llego mi pedido,1,Carlos Demo,review+0456@example.com,eau-de-parfum-flor-50ml
+Reseña,meh,1,Carlos Demo,review+0457@example.com,eau-de-parfum-ambar-100ml
+,Lo amo,5,Jorge Muestra,review+0458@example.com,eau-de-parfum-flor-50ml
+,"excelente calidad, la fragancia dura todo el dia",5,María Ficticio,review+0459@example.com,body-mist-coco
+,me encanta 😍.,5,Lucía Ficticio,review+0460@example.com,body-mist-coco
+,Lo amo,5,Sofía Ficticio,review+0461@example.com,eau-de-parfum-flor-50ml
+,"Me encanto, el aroma se mantien horas",5,Sofía Demo,review+0462@example.com,eau-de-toilette-cedro-100ml
+,"llego antes de lo esperado, gracias",5,Pablo Prueba,review+0463@example.com,body-mist-coco
+,Tardó tres semanas en llegar,1,María Ejemplo,review+0464@example.com,eau-de-parfum-flor-50ml
+Excelente,"Great quality, lasts al day",5,Lucía Muestra,review+0465@example.com,body-mist-coco
+Excelente,"Vale la pea, buen precio",4,Carlos Prueba,review+0466@example.com,eau-de-parfum-flor-50ml
+Excelente,"Vale la pena, buen precio",5,Lucía Ejemplo,review+0467@example.com,eau-de-parfum-flor-50ml
+,"Excelente calidad, la fragancia dura todo el dia",5,Pablo Prueba,review+0468@example.com,body-mist-coco
+,Nunca llegó mi pedido,1,Ana Ficticio,review+0469@example.com,eau-de-parfum-flor-50ml
+,El olor no se parece al original,1,Pablo Ficticio,review+0470@example.com,eau-de-parfum-ambar-100ml
+,es el de 100 ml,3,Sofía Prueba,review+0471@example.com,eau-de-parfum-ambar-100ml
+,"excelente producto, solo que el envío fue lento",3,María Ficticio,review+0472@example.com,eau-de-parfum-flor-50ml
+,muy buen perfume y super barato,5,Jorge Muestra,review+0473@example.com,eau-de-toilette-cedro-100ml
+Excelente,Me encanta 😍,5,Carlos Prueba,review+0474@example.com,eau-de-parfum-flor-50ml
+Reseña,"mala fijación, no lo recomiendo.",1,Pablo Demo,review+0475@example.com,eau-de-parfum-ambar-100ml
+Me encantó,Me lo recomendo mi amiga y me encanto.,5,Lucía Muestra,review+0476@example.com,eau-de-parfum-ambar-100ml
+Excelente,"Muy buena fijacion, igualito al original",5,Luis Muestra,review+0477@example.com,body-mist-coco
+Mi opinión,Llego el frasco roto,1,Diego Muestra,review+0478@example.com,body-mist-coco
+,"muy buena fijación, igualito al original",5,María Demo,review+0479@example.com,body-mist-coco
+Reseña,"Mala fijación, no lo recomiendo",1,Diego Ejemplo,review+0480@example.com,eau-de-parfum-flor-50ml
+,"Excelente calidad, la fragancia dura todo el dia",5,Diego Prueba,review+0481@example.com,body-mist-coco
+Excelente,llego rapidisimo y bien empacao,5,Lucía Prueba,review+0482@example.com,eau-de-parfum-ambar-100ml
+Me encantó,"Excelente calidad, la fragancia dura todo el dia",5,Fernanda Demo,review+0483@example.com,eau-de-parfum-ambar-100ml
+Excelente,llegó rapidísimo y bien empacado,5,Pablo Ficticio,review+0484@example.com,eau-de-parfum-ambar-100ml
+Excelente,Huele delicioso y dura muchisimo.,5,Ana Muestra,review+0485@example.com,eau-de-parfum-flor-50ml
+,"mala fijación, no lo recomiendo",2,Jorge Ficticio,review+0486@example.com,eau-de-parfum-ambar-100ml
+,Es parecido l original,3,Daniela Prueba,review+0487@example.com,eau-de-parfum-ambar-100ml
+,"todo perfecto, el envío muy rápido.",5,Sofía Prueba,review+0488@example.com,eau-de-parfum-flor-50ml
+Excelente,Muy buen perfume y super barato,5,Lucía Prueba,review+0489@example.com,eau-de-parfum-flor-50ml
+Excelente,Llegó rapidísimo y bien empacado,5,Pablo Ficticio,review+0490@example.com,eau-de-toilette-cedro-100ml
+,La presentacion esta hermosa,5,Luis Muestra,review+0491@example.com,eau-de-parfum-ambar-100ml
+Me encantó,lo amo,5,Ana Demo,review+0492@example.com,eau-de-parfum-flor-50ml
+,"vale la pena, buen precio",5,María Ejemplo,review+0493@example.com,eau-de-toilette-cedro-100ml
+Me encantó,excelente precio para lo que es,5,Jorge Ejemplo,review+0494@example.com,eau-de-parfum-flor-50ml
+Me encantó,Huele delicioso y dura muchísimo,5,Fernanda Muestra,review+0495@example.com,eau-de-parfum-flor-50ml
+,No me gusto,2,Valeria Ejemplo,review+0496@example.com,body-mist-coco
+Excelente,"Todo perfecto, el envio muy rapido",5,Fernanda Ejemplo,review+0497@example.com,eau-de-parfum-flor-50ml
+,"todo perfecto, el envío muy rápido",5,Pablo Demo,review+0498@example.com,eau-de-toilette-cedro-100ml
+,Lo compre por las resenas y no me arrepiento,5,María Demo,review+0499@example.com,body-mist-coco
+Excelente,"Me encantó, el aroma se mantiene horas",5,María Prueba,review+0500@example.com,eau-de-toilette-cedro-100ml
+Me encantó,Huele delicioso y dura muchísimo,4,Luis Ejemplo,review+0501@example.com,eau-de-toilette-cedro-100ml
+,Excelente precio para lo que es,5,Sofía Muestra,review+0502@example.com,eau-de-parfum-flor-50ml
+,"Me gusto mucho el frasco, muy bonito",5,Lucía Muestra,review+0503@example.com,eau-de-parfum-ambar-100ml
+Mi opinión,Nunca llegó mi pedido,1,Carlos Ficticio,review+0504@example.com,eau-de-toilette-cedro-100ml
+Excelente,Excelente precio para lo que es.,5,Sofía Muestra,review+0505@example.com,body-mist-coco
+Mi opinión,el olor no se parece al original,1,Sofía Ficticio,review+0506@example.com,eau-de-toilette-cedro-100ml
+,Me encanta 😍,5,Sofía Ficticio,review+0507@example.com,eau-de-toilette-cedro-100ml
+Me encantó,Perfecto.,5,Sofía Prueba,review+0508@example.com,body-mist-coco
+Me encantó,me encanta 😍,4,Pablo Muestra,review+0509@example.com,body-mist-coco
+Excelente,Llego rapidisimo y bien empacado,5,Sofía Prueba,review+0510@example.com,eau-de-toilette-cedro-100ml
+,10/10,5,Diego Ficticio,review+0511@example.com,eau-de-toilette-cedro-100ml
+,Súper recomendado,5,Lucía Demo,review+0512@example.com,eau-de-parfum-ambar-100ml
+Mi opinión,Tardó tres semanas en llegar,1,Luis Ejemplo,review+0513@example.com,body-mist-coco
+,"Me encantó, el aroma se mantiene horas",5,Diego Demo,review+0514@example.com,body-mist-coco
+,"Muy buena fijacion, igualito al original",5,Ana Muestra,review+0515@example.com,eau-de-toilette-cedro-100ml
+,"llego antes de lo esperado, gracias",5,Jorge Muestra,review+0516@example.com,eau-de-toilette-cedro-100ml
+Excelente,"Vale la pena, buen precio",5,María Ficticio,review+0517@example.com,body-mist-coco
+Me encantó,Muy buen perfume y súper barato,5,Lucía Ejemplo,review+0518@example.com,eau-de-parfum-flor-50ml
+,"No dura nada, a la hora ya no huele",2,Daniela Muestra,review+0519@example.com,eau-de-toilette-cedro-100ml
+,"llegó antes de lo esperado, gracias",5,María Muestra,review+0520@example.com,eau-de-parfum-ambar-100ml
+,huele delicioso y dura muchísimo,5,Fernanda Prueba,review+0521@example.com,body-mist-coco
+,Tardo tres semanas en llegar.,1,Carlos Muestra,review+0522@example.com,eau-de-parfum-ambar-100ml
+Mi opinión,"No dura nada, a la hora ya no huele",1,Sofía Prueba,review+0523@example.com,eau-de-parfum-flor-50ml
+Me encantó,Muy buen perfume y súper barato,5,Valeria Ejemplo,review+0524@example.com,eau-de-parfum-flor-50ml
+Reseña,"Aroma dulce, fijacon normal.",3,María Prueba,review+0525@example.com,eau-de-parfum-ambar-100ml
+Me encantó,"great quality, lasts all day",5,Carlos Ficticio,review+0526@example.com,eau-de-parfum-ambar-100ml
+,"No dura nada, a la hora ya no huele",1,Pablo Ficticio,review+0527@example.com,eau-de-parfum-ambar-100ml
+Excelente,Super recomendado.,5,Jorge Prueba,review+0528@example.com,body-mist-coco
+Excelente,Mi favorito,5,Carlos Prueba,review+0529@example.com,eau-de-toilette-cedro-100ml
+,Perfecto,5,Daniela Muestra,review+0530@example.com,body-mist-coco
+Excelente,"vale la pena, buen precio",5,María Ficticio,review+0531@example.com,eau-de-parfum-ambar-100ml
+,Lo compré por las reseñas y no me arrepiento,5,Lucía Prueba,review+0532@example.com,eau-de-toilette-cedro-100ml
+Excelente,Lo compré por las reseñas y no me arrepiento,4,Fernanda Prueba,review+0533@example.com,body-mist-coco
+Me encantó,L presentacion esta hermosa,5,Sofía Demo,review+0534@example.com,eau-de-parfum-flor-50ml
+,"great quality, lasts all day",5,Diego Ejemplo,review+0535@example.com,eau-de-toilette-cedro-100ml
+Excelente,"Vale la pena, buen precio",5,Ana Prueba,review+0536@example.com,eau-de-parfum-flor-50ml
+,buen aroma aunque la fijacion es regular,5,Valeria Prueba,review+0537@example.com,body-mist-coco
+Reseña,"no dura nada, a la hora ya no huele",2,Daniela Prueba,review+0538@example.com,eau-de-toilette-cedro-100ml
+,"llego antes de lo esperado, gracias",4,Valeria Ejemplo,review+0539@example.com,eau-de-parfum-flor-50ml
+,"me gusto mucho el frasco, muy bonito",5,Valeria Muestra,review+0540@example.com,eau-de-parfum-ambar-100ml
+,Muy buen perfume y super barato,5,Pablo Ficticio,review+0541@example.com,body-mist-coco
+Excelente,"Me encantó, el aroma se mantiene horas",5,Carlos Ejemplo,review+0542@example.com,eau-de-toilette-cedro-100ml
+,"Aroma dulce, fijación normal",3,María Prueba,review+0543@example.com,eau-de-parfum-ambar-100ml
+,Me encanta 😍,5,Valeria Muestra,review+0544@example.com,eau-de-parfum-ambar-100ml
+Mi opinión,"Aroma dulce, fijación normal",3,Carlos Ejemplo,review+0545@example.com,body-mist-coco
+Excelente,excelente precio para lo que es,5,Carlos Ejemplo,review+0546@example.com,eau-de-parfum-flor-50ml
+,Pedí un cambio y nadie me respondió,2,Jorge Ejemplo,review+0547@example.com,eau-de-parfum-ambar-100ml
+,Decepcionada,1,Lucía Ejemplo,review+0548@example.com,body-mist-coco
+,Me encanto el perfume pero tardo mucho en llegar,3,Luis Ejemplo,review+0549@example.com,eau-de-parfum-flor-50ml
+Excelente,"excelente calidad, la fragancia dura todo el dia",5,Daniela Prueba,review+0550@example.com,eau-de-parfum-flor-50ml
+Me encantó,Huele delicioso y dura muchísimo,5,Lucía Muestra,review+0551@example.com,eau-de-toilette-cedro-100ml
+,"Muy buena fijacion, igualito al original",4,Daniela Demo,review+0552@example.com,body-mist-coco
+,Muy buen perfume y super barato,5,Valeria Prueba,review+0553@example.com,eau-de-toilette-cedro-100ml
+,"Llegó antes de lo esperado, gracias",5,Carlos Muestra,review+0554@example.com,eau-de-parfum-ambar-100ml
+,"Great quality, lasts all day.",5,Daniela Muestra,review+0555@example.com,body-mist-coco
+Reseña,Es parecido al original,3,Luis Prueba,review+0556@example.com,body-mist-coco
+Reseña,pedi un cambio y nadie me respondio,1,Diego Ficticio,review+0557@example.com,body-mist-coco
+Me encantó,"Excelente calidad, la fragancia dura todo el dia",5,Jorge Ficticio,review+0558@example.com,eau-de-parfum-ambar-100ml
+Reseña,"No dura nada, a la hora ya no huele.",1,Sofía Muestra,review+0559@example.com,eau-de-parfum-ambar-100ml
+,Perfecto,5,Luis Muestra,review+0560@example.com,body-mist-coco
+Me encantó,"Me encanto, el aroma se mantiene horas",5,Jorge Muestra,review+0561@example.com,eau-de-parfum-ambar-100ml
+Excelente,Muy buen perfume y super barato,5,Lucía Muestra,review+0562@example.com,eau-de-parfum-flor-50ml
+,"Todo perfecto, el envío muy rápido",5,Daniela Prueba,review+0563@example.com,eau-de-parfum-ambar-100ml
+,"vale la pena, buen precio",5,Jorge Ejemplo,review+0564@example.com,eau-de-parfum-flor-50ml
+,Llegó rapidísimo y ben empacado,5,Daniela Demo,review+0565@example.com,eau-de-parfum-ambar-100ml
+Me encantó,"Me encanto, el aroma se mantene horas",5,Fernanda Ficticio,review+0566@example.com,eau-de-parfum-flor-50ml
+Excelente,Muy buen perfume y súper barato,5,Carlos Prueba,review+0567@example.com,eau-de-parfum-ambar-100ml
+,Súper recomendado.,5,Jorge Demo,review+0568@example.com,eau-de-parfum-flor-50ml
+,Mi favorito,5,Luis Ejemplo,review+0569@example.com,body-mist-coco
+Me encantó,"Excelente calidad, la fragancia dura todo el día",4,Lucía Ficticio,review+0570@example.com,body-mist-coco
+,huele delicioso y dura muchísimo,5,María Prueba,review+0571@example.com,body-mist-coco
+,Excelente calidad la fragancia dura todo el día,5,Valeria Ficticio,review+0572@example.com,body-mist-coco
+,"vale la pena, buen precio",5,Daniela Ejemplo,review+0573@example.com,eau-de-toilette-cedro-100ml
+Me encantó,"todo perfecto, el envío muy rápido",5,Diego Ejemplo,review+0574@example.com,eau-de-parfum-ambar-100ml
+Excelente,Súper recomendado,4,Sofía Muestra,review+0575@example.com,eau-de-parfum-ambar-100ml
+Excelente,"me gustó mucho el frasco, muy bonito",4,Diego Ejemplo,review+0576@example.com,eau-de-parfum-ambar-100ml
+Excelente,Muy buen perfume y súper barato,4,Ana Prueba,review+0577@example.com,eau-de-toilette-cedro-100ml
+Me encantó,Lo compré por las reseñas y no me arrepiento,5,Pablo Ficticio,review+0578@example.com,eau-de-parfum-ambar-100ml
+Reseña,Buen aroma aunque la fijación es regular,3,María Muestra,review+0579@example.com,eau-de-parfum-ambar-100ml
+,"Excelente calidad, la fragancia dura todo el dia",5,Pablo Prueba,review+0580@example.com,eau-de-toilette-cedro-100ml
+,La presentación está hermosa,5,Fernanda Prueba,review+0581@example.com,eau-de-toilette-cedro-100ml
+Me encantó,"Me encantó, el aroma se mantiene horas",5,Lucía Ficticio,review+0582@example.com,eau-de-toilette-cedro-100ml
+,"Me gusto mucho el frasco, muy bonito",5,Fernanda Ejemplo,review+0583@example.com,eau-de-parfum-ambar-100ml
+Excelente,10/10,5,Carlos Muestra,review+0584@example.com,eau-de-parfum-flor-50ml
+,Tardo tres semanas en llegar,1,Pablo Ejemplo,review+0585@example.com,eau-de-parfum-ambar-100ml
+,"vae la pena, buen precio.",4,Ana Ficticio,review+0586@example.com,eau-de-parfum-flor-50ml
+Me encantó,huele delicioso y dura muchisimo,4,Carlos Muestra,review+0587@example.com,eau-de-parfum-flor-50ml
+,Huele delicoso y dura muchísimo.,5,Diego Prueba,review+0588@example.com,eau-de-toilette-cedro-100ml
+,Me lo recomendó mi amiga y me encantó.,5,Pablo Ejemplo,review+0589@example.com,eau-de-toilette-cedro-100ml
+Excelente,"Excelente calidad, la fragancia dura todo el dia",5,Daniela Ficticio,review+0590@example.com,eau-de-parfum-flor-50ml
+Mi opinión,Buen aroma aunque la fijación es regular.,3,Ana Ejemplo,review+0591@example.com,eau-de-parfum-ambar-100ml
+,Lo compré por las reseñas y no me arrepiento,5,Sofía Prueba,review+0592@example.com,eau-de-toilette-cedro-100ml
+,"Todo perfecto, el envío muy rápido",4,Lucía Prueba,review+0593@example.com,body-mist-coco
+Me encantó,"Excelente calidad, la fragancia dura todo el día",4,Lucía Ficticio,review+0594@example.com,eau-de-toilette-cedro-100ml
+Excelente,"great quality, lasts all day",5,Sofía Demo,review+0595@example.com,eau-de-toilette-cedro-100ml
+,Perfecto,5,Daniela Muestra,review+0596@example.com,body-mist-coco
+,"excelente producto, solo que el envío fue lento",5,Luis Ficticio,review+0597@example.com,eau-de-toilette-cedro-100ml
+,"Great quality, lasts all day",4,Daniela Ficticio,review+0598@example.com,eau-de-toilette-cedro-100ml
+,"excelente calidad, la fragancia dura todo el día.",4,Sofía Ficticio,review+0599@example.com,eau-de-parfum-ambar-100ml
+,10/10,5,Ana Demo,review+0600@example.com,eau-de-toilette-cedro-100ml
+Me encantó,10/10,5,Jorge Ejemplo,review+0601@example.com,eau-de-toilette-cedro-100ml
+Mi opinión,"Es para regalo, todavía no lo abro",3,Sofía Ficticio,review+0602@example.com,eau-de-toilette-cedro-100ml
+,"Mala fijación, no lo recomiendo",1,Pablo Prueba,review+0603@example.com,body-mist-coco
+Mi opinión,buen aroma aunque la fijación es regular.,3,Pablo Muestra,review+0604@example.com,eau-de-parfum-flor-50ml
+,llegó el frasco roto,2,Fernanda Ejemplo,review+0605@example.com,body-mist-coco
+,Lo compre por las resenas y no me arrepiento.,4,Sofía Prueba,review+0606@example.com,body-mist-coco
+,Es parecido al original,3,Sofía Muestra,review+0607@example.com,eau-de-parfum-flor-50ml
+Excelente,excelente precio para lo que es,5,Sofía Demo,review+0608@example.com,eau-de-toilette-cedro-100ml
+,"me gusto mucho el frasco, muy bonito",5,Luis Muestra,review+0609@example.com,eau-de-parfum-flor-50ml
+Mi opinión,me encantó el perfum pero tardó mucho en llegar,3,Sofía Muestra,review+0610@example.com,eau-de-parfum-ambar-100ml
+Excelente,La presentacion esta hermosa,5,Valeria Ficticio,review+0611@example.com,eau-de-toilette-cedro-100ml
+Me encantó,"Great quality, lasts all day",5,Fernanda Ficticio,review+0612@example.com,eau-de-parfum-ambar-100ml
+,me encantó el perfume pero tardó mucho en llegar,5,Pablo Demo,review+0613@example.com,body-mist-coco
+Mi opinión,nunca llego mi pedido.,1,Lucía Ejemplo,review+0614@example.com,eau-de-toilette-cedro-100ml
+,"Muy buena fijacion, igualito al original",5,Ana Muestra,review+0615@example.com,eau-de-parfum-flor-50ml
+,Me lo recomendó mi amiga y me encantó,4,Valeria Muestra,review+0616@example.com,eau-de-parfum-ambar-100ml
+Me encantó,"Me encantó, el aroma se mantiene hors",5,Jorge Prueba,review+0617@example.com,body-mist-coco
+Excelente,"Excelente calidad, la fragancia dura todo el dia",5,Ana Prueba,review+0618@example.com,eau-de-parfum-ambar-100ml
+Me encantó,Mi favorito,5,Carlos Ficticio,review+0619@example.com,body-mist-coco
+,Huele rico pero dura poco.,3,Pablo Muestra,review+0620@example.com,eau-de-parfum-ambar-100ml
+,decepcionada,1,Fernanda Ejemplo,review+0621@example.com,eau-de-parfum-flor-50ml
+Reseña,"Mala fijación, no lo recomiendo",2,Diego Prueba,review+0622@example.com,eau-de-toilette-cedro-100ml
+Reseña,es el de 100 ml,3,Diego Ejemplo,review+0623@example.com,eau-de-parfum-ambar-100ml
+,Me lo recomendó mi amiga y me encantó,4,Carlos Prueba,review+0624@example.com,eau-de-toilette-cedro-100ml
+,"Todo perfecto, el envio muy rapido",5,María Muestra,review+0625@example.com,eau-de-parfum-flor-50ml
+Excelente,"Muy buena fijacion, igualito al original",5,Lucía Demo,review+0626@example.com,eau-de-parfum-ambar-100ml
+Excelente,"Vale la pena, uen precio",5,Fernanda Prueba,review+0627@example.com,eau-de-parfum-ambar-100ml
+Excelente,"Llegó antes de lo esperado, gracias",5,Ana Muestra,review+0628@example.com,eau-de-parfum-flor-50ml
+Excelente,"great quality, lasts all day",5,Diego Ejemplo,review+0629@example.com,eau-de-parfum-ambar-100ml
+,Lo compre por las resenas y no me arrepiento,5,Daniela Ejemplo,review+0630@example.com,eau-de-toilette-cedro-100ml
+,La presentación está hermosa,5,Sofía Prueba,review+0631@example.com,eau-de-parfum-ambar-100ml
+,"excelente producto, solo que el envío fue lento",3,Carlos Prueba,review+0632@example.com,eau-de-toilette-cedro-100ml
+,"Muy buena fijacion, igualito al original",5,Fernanda Demo,review+0633@example.com,body-mist-coco
+,Huele delicioso y dura muchisimo.,5,Jorge Ficticio,review+0634@example.com,body-mist-coco
+Mi opinión,El olor no se parece al original,2,Valeria Demo,review+0635@example.com,eau-de-toilette-cedro-100ml
+,Huele delicioso y dura muchísimo,5,Valeria Demo,review+0636@example.com,eau-de-toilette-cedro-100ml
+Excelente,"great quality, lasts all day",4,Valeria Prueba,review+0637@example.com,eau-de-parfum-flor-50ml
+,"Great quality, lasts allday",4,Valeria Muestra,review+0638@example.com,eau-de-toilette-cedro-100ml
+Me encantó,"Great quality, lasts all day",5,Valeria Prueba,review+0639@example.com,eau-de-parfum-flor-50ml
+Excelente,Lo amo,5,Lucía Ejemplo,review+0640@example.com,eau-de-parfum-ambar-100ml
+,El olor no se parece al original,1,Ana Prueba,review+0641@example.com,eau-de-parfum-ambar-100ml
+Excelente,Lo compré por las reseñas y no me arrepiento,5,Jorge Muestra,review+0642@example.com,eau-de-toilette-cedro-100ml
+Me encantó,Huele delicioso y dura muchisimo,5,Carlos Ejemplo,review+0643@example.com,eau-de-parfum-flor-50ml
+Reseña,Buen aroma aunque la fijacion es regular,5,Ana Ficticio,review+0644@example.com,eau-de-parfum-flor-50ml
+Me encantó,"great quality, lasts all day",5,María Ejemplo,review+0645@example.com,eau-de-parfum-flor-50ml
+,"Me gustó mucho el frasco, muy bonito",5,María Ficticio,review+0646@example.com,body-mist-coco
+Me encantó,"Me gusto mucho el frasco, muy bonito",5,Luis Ejemplo,review+0647@example.com,body-mist-coco
+,Llego rapidisimo y bien empacado,5,Ana Prueba,review+0648@example.com,eau-de-parfum-ambar-100ml
+,decepcionada,2,Jorge Demo,review+0649@example.com,body-mist-coco
+,10/10,4,Daniela Muestra,review+0650@example.com,body-mist-coco
+Reseña,Es parecido al original,3,Sofía Demo,review+0651@example.com,eau-de-parfum-flor-50ml
+,10/10,5,María Demo,review+0652@example.com,eau-de-parfum-ambar-100ml
+Mi opinión,Buen aroma aunque la fijacion es regular,3,Luis Ejemplo,review+0653@example.com,eau-de-toilette-cedro-100ml
+,"Me gusto mucho el frasco, muy bonito",5,Valeria Ficticio,review+0654@example.com,eau-de-parfum-flor-50ml
+Excelente,Mi favorito,4,Fernanda Ficticio,review+0655@example.com,eau-de-parfum-flor-50ml
+,Pesima atencion al cliente,1,Luis Demo,review+0656@example.com,eau-de-parfum-ambar-100ml
+,Muy buen perfume y súper barato.,4,Fernanda Demo,review+0657@example.com,eau-de-parfum-ambar-100ml
+Reseña,Huele rico pero dura poco,4,Fernanda Ficticio,review+0658@example.com,eau-de-parfum-flor-50ml
+Me encantó,"Me encanto, el aroma se mantiene horas",5,Diego Ejemplo,review+0659@example.com,eau-de-parfum-flor-50ml
+Excelente,10/10,5,Jorge Demo,review+0660@example.com,eau-de-toilette-cedro-100ml
+Reseña,"Aroma dulce, fijacion normal.",3,Pablo Prueba,review+0661@example.com,eau-de-parfum-ambar-100ml
+Excelente,"Me encantó, el aroma se mantiene horas",5,Daniela Ficticio,review+0662@example.com,eau-de-parfum-flor-50ml
+Mi opinión,Pésima atención al cliente,2,Carlos Muestra,review+0663@example.com,eau-de-parfum-ambar-100ml
+,La presentacion esta hermosa.,5,Jorge Demo,review+0664@example.com,body-mist-coco
+,me encantó el perfume pero tardó mucho en llegar,5,Pablo Muestra,review+0665@example.com,eau-de-parfum-flor-50ml
+,Muy buen perfume y super barato,4,Fernanda Demo,review+0666@example.com,body-mist-coco
+,el olor no se parece al original,1,Lucía Ejemplo,review+0667@example.com,eau-de-toilette-cedro-100ml
+Me encantó,"great quality, lasts all day",5,Pablo Ficticio,review+0668@example.com,eau-de-parfum-flor-50ml
+,Excelente precio para lo que es,5,Daniela Ejemplo,review+0669@example.com,eau-de-parfum-flor-50ml
+,"Llego antes de lo esperado, gracias",5,Pablo Ejemplo,review+0670@example.com,eau-de-toilette-cedro-100ml
+Excelente,Mi favorito,5,Carlos Ejemplo,review+0671@example.com,eau-de-parfum-ambar-100ml
+,muy buen perfume y super barato,5,Ana Muestra,review+0672@example.com,eau-de-parfum-flor-50ml
+Reseña,es parecido al original.,3,Fernanda Ficticio,review+0673@example.com,eau-de-parfum-ambar-100ml
+Me encantó,"me encantó, el aroma se mantiene horas.",5,Fernanda Muestra,review+0674@example.com,eau-de-parfum-flor-50ml
+,"Muy buena fijacion, igualito al original.",4,Daniela Muestra,review+0675@example.com,body-mist-coco
+Me encantó,Lo compré por las reseñas y no me arrepiento,5,Sofía Muestra,review+0676@example.com,eau-de-parfum-ambar-100ml
+,Llego el frasco roto,2,Sofía Muestra,review+0677@example.com,eau-de-toilette-cedro-100ml
+,"Aroma dulce, fijación normal",3,Sofía Ficticio,review+0678@example.com,body-mist-coco
+,El olor no se parece al original,2,Jorge Demo,review+0679@example.com,eau-de-parfum-flor-50ml
+,Me encanta 😍,4,Pablo Ejemplo,review+0680@example.com,eau-de-parfum-ambar-100ml
+Me encantó,Llegó rapidísimo y bien empacado,5,María Ejemplo,review+0681@example.com,eau-de-toilette-cedro-100ml
+,El olor no se parece al original,1,Daniela Demo,review+0682@example.com,eau-de-parfum-ambar-100ml
+,"Muy buena fijación, igualito al original",5,Pablo Demo,review+0683@example.com,eau-de-parfum-flor-50ml
+,Huele rico pero dura poco,5,María Ficticio,review+0684@example.com,eau-de-parfum-ambar-100ml
+,Muy buen perfume y súper barato,4,Pablo Demo,review+0685@example.com,eau-de-toilette-cedro-100ml
+Excelente,Mi favorito,5,Sofía Ejemplo,review+0686@example.com,eau-de-parfum-flor-50ml
+Me encantó,"Great quality, lasts all day.",4,Daniela Demo,review+0687@example.com,eau-de-parfum-ambar-100ml
+Excelente,Huele delicioso y dura mchisimo,5,Sofía Muestra,review+0688@example.com,eau-de-parfum-ambar-100ml
+,Tardó tres semanas en llegar,1,Carlos Ejemplo,review+0689@example.com,eau-de-parfum-flor-50ml
+Reseña,Nunca llegó mi pedido,2,Carlos Prueba,review+0690@example.com,eau-de-parfum-ambar-100ml
+,Muy buen perfume y súper barato,5,Sofía Ficticio,review+0691@example.com,body-mist-coco
+Excelente,"Me gustómucho el frasco, muy bonito",5,Diego Ejemplo,review+0692@example.com,eau-de-parfum-ambar-100ml
+,"Excelente calidad, la fragancia dura todo el dia",4,Ana Muestra,review+0693@example.com,eau-de-parfum-flor-50ml
+Mi opinión,"Es para regalo, todavía no lo abro.",3,Sofía Prueba,review+0694@example.com,body-mist-coco
+Reseña,Nunca llegó mi pedido,2,Ana Ficticio,review+0695@example.com,body-mist-coco
+Me encantó,"Me encanto, el aroma se mantiene horas",4,María Ficticio,review+0696@example.com,eau-de-parfum-flor-50ml
+Excelente,"Me gustó mucho el frasco, muy bonito",5,Luis Ejemplo,review+0697@example.com,body-mist-coco
+,muy buen perfume y súper barato,5,Luis Muestra,review+0698@example.com,eau-de-parfum-flor-50ml
+,"vale la pena, buen precio",4,Fernanda Ejemplo,review+0699@example.com,eau-de-parfum-ambar-100ml
+Excelente,Mi favorito,5,Diego Ficticio,review+0700@example.com,eau-de-parfum-flor-50ml
