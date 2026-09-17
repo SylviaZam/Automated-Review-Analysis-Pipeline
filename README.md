@@ -4,6 +4,8 @@ Turn Spanish-language survey and review exports into cleaned, coded themes and a
 
 I built v1 of this pipeline while working as a UX researcher at an e-commerce consultancy in Monterrey, where post-purchase surveys and reviews from Shopify stores piled up faster than anyone could read them. v2 is the version I rebuilt after testing v1 on the kind of data it was made for and finding that it did not work.
 
+[![ci](https://github.com/SylviaZam/Automated-Review-Analysis-Pipeline/actions/workflows/ci.yml/badge.svg?branch=v2)](https://github.com/SylviaZam/Automated-Review-Analysis-Pipeline/actions/workflows/ci.yml)
+
 ---
 
 ## Why v2 exists
@@ -157,7 +159,6 @@ docs/                method, privacy, evaluation, codebook
 legacy/              v1 script and its example input/output, kept for comparison
 scripts/             privacy guard
 tests/               106 tests
-docs/ci-workflow.yml the GitHub Actions workflow, ready to move to .github/workflows/
 ```
 
 ## Limitations
