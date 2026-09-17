@@ -215,3 +215,18 @@ def test_free_text_is_not_mistaken_for_multi_select():
 ])
 def test_themes_added_after_diagnosing_real_exports(answer, theme):
     assert theme in CB.match(answer)
+
+
+def test_duplicate_question_detected_when_rows_are_offset():
+    # The same export pasted twice, second copy shifted down: same answers, different rows.
+    answers = [f"respuesta {i}" for i in range(40)]
+    a = answers + [None] * 5
+    b = [None] * 5 + answers
+    df = pd.DataFrame({"¿Qué te preocupaba?": a, "Slide: ¿Qué te preocupaba?": b})
+    assert len(detect_questions(df)) == 1
+
+
+def test_different_columns_with_the_same_question_are_both_kept():
+    df = pd.DataFrame({"¿Qué te preocupaba?": [f"primera ola {i}" for i in range(40)],
+                       "Slide: ¿Qué te preocupaba?": [f"segunda ola totalmente distinta {i}" for i in range(40)]})
+    assert len(detect_questions(df)) == 2

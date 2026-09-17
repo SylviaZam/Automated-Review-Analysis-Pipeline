@@ -152,10 +152,22 @@ def detect_questions(df: pd.DataFrame, overrides: dict[str, str] | None = None) 
 
 
 def _is_copy(df: pd.DataFrame, col: str, same_text_cols: list[str]) -> bool:
-    """True when an earlier column with the same question holds mostly the same answers
-    (analysts sometimes paste a second export of the same survey next to the first)."""
+    """True when an earlier column with the same question holds the same answers.
+
+    Analysts sometimes pasted a second export of the same survey next to the first.
+    The rows do not always line up, so compare row by row *and* as a bag of values:
+    the same 84 answers offset by a few rows are still the same 84 answers.
+    """
+    values = df[col].dropna().astype(str).str.strip()
+    values = values[values != ""]
     for other in same_text_cols:
         both = df[col].notna() & df[other].notna()
         if both.sum() and (df.loc[both, col].astype(str) == df.loc[both, other].astype(str)).mean() >= 0.5:
             return True
+        theirs = df[other].dropna().astype(str).str.strip()
+        theirs = theirs[theirs != ""]
+        if len(values) and len(theirs):
+            shared = (values.value_counts() - theirs.value_counts().reindex(values.value_counts().index, fill_value=0)).clip(lower=0).sum()
+            if 1 - shared / len(values) >= 0.8:
+                return True
     return False
