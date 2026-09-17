@@ -1,3 +1,6 @@
+# GitHub Actions workflow for this project.
+# Move it to .github/workflows/ci.yml to enable it (a push that creates a workflow
+# file needs a login with the 'workflow' scope, or use the GitHub web UI).
 name: ci
 
 on:
