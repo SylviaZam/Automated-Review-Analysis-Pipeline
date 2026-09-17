@@ -256,3 +256,60 @@ def test_cli_fails_loudly_when_every_answer_fails(tmp_path, synthetic, monkeypat
     assert main(["run", str(synthetic["apparel_pdp_poll.csv"]), "--out", str(tmp_path / "o")]) == 1
     assert "every answer failed" in capsys.readouterr().err
     assert not (tmp_path / "o").exists()
+
+
+# --- diagnose ----------------------------------------------------------------------
+def test_diagnose_flags_multi_select_and_gaps(tmp_path):
+    from voc import diagnose as diag
+
+    options = ["Precio Justo", "Entrega Rapida", "Servicio al Cliente"]
+    path = tmp_path / "brand.csv"
+    pd.DataFrame({
+        "Email": [f"demo+{i}@example.com" for i in range(40)],
+        "¿Cuál fue la razón principal por la que compraste?": [", ".join(options[: 1 + i % 3]) for i in range(40)],
+        "¿Qué te causaba incertidumbre antes de comprar?": [f"cocodrilo bailarín numero {i} en el tejado" for i in range(40)],
+    }).to_csv(path, index=False)
+    report = diag.diagnose(ingest.load(path, label="Brand"), CB)
+    kinds = {q["question"][:20]: q["kind"] for q in report["questions"]}
+    assert "multi" in kinds.values()
+    issues = " ".join(f["message"] for f in report["findings"] if f["level"] == "issue")
+    assert "cannot place" in issues
+    assert any(c["phrase"] in {"cocodrilo", "bailarin", "cocodrilo bailarin"} for c in report["candidates"])
+    md = diag.markdown(report)
+    assert "Candidate vocabulary" in md
+    assert "unassigned" in diag.keyword_stub(report)
+
+
+def test_diagnose_flags_two_exports_pasted_together(tmp_path):
+    from voc import diagnose as diag
+
+    path = tmp_path / "pasted.csv"
+    a = [f"respuesta larga distinta numero {i}" for i in range(30)] + [None] * 30
+    b = [None] * 30 + [f"otra respuesta totalmente distinta {i}" for i in range(30)]
+    pd.DataFrame({"¿Qué te preocupaba?": a, "Slide: ¿Qué te preocupaba?": b}).to_csv(path, index=False)
+    report = diag.diagnose(ingest.load(path, label="Pasted"), CB)
+    assert any("pasted side by side" in f["message"] for f in report["findings"])
+
+
+def test_multi_select_options_are_tallied_per_respondent(tmp_path):
+    path = tmp_path / "multi.csv"
+    options = ["Precio Justo", "Entrega Rapida", "Servicio al Cliente"]
+    pd.DataFrame({"¿Cuál fue la razón principal por la que compraste?": [", ".join(options[: 1 + i % 3]) for i in range(60)]}).to_csv(path, index=False)
+    an = pipeline.run(ingest.load(path), RulesClassifier(CB), CB, min_n=1)
+    assert an.coded.empty  # nothing was coded as free text
+    tally = an.choices.set_index("option")["count"].to_dict()
+    assert tally["Precio Justo"] == 60 and tally["Servicio al Cliente"] == 20
+
+
+def test_eval_excludes_unclear_rows(tmp_path):
+    path = tmp_path / "gold.csv"
+    pd.DataFrame([
+        {"id": "a", "role": "hesitation", "question": "q", "answer": "que no llegara", "gold_theme": "shipping_delivery", "gold_sentiment": ""},
+        {"id": "b", "role": "hesitation", "question": "q", "answer": "asdf ???", "gold_theme": "unclear", "gold_sentiment": ""},
+        {"id": "c", "role": "hesitation", "question": "q", "answer": "que no funcione", "gold_theme": "", "gold_sentiment": ""},
+    ]).to_csv(path, index=False)
+    gold = evaluate.load_gold(path)
+    result = evaluate.score(gold, RulesClassifier(CB))
+    assert result["n"] == 1 and result["coverage_gap"] == 2
+    assert result["theme_accuracy"] == 1.0
+    assert "unclear or left blank" in evaluate.markdown([result], "t")

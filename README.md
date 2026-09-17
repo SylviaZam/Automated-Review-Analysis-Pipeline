@@ -16,16 +16,18 @@ v1 classified sentiment with VADER, an English-only lexicon, and sorted answers 
 |---|---|---|
 | Labelled **Positive** | 15.7% | **80.7%** |
 | Labelled **Negative** (all false alarms) | 17.9% | **2.6%** |
-| Left in the catch-all bucket ("General" / "Other") | 82.6% | 35.5% |
+| Left in the catch-all bucket ("General" / "Other") | 82.6% | 34.1% |
 
 The v1 report looked finished. Its numbers were wrong. v2 fixes the method rather than the formatting:
 
 | Problem in v1 | What v2 does |
 |---|---|
 | English-only sentiment | Spanish-first lexicon with negation ("no funcionó"), contrast ("pero", "aunque") and emoji |
-| Six generic buckets; the API mode invented its own category names, so brands could not be compared | One **codebook** of 18 themes, consolidated from my manual affinity coding across brands; the model backend must choose from it |
+| Six generic buckets; the API mode invented its own category names, so brands could not be compared | One **codebook** of 21 themes, consolidated from my manual affinity coding across brands and extended by diagnosing each export; the model backend must choose from it |
 | Sentiment forced onto every question | Each question gets a **role** (why they bought, what almost stopped them, product-page blocker...). Only opinion questions get sentiment |
 | Typos, texting shorthand and junk answers counted as data | **Cleaning step**: junk detection, shorthand expansion, typo repair (details below) |
+| Multi-select questions coded as if they were free text, inflating counts and theme shares | Detected and tallied per option instead (`voc diagnose` flags them) |
+| One vocabulary for every industry | Shared themes plus [industry packs](codebooks/) and per-brand keyword files proposed by `voc diagnose` |
 | Broken encodings (`Cu√©ntanos`, `ÀC\x97mo`) | File- and cell-level encoding repair |
 | Names, emails, cities and IPs flowed into outputs and a committed cache | Identifying columns dropped at ingest, contact details masked in free text, spend kept as a band, cache stores hashes only |
 | Failed API calls silently became "Neutral" | Failures are flagged and counted in a run manifest |
@@ -66,6 +68,7 @@ Commands:
 |---|---|
 | `voc run <export>` | Analyse one export. `--label` sets the dataset name used in outputs. `--quotes` adds cleaned answers to the Excel for internal use only. |
 | `voc eval <gold.csv>` | Score backends (`v1`, `rules`, `claude`, `openai`) against a hand-labelled answer key. |
+| `voc diagnose <export>` | Check a brand's export before coding it: question kinds, coverage gaps, candidate vocabulary. |
 | `voc label-kit <export>` | Sample real answers into a labelling sheet that stays on your machine. |
 | `voc synth` | Regenerate the synthetic demo datasets and their answer key. |
 
@@ -97,6 +100,24 @@ Detected from the headers, no configuration needed:
 
 Unusual exports: `--roles roles.json` maps column headers to roles. `--extra-keywords extra.json` adds brand-specific terms (product or influencer names) to a theme without editing the shared codebook.
 
+## Diagnose a brand before coding it
+
+The codebook is deliberately shared, so results can be compared across brands. That only works if you check each export first:
+
+```bash
+python -m voc diagnose export.csv --label "BFit" --extra-keywords codebooks/supplements.json
+```
+
+The report lists what each question actually is, and flags three things that quietly ruin a study:
+
+- **Multi-select questions being read as free text.** One store's "why did you buy?" was a pick-list whose options the export joined with commas. 1,654 answers were being coded as if customers had written them, which inflated both the answer count and every theme share for that brand.
+- **Coverage gaps.** The share of answers the codebook cannot place, per question. Above 25% the report tells you to fix the codebook before labelling or reporting anything.
+- **Two exports pasted side by side.** Same question in two columns with different answers, which silently mixes two populations in one base.
+
+It then proposes vocabulary: the phrases that recur inside the answers nothing matched, with examples, plus a draft keyword file to fill in. Nothing is applied automatically; a researcher accepts or rejects each phrase. Running this on the real exports is how `first_time_trial` ("quiero probar la marca", "nunca había comprado"), `loyalty_rewards` and `site_usability` entered the codebook.
+
+Category vocabulary lives in [codebooks/](codebooks/) (jewelry, footwear, supplements, fragrance, fashion); brand-specific words belong in a brand file. The shared themes never change, so brands stay comparable.
+
 ## Cleaning: typos and junk answers
 
 Real survey answers are messy. `voc/clean.py` runs before coding:
@@ -114,7 +135,7 @@ Real survey answers are messy. `voc/clean.py` runs before coding:
 
 The original answer is always kept next to the cleaned one.
 
-On six real exports (about 7,700 responses and 10,800 open answers), cleaning removed 73 junk answers and repaired typos in 305 answers. Typical fixes: `calidsd` → calidad, `prodcutos` → productos, `etrega` → entrega, `ninguo` → ninguno. An early version was too aggressive (`hago` → pago, `premios` → precios); the rules above came from reviewing those errors.
+On six real exports (about 7,700 responses and 9,200 open answers), cleaning removed 73 junk answers and repaired typos in 305 answers. Typical fixes: `calidsd` → calidad, `prodcutos` → productos, `etrega` → entrega, `ninguo` → ninguno. An early version was too aggressive (`hago` → pago, `premios` → precios); the rules above came from reviewing those errors.
 
 ## Evaluation
 
@@ -152,13 +173,14 @@ Details: [docs/privacy.md](docs/privacy.md).
 
 ```
 voc/                 pipeline package (ingest, questions, clean, codebook, sentiment, classify, pipeline, reports, evaluate, synth, cli)
-voc/codebook.json    the 18-theme codebook
+voc/codebook.json    the shared codebook (21 themes)
+codebooks/           industry keyword packs
 data/synthetic/      generated demo exports + answer key (no real people)
 examples/output/     reports generated from the synthetic data
 docs/                method, privacy, evaluation, codebook
 legacy/              v1 script and its example input/output, kept for comparison
 scripts/             privacy guard
-tests/               106 tests
+tests/               119 tests
 ```
 
 ## Limitations

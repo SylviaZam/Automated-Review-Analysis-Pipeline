@@ -1,0 +1,25 @@
+{
+  "size_fit": [
+    "numero",
+    "numeros medios",
+    "medio numero",
+    "me aprieta",
+    "me queda grande",
+    "me queda chico",
+    "horma",
+    "plantilla",
+    "ancho del pie",
+    "talla europea"
+  ],
+  "quality": [
+    "suela",
+    "piel genuina",
+    "costuras",
+    "se despego"
+  ],
+  "stock_availability": [
+    "no hay de mi talla",
+    "agotado en mi numero",
+    "reposicion de talla"
+  ]
+}

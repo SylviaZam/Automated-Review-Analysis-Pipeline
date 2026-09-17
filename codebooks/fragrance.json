@@ -1,0 +1,22 @@
+{
+  "quality": [
+    "fijacion",
+    "duracion en piel",
+    "estela",
+    "proyeccion",
+    "concentracion",
+    "parfum",
+    "eau de"
+  ],
+  "variety_selection": [
+    "inspirado en",
+    "equivalente a",
+    "dupe",
+    "catalogo de fragancias"
+  ],
+  "design_style": [
+    "frasco",
+    "atomizador",
+    "presentacion del perfume"
+  ]
+}

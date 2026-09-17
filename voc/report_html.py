@@ -85,7 +85,9 @@ def render(an: Analysis, title: str | None = None, top: int = 6) -> str:
         role = grp.role.iloc[0]
         base = int(grp.base.iloc[0])
         rows = [(str(r.option), r.share, r["count"]) for _, r in grp.head(top).iterrows()]
-        cards.append(_card(ROLE_TITLES.get(role, "Choice question"), question, _bar_rows(rows), base, bool(grp.reportable.iloc[0]), min_n))
+        title_suffix = " (pick several)" if grp.kind.iloc[0] == "multi" else ""
+        cards.append(_card(ROLE_TITLES.get(role, "Choice question") + title_suffix, question,
+                           _bar_rows(rows), base, bool(grp.reportable.iloc[0]), min_n))
 
     gate_html = ""
     for g in an.gates.itertuples():

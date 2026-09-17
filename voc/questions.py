@@ -50,7 +50,7 @@ class Question:
     column: str
     text: str
     role: str
-    kind: str  # "text" | "choice" | "gate"
+    kind: str  # "text" | "choice" | "multi" | "gate"
 
 
 def meta_role(header: str) -> str | None:
@@ -85,8 +85,29 @@ def role_for(header: str) -> str:
     return "open_feedback"
 
 
+def multi_select_share(values: pd.Series) -> float:
+    """Share of answers built entirely from options that recur across the column.
+
+    Several stores asked "why did you buy?" as a multi-select; the export joins the
+    chosen options with commas ("Precio Justo, Entrega Rapida"), which looks like
+    free text until you notice the segments repeat.
+    """
+    segments = values.str.split(",").explode().str.strip()
+    segments = segments[segments != ""]
+    if segments.empty:
+        return 0.0
+    counts = segments.map(fold).value_counts()
+    options = {opt for opt, n in counts.items() if n >= max(3, 0.02 * len(values)) and len(opt) <= 60}
+    if not options:
+        return 0.0
+    def from_options(answer: str) -> bool:
+        parts = [fold(p.strip()) for p in answer.split(",") if p.strip()]
+        return bool(parts) and all(p in options for p in parts)
+    return float(values.map(from_options).mean())
+
+
 def answer_kind(series: pd.Series, role: str) -> str:
-    """Decide whether a column holds free text or picks from a fixed list."""
+    """Decide whether a column holds free text, one pick, several picks, or yes/no."""
     values = series.dropna().astype(str).str.strip()
     values = values[values != ""]
     if values.empty:
@@ -94,6 +115,8 @@ def answer_kind(series: pd.Series, role: str) -> str:
     folded = values.map(fold)
     if folded.isin(YES_NO).mean() >= 0.9:
         return "gate"
+    if len(values) >= 20 and folded.str.contains(",").mean() > 0.15 and multi_select_share(values) >= 0.9:
+        return "multi"
     if role in TEXT_ROLES and role != "open_feedback":
         # Some brands used multiple choice for "why did you buy"; detect it.
         top = folded.value_counts()

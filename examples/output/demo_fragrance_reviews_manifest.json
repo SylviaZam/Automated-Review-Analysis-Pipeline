@@ -1,6 +1,6 @@
 {
   "tool": "voc-pipeline 2.0.0",
-  "run_at": "2026-09-17T09:35:39",
+  "run_at": "2026-09-17T11:50:16",
   "label": "Demo fragrance reviews",
   "source_sha256": "da1665881d43e6c85793e8983b9715339972673221a0ecbe35a2291a9b7afe7d",
   "source_encoding": "utf-8",
@@ -15,7 +15,7 @@
   ],
   "backend": "rules",
   "model": null,
-  "codebook_version": "2.0.1",
+  "codebook_version": "2.2",
   "text_answers_received": 700,
   "text_answers_coded": 700,
   "junk_removed": {},

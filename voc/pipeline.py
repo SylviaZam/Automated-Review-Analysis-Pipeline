@@ -107,19 +107,20 @@ def run(ds: Dataset, classifier, codebook: Codebook, min_n: int = MIN_N_DEFAULT)
     for q in ds.questions:
         series = df[q.column][df[q.column].map(_is_answer)]
         base = len(series)
-        if q.kind == "choice":
-            # Merge spelling variants ("Instagram", "instagram ") under the most common spelling.
-            canon = series.str.strip()
+        if q.kind in ("choice", "multi"):
+            # Multi-select answers arrive comma-joined; count each option once per respondent.
+            canon = series.str.split(",").explode().str.strip() if q.kind == "multi" else series.str.strip()
+            canon = canon[canon != ""]
             groups = canon.groupby(canon.map(fold))
             for _, grp in sorted(groups, key=lambda kv: -len(kv[1])):
-                choice_rows.append({"question": q.text, "role": q.role, "option": grp.value_counts().index[0],
-                                    "count": len(grp), "base": base, "share": len(grp) / base,
-                                    "reportable": base >= min_n})
+                choice_rows.append({"question": q.text, "role": q.role, "kind": q.kind,
+                                    "option": grp.value_counts().index[0], "count": len(grp), "base": base,
+                                    "share": len(grp) / base, "reportable": base >= min_n})
         elif q.kind == "gate":
             yes = int(series.map(fold).isin({"si", "yes"}).sum())
             gate_rows.append({"question": q.text, "shown": base, "yes": yes,
                               "yes_rate": yes / base if base else 0.0, "reportable": base >= min_n})
-    choices = pd.DataFrame(choice_rows, columns=["question", "role", "option", "count", "base", "share", "reportable"])
+    choices = pd.DataFrame(choice_rows, columns=["question", "role", "kind", "option", "count", "base", "share", "reportable"])
     gates = pd.DataFrame(gate_rows, columns=["question", "shown", "yes", "yes_rate", "reportable"])
 
     sent = coded[(coded.sentiment != "n/a") & (coded.status == "ok")]

@@ -1,0 +1,36 @@
+{
+  "quality": [
+    "kilataje",
+    "kilates",
+    "quilate",
+    "plata 925",
+    "oro solido",
+    "chapa",
+    "no se oxida",
+    "se pone negro",
+    "alergia al niquel",
+    "de oro",
+    "oro real",
+    "oro solido",
+    "chapa de oro",
+    "no es oro",
+    "plata real"
+  ],
+  "customer_service_returns": [
+    "garantia de por vida",
+    "garantia de kilataje",
+    "poliza"
+  ],
+  "size_fit": [
+    "numero de anillo",
+    "medida del anillo",
+    "largo de la cadena",
+    "ajustable"
+  ],
+  "design_style": [
+    "disenos",
+    "modelos nuevos",
+    "grabado",
+    "personalizado"
+  ]
+}

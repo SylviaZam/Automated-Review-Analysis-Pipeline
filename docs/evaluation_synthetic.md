@@ -3,7 +3,7 @@
 | Backend | n | Theme accuracy (primary) | Theme any-match | Theme macro-F1 | Sentiment n | Sentiment accuracy | Sentiment macro-F1 | Positives called Negative |
 |---|---|---|---|---|---|---|---|---|
 | v1-demo | 400 | 20.0% | 20.0% | 0.16 | 56 | 37.5% | 0.46 | 0.0% |
-| rules | 400 | 93.0% | 93.8% | 0.86 | 56 | 100.0% | 1.00 | 0.0% |
+| rules | 400 | 92.8% | 93.5% | 0.86 | 56 | 100.0% | 1.00 | 0.0% |
 
 ## v1-demo: per-theme results
 
@@ -45,10 +45,11 @@
 | customer_service_returns |         2 |        0.25 |     0.50 | 0.33 |
 | design_style             |         1 |        1.00 |     1.00 | 1.00 |
 | efficacy_results         |        70 |        1.00 |     0.83 | 0.91 |
+| first_time_trial         |         0 |        0.00 |     0.00 | 0.00 |
 | health_goal              |        75 |        1.00 |     1.00 | 1.00 |
 | ingredients_safety       |        30 |        0.71 |     0.97 | 0.82 |
 | no_concern               |        27 |        1.00 |     0.93 | 0.96 |
-| other                    |        38 |        0.81 |     0.89 | 0.85 |
+| other                    |        38 |        0.80 |     0.87 | 0.84 |
 | payment_checkout         |         1 |        1.00 |     1.00 | 1.00 |
 | price_value              |        30 |        1.00 |     1.00 | 1.00 |
 | product_info             |         1 |        0.00 |     0.00 | 0.00 |

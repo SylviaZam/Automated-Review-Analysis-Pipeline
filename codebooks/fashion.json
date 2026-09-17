@@ -1,0 +1,21 @@
+{
+  "size_fit": [
+    "talla",
+    "guia de tallas",
+    "modelo mide",
+    "queda entallado",
+    "holgado"
+  ],
+  "quality": [
+    "tela",
+    "costura",
+    "se destine",
+    "encogio",
+    "pilling"
+  ],
+  "design_style": [
+    "color real",
+    "como en la foto",
+    "estampado"
+  ]
+}

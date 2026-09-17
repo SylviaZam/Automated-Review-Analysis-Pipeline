@@ -1,6 +1,6 @@
 {
-  "version": "2.0.1",
-  "notes": "Themes were consolidated from manual affinity coding of post-purchase, product-page, and review data across e-commerce brands (2023-2024). Keywords are accent-folded, lowercase regular expressions matched on word starts. Brand-specific terms (product names, influencer names) belong in an extra-keywords file, never here.",
+  "version": "2.2",
+  "notes": "Themes were consolidated from manual affinity coding of post-purchase, product-page, and review data across e-commerce brands (2023-2024). Keywords are accent-folded, lowercase regular expressions matched on word starts. Brand-specific terms (product names, influencer names) belong in an extra-keywords file, never here. Industry packs in codebooks/ add brand- or category-specific vocabulary through --extra-keywords.",
   "themes": [
     {
       "id": "price_value",
@@ -141,7 +141,20 @@
         "is this real",
         "no (la |lo )?conozco",
         "tienda nueva",
-        "dar mis datos"
+        "dar mis datos",
+        "seguridad",
+        "(sea|es|era|fuera) seguro",
+        "compra(r)? (en )?(linea|internet)",
+        "por internet",
+        "pagina (en )?linea",
+        "sitio seguro",
+        "comercio",
+        "robo",
+        "clonaran",
+        "datos bancarios",
+        "que sea real",
+        "sea verdad",
+        "burla"
       ]
     },
     {
@@ -456,7 +469,13 @@
         "already (bought|tried)",
         "second time",
         "ya (lo |la |los |las )(habia )?(compre|comprado|probado)",
-        "ya (habia )?(compre|comprado)"
+        "ya (habia )?(compre|comprado)",
+        "ya (he |habia )?(compre|comprado|comprada)",
+        "compras? anterior",
+        "con anterioridad",
+        "cliente frecuente",
+        "siempre (he |les )?(compro|comprado)",
+        "vuelvo a comprar"
       ]
     },
     {
@@ -469,6 +488,93 @@
         "^no (tenia|tuve|tengo) (ningun|ninguna|miedo|dudas?)",
         "^nothing really$",
         "^nada en (especial|particular)$"
+      ]
+    },
+    {
+      "id": "first_time_trial",
+      "label": "First-time trial",
+      "label_es": "Primera compra / probar la marca",
+      "definition": "Curiosity or trying the brand for the first time, with no prior experience of it.",
+      "keywords": [
+        "quiero probar",
+        "queria probar",
+        "probar la marca",
+        "probar los productos",
+        "probar el producto",
+        "darle una oportunidad",
+        "primera vez",
+        "primera compra",
+        "nunca (habia|he) (comprado|probado)",
+        "no (los |las |lo |la )?(habia|he) probado",
+        "curiosidad",
+        "por curiosidad",
+        "novedad",
+        "first time",
+        "wanted to try",
+        "never (bought|tried) (it|them|this)",
+        "curious"
+      ]
+    },
+    {
+      "id": "loyalty_rewards",
+      "label": "Loyalty & rewards",
+      "label_es": "Lealtad y recompensas",
+      "definition": "Loyalty points, rewards, referral credit, memberships, subscriptions.",
+      "keywords": [
+        "puntos",
+        "recompensa",
+        "monedero",
+        "cashback",
+        "codigo de referid",
+        "referid",
+        "membresia",
+        "suscripcion",
+        "club de",
+        "programa de lealtad",
+        "loyalty",
+        "rewards?\\b",
+        "points\\b",
+        "referral",
+        "membership",
+        "subscription"
+      ]
+    },
+    {
+      "id": "site_usability",
+      "label": "Site & buying experience",
+      "label_es": "Experiencia de compra en el sitio",
+      "definition": "How easy the store itself is to use: finding things, the size selector, the cart, errors, unclear labels or steps.",
+      "keywords": [
+        "facilidad",
+        "facil de",
+        "no encuentro",
+        "no aparece",
+        "no me deja",
+        "no funciona la pagina",
+        "la pagina no",
+        "no carga",
+        "error",
+        "confus",
+        "donde veo",
+        "no se ve",
+        "esta en diagonal",
+        "aparece tachad",
+        "filtro",
+        "buscador",
+        "navegar",
+        "easy to (use|find|buy)",
+        "cant find",
+        "can'?t find",
+        "doesn'?t let me",
+        "website (is|was)",
+        "confusing",
+        "unclear",
+        "error message",
+        "checkout page",
+        "no entiendo",
+        "diagonal",
+        "aparece tachad",
+        "no me aparece"
       ]
     }
   ]

@@ -190,3 +190,28 @@ def test_cleaner_leaves_real_words_alone():
 def test_cleaner_learns_repeated_misspelling():
     cleaner = Cleaner().fit(["envio"] * 40 + ["evnio"] * 3)
     assert cleaner.clean("evnio rapido").text == "envio rapido"
+
+
+# --- multi-select detection -------------------------------------------------------
+def test_multi_select_column_is_not_free_text():
+    options = ["Precio Justo", "Entrega Rapida", "Servicio al Cliente", "Garantia de por Vida"]
+    answers = [", ".join(options[: 1 + i % 3]) for i in range(40)]
+    assert answer_kind(pd.Series(answers), "purchase_reason") == "multi"
+
+
+def test_free_text_is_not_mistaken_for_multi_select():
+    answers = [f"me preocupaba que no llegara el pedido {i}, la verdad" for i in range(40)]
+    assert answer_kind(pd.Series(answers), "hesitation") == "text"
+
+
+@pytest.mark.parametrize("answer,theme", [
+    ("Como puedo comprar con mis puntos acumulados", "loyalty_rewards"),
+    ("Facilidad en la compra y en la explicación", "site_usability"),
+    ("La talla 4 aparece con una diagonal, no entiendo", "site_usability"),
+    ("Quiero probar la marca", "first_time_trial"),
+    ("Nunca había comprado aquí", "first_time_trial"),
+    ("Ya he comprado antes y todo bien", "repeat_loyalty"),
+    ("La seguridad de comprar en línea", "trust_legitimacy"),
+])
+def test_themes_added_after_diagnosing_real_exports(answer, theme):
+    assert theme in CB.match(answer)

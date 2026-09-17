@@ -1,10 +1,10 @@
-# Codebook v2.0.1
+# Codebook v2.2
 
-Eighteen themes plus `other`, shared by every brand so results can be compared. The themes were consolidated from manual affinity coding of post-purchase surveys, product-page polls and reviews. Each theme lists its Spanish label because stakeholder reports were delivered in Spanish.
+Twenty-one themes plus `other`, shared by every brand so results can be compared. The themes were consolidated from manual affinity coding of post-purchase surveys, product-page polls and reviews, then extended where `voc diagnose` showed the codebook could not place a brand's answers. Each theme lists its Spanish label because stakeholder reports were delivered in Spanish.
 
 An answer can carry several themes. The **primary** theme is the one mentioned first. `no_concern` applies only when the whole answer means "nothing" ("Ninguno", "nada en especial", "No tenía ningún miedo").
 
-Keywords are accent-insensitive regular expressions matched at word starts. Brand-specific words (product names, an influencer's name) go in an `--extra-keywords` file, not here.
+Keywords are accent-insensitive regular expressions matched at word starts. Category vocabulary lives in [../codebooks/](../codebooks/); brand-specific words belong in a brand file passed with `--extra-keywords`, never here.
 
 | id | Theme | Tema | Definition | Example keywords |
 |---|---|---|---|---|
@@ -26,4 +26,7 @@ Keywords are accent-insensitive regular expressions matched at word starts. Bran
 | `health_goal` | Health goal | Objetivo de salud | The personal health or wellbeing need the customer wants to solve. | dolor, articula, artrosis, rodilla, sop |
 | `repeat_loyalty` | Repeat purchase | Recompra | Returning customers or prior positive experience with the brand. | otra vez, de nuevo, siempre (les )?compro, segunda vez, volver a comprar |
 | `no_concern` | Nothing / no concern | Ninguna / sin inquietud | The customer explicitly had no concern or nothing to add. | ^(ningun[oa]?/nada/no/none/nothing/n/?a/na/ninguna duda/sin (dudas?/miedo/comentarios)/todo (bien/perfecto))$, ^no (tenia/tuve/tengo) (ningun/ninguna/miedo/dudas?), ^nothing really$, ^nada en (especial/particular)$ |
+| `first_time_trial` | First-time trial | Primera compra / probar la marca | Curiosity or trying the brand for the first time, with no prior experience of it. | quiero probar, queria probar, probar la marca, probar los productos, probar el producto |
+| `loyalty_rewards` | Loyalty & rewards | Lealtad y recompensas | Loyalty points, rewards, referral credit, memberships, subscriptions. | puntos, recompensa, monedero, cashback, codigo de referid |
+| `site_usability` | Site & buying experience | Experiencia de compra en el sitio | How easy the store itself is to use: finding things, the size selector, the cart, errors, unclear labels or steps. | facilidad, facil de, no encuentro, no aparece, no me deja |
 | `other` | Other | Otro | None of the above | |

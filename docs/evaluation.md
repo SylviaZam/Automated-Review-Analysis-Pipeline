@@ -10,7 +10,7 @@
 | `role` | question role (see methodology) |
 | `question` | question text |
 | `answer` | the customer's answer |
-| `gold_theme` | the single most important theme id from the codebook |
+| `gold_theme` | the single most important theme id from the codebook, `other` for a real answer that fits none, or `unclear` when the answer does not answer the question |
 | `gold_sentiment` | Positive / Neutral / Negative / Mixed, only for `review` and `open_feedback` rows |
 | `gold_theme_2` | optional: a second, independent label of the same answer, used for Cohen's kappa |
 
@@ -25,10 +25,13 @@
 
 Junk answers are removed by the cleaning step before scoring. They count as `other` / Neutral, which is also what a coder would label them.
 
+Rows the coder marked `unclear` (or left blank) are excluded from accuracy and reported as a coverage gap. Forcing a label on an answer that does not answer the question measures the wrong thing; the size of that gap is a finding about the survey instrument, and it belongs in the diagnosis report rather than in the accuracy figure.
+
 ## Protocol for the real-data benchmark
 
 1. `voc label-kit <export> --out private/labels.csv -n 200` samples answers (repeat per brand, then combine).
-2. Label `gold_theme` and `gold_sentiment` without looking at any model output.
+2. Run `voc diagnose` on each export first, and fix what it flags. Multi-select questions must not be in the sample at all.
+3. Label `gold_theme` and `gold_sentiment` without looking at any model output. Use `unclear` plus a note rather than guessing.
 3. A week later, label the first 50 rows again in `gold_theme_2` without looking at the first labels.
 4. Run `voc eval private/labels.csv --backends v1 rules claude --corpus <exports...> --out private/eval.md`.
 5. Publish only the aggregate table.

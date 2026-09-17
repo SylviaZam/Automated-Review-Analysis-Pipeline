@@ -6,6 +6,11 @@ Gold CSV columns:
 `gold_sentiment` may be blank for non-opinion roles. `gold_theme_2`, when
 present, is a second coder's primary theme and is used for Cohen's kappa
 (how consistent the human labels are - the ceiling for any classifier).
+
+A `gold_theme` of `unclear` (or a blank one) means the coder judged that the
+answer does not answer the question or is too vague to code. Those rows are
+excluded from accuracy and reported separately as a coverage gap: forcing a
+label on them would measure the wrong thing.
 """
 from __future__ import annotations
 
@@ -70,9 +75,17 @@ def prf(gold: list[str], pred: list[str]) -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
+UNCLEAR = "unclear"
+
+
 def score(gold: pd.DataFrame, classifier, clean: bool = True, corpus: list[str] | None = None) -> dict:
     """Score one backend. With `clean`, answers go through the same cleaning step
     as `voc run` (junk answers become `other`/Neutral); v1 had no cleaning step."""
+    unclear = gold.gold_theme.isna() | gold.gold_theme.astype(str).str.strip().isin(["", UNCLEAR, "nan"])
+    coverage_gap = int(unclear.sum())
+    gold = gold[~unclear].reset_index(drop=True)
+    if gold.empty:
+        raise ValueError("every gold row is blank or 'unclear'; nothing to score")
     answers = gold.answer.astype(str).tolist()
     junk = [False] * len(answers)
     if clean:
@@ -95,6 +108,7 @@ def score(gold: pd.DataFrame, classifier, clean: bool = True, corpus: list[str] 
     out = {
         "backend": getattr(classifier, "name", "?"),
         "n": len(gold),
+        "coverage_gap": coverage_gap,
         "theme_accuracy": sum(g == p for g, p in zip(gold_theme, pred_primary)) / len(gold),
         "theme_any_match": sum(any_hit) / len(gold),
         "theme_macro_f1": float(supported.f1.mean()) if len(supported) else float("nan"),
@@ -128,7 +142,13 @@ def score(gold: pd.DataFrame, classifier, clean: bool = True, corpus: list[str] 
 
 
 def markdown(scores: list[dict], title: str) -> str:
-    lines = [f"# {title}", "", "| Backend | n | Theme accuracy (primary) | Theme any-match | Theme macro-F1 | Sentiment n | Sentiment accuracy | Sentiment macro-F1 | Positives called Negative |",
+    gaps = scores[0].get("coverage_gap", 0) if scores else 0
+    lines = [f"# {title}", ""]
+    if gaps:
+        lines += [f"{gaps} answer(s) were marked unclear or left blank by the coder and are excluded below: "
+                  "the coder judged that they do not answer the question or are too vague to code. "
+                  "That share is itself a finding about the survey, not about the classifier.", ""]
+    lines += [ "| Backend | n | Theme accuracy (primary) | Theme any-match | Theme macro-F1 | Sentiment n | Sentiment accuracy | Sentiment macro-F1 | Positives called Negative |",
              "|---|---|---|---|---|---|---|---|---|"]
     for s in scores:
         def f(key):
@@ -156,7 +176,8 @@ def load_gold(path: str | Path) -> pd.DataFrame:
         raise ValueError(f"gold file missing columns: {sorted(missing)}")
     if "gold_sentiment" not in gold.columns:
         gold["gold_sentiment"] = ""
-    unknown = set(gold.gold_theme) - set(Codebook.load().ids)
+    allowed = set(Codebook.load().ids) | {UNCLEAR, ""}
+    unknown = {str(t).strip() for t in gold.gold_theme.dropna()} - allowed
     if unknown:
         raise ValueError(f"gold_theme values not in the codebook: {sorted(unknown)}")
     return gold.reset_index(drop=True)

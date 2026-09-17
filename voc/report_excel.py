@@ -67,7 +67,7 @@ def write(an: Analysis, path: str, include_quotes: bool = False) -> None:
         if not an.choices.empty:
             an.choices.to_excel(xw, sheet_name="Choice questions", index=False)
             _widths(xw.sheets["Choice questions"], an.choices)
-            xw.sheets["Choice questions"].set_column(5, 5, 10, pct)
+            xw.sheets["Choice questions"].set_column(6, 6, 10, pct)
 
         if not an.gates.empty:
             an.gates.to_excel(xw, sheet_name="PDP gate", index=False)

@@ -1,0 +1,42 @@
+{
+  "ingredients_safety": [
+    "gluten",
+    "lactosa",
+    "vegano",
+    "sin azucar",
+    "estevia",
+    "dosis diaria",
+    "scoop",
+    "porcion",
+    "certificado"
+  ],
+  "efficacy_results": [
+    "resultados en semanas",
+    "note cambios",
+    "energia desde",
+    "me desinflamo"
+  ],
+  "health_goal": [
+    "masa muscular",
+    "recuperacion",
+    "rendimiento",
+    "menopausia",
+    "tiroides",
+    "anemia",
+    "hierro",
+    "colageno para"
+  ],
+  "product_info": [
+    "como tomarlo",
+    "cuantas capsulas",
+    "con que se toma",
+    "sabor"
+  ],
+  "quality": [
+    "sabor",
+    "el sabor",
+    "sabe bien",
+    "sabe mal",
+    "textura"
+  ]
+}

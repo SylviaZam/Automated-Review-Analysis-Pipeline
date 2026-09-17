@@ -8,7 +8,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from . import __version__, evaluate, ingest, pipeline, report_excel, report_html, synth
+from . import __version__, diagnose as diagnose_mod, evaluate, ingest, pipeline, report_excel, report_html, synth
 from .classify import make_classifier
 from .codebook import Codebook
 
@@ -88,6 +88,20 @@ def cmd_eval(args) -> int:
     return 0
 
 
+def cmd_diagnose(args) -> int:
+    codebook = Codebook.load(args.codebook, args.extra_keywords)
+    ds = ingest.load(args.input, label=args.label, sheet=args.sheet)
+    report = diagnose_mod.diagnose(ds, codebook, min_count=args.min_count)
+    stem = (args.label or Path(args.input).stem).lower().replace(" ", "_")
+    paths = diagnose_mod.write(report, args.out, stem, show_examples=not args.no_examples)
+    issues = [f for f in report["findings"] if f["level"] == "issue"]
+    print(diagnose_mod.markdown(report, show_examples=not args.no_examples).split("## Questions")[0])
+    print(f"[ok] wrote {paths[0]} and {paths[1]}")
+    if issues:
+        print(f"[warn] {len(issues)} thing(s) to fix before labelling or reporting this brand")
+    return 0
+
+
 def cmd_synth(args) -> int:
     paths = synth.generate(args.out, seed=args.seed, gold_size=args.gold_size)
     for name, path in paths.items():
@@ -157,6 +171,17 @@ def build_parser() -> argparse.ArgumentParser:
     e.add_argument("--predictions", action="store_true", help="also write per-item predictions next to the report")
     e.add_argument("--title", default="Classifier evaluation")
     e.set_defaults(func=cmd_eval)
+
+    g = sub.add_parser("diagnose", help="check one export before coding it: question kinds, coverage gaps, candidate vocabulary")
+    g.add_argument("input")
+    g.add_argument("--out", default="output")
+    g.add_argument("--label")
+    g.add_argument("--sheet")
+    g.add_argument("--codebook")
+    g.add_argument("--extra-keywords")
+    g.add_argument("--min-count", type=int, default=3, help="how often a phrase must recur to be a candidate")
+    g.add_argument("--no-examples", action="store_true", help="omit example answers (real customer text) from the report")
+    g.set_defaults(func=cmd_diagnose)
 
     s = sub.add_parser("synth", help="generate the synthetic demo datasets and gold labels")
     s.add_argument("--out", default="data/synthetic")
