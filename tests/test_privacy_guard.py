@@ -21,7 +21,7 @@ def test_guard_allows_reserved_demo_values():
 
 def test_guard_flags_blocked_names_by_hash(monkeypatch):
     monkeypatch.setattr(guard, "BLOCKED_NAME_HASHES", {hashlib.sha256(b"acmebrand").hexdigest()})
-    assert guard.problems(Path("x.md"), "Results for Acme Brand customers") == ["1 blocked client name(s)"]
+    assert guard.problems(Path("x.md"), "Results for Acme Brand customers") == ["1 blocked name(s)"]
 
 
 def test_guard_flags_key_shaped_strings():

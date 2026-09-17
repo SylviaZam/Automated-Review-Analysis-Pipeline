@@ -10,7 +10,7 @@ I built v1 of this pipeline while working as a UX researcher at an e-commerce co
 
 ## Why v2 exists
 
-v1 classified sentiment with VADER, an English-only lexicon, and sorted answers into six keyword buckets. The customers wrote in Mexican Spanish. When I ran v1 on about 1,300 real, published product reviews from a wellness brand (every one rated 4 or 5 stars), this is what came back:
+v1 classified sentiment with VADER, an English-only lexicon, and sorted answers into six keyword buckets. The customers wrote in Mexican Spanish. When I ran v1 on about 1,300 real, published product reviews from BFit, a Mexican wellness brand (every one rated 4 or 5 stars), this is what came back:
 
 | On ~1,300 real 4-5 star reviews | v1 (2025) | v2 |
 |---|---|---|
@@ -64,7 +64,7 @@ Commands:
 
 | Command | Purpose |
 |---|---|
-| `voc run <export>` | Analyse one export. `--label` sets the name used in outputs (use code names for clients). `--quotes` adds cleaned answers to the Excel for internal use only. |
+| `voc run <export>` | Analyse one export. `--label` sets the dataset name used in outputs. `--quotes` adds cleaned answers to the Excel for internal use only. |
 | `voc eval <gold.csv>` | Score backends against a hand-labelled answer key. |
 | `voc label-kit <export>` | Sample real answers into a labelling sheet that stays on your machine. |
 | `voc synth` | Regenerate the synthetic demo datasets and their answer key. |
@@ -107,7 +107,7 @@ On six real exports (about 7,700 responses and 10,800 open answers), cleaning re
 
 Two layers, reported separately on purpose:
 
-1. **Real exports, aggregate only** (the table at the top). Star ratings act as a partial answer key for sentiment. For themes, I compared v2 against my own manual tally of one brand's post-purchase survey (113 buyers). v2 agreed with me on the top two reasons for choosing the brand (quality and longevity, then price) and on the top two worries (quality and longevity, then not knowing or trusting the brand). It undercounted product variety (5 answers against my 13) and left about a quarter of answers as "Other" (curiosity, a specific scent). Closing those gaps is what the model backend and codebook extensions are for.
+1. **Real exports, aggregate only** (the table at the top). Star ratings act as a partial answer key for sentiment. For themes, I compared v2 against my own manual tally of Divain's post-purchase survey (113 buyers). v2 agreed with me on the top two reasons for choosing the brand (quality and longevity, then price) and on the top two worries (quality and longevity, then not knowing or trusting the brand). It undercounted product variety (5 answers against my 13) and left about a quarter of answers as "Other" (curiosity, a specific scent). Closing those gaps is what the model backend and codebook extensions are for.
 2. **Synthetic development set** ([docs/evaluation_synthetic.md](docs/evaluation_synthetic.md)): 400 generated answers with known labels.
 
    | | Theme accuracy | Theme macro-F1 | Sentiment accuracy |
@@ -124,7 +124,7 @@ The benchmark that matters is a **hand-labelled sample of real answers**, and it
 Client data never enters this repository. The public demo runs on synthetic data, and [scripts/check_no_pii.py](scripts/check_no_pii.py) runs in CI to block:
 - real email addresses and IP addresses;
 - API-key shaped strings;
-- client brand names (compared by SHA-256, so the names are not written in the repo either).
+- any names added to the blocklist (compared by SHA-256, so the list itself reveals nothing).
 
 When the pipeline runs on real data:
 - identifying columns are dropped before analysis;

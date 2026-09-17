@@ -5,7 +5,7 @@ available) for:
 - email addresses outside the reserved example.com domain
 - IPv4 addresses outside the documentation range 203.0.113.0/24
 - API-key shaped strings
-- client brand names, compared by SHA-256 so the names never appear here
+- blocked names, compared by SHA-256 so the list never reveals them
 
 Run: python scripts/check_no_pii.py
 """
@@ -23,17 +23,10 @@ ROOT = Path(__file__).resolve().parent.parent
 SKIP_DIRS = {".git", ".venv", "venv", "__pycache__", ".pytest_cache"}
 TEXT_SUFFIXES = {".py", ".md", ".csv", ".json", ".txt", ".html", ".toml", ".yml", ".yaml", ".cfg", ".example"}
 
-BLOCKED_NAME_HASHES = {
-    "451a99b9470331a54c7becaea605c3c8fe1df9b0185ced70ea3864ce3ffb5207",
-    "326279d6b85281a947f5c4b3484439628762bb2e7d0d8f014c1f750ec4b296f1",
-    "b0fbddb4123cbb2344fa3cd6d78588ff6d24914059bb2175aacaa0c40ae36c68",
-    "53ea88be007bfb105b2d12ea7d3ace0de2bbbe9e545498c0b965209126c3c5ad",
-    "a80f63fffc27306769f100f20979b4ca69fc5b93542831ebd4c654610b8d596a",
-    "1bb2f908013368b28cf6e3520b95ff380cb2948f07abdbe9b7aadfae47fe16ae",
-    "9746e385a7718b17763b74d7af039fa254facfc5c6af51e82493320289264429",
-    "87e1b086b3f52d91e04e9216438113ecde867c986ae69503f8b03402702f4e77",
-    "fbcf1ca078ec30468512237bb42455b9b78f845b977cdc5a0ce764b4399971ce",
-}
+# SHA-256 of lowercase names that must never appear (e.g. a client that asked not to
+# be named). Empty: the client brands in this project agreed to be named.
+# Add one with: python -c "import hashlib;print(hashlib.sha256(b'name').hexdigest())"
+BLOCKED_NAME_HASHES: set[str] = set()
 
 EMAIL = re.compile(r"[\w.+-]+@([\w-]+\.)+[a-z]{2,}", re.I)
 ALLOWED_EMAIL = re.compile(r"@(example\.(com|org|net)|users\.noreply\.github\.com)$|^noreply@anthropic\.com$", re.I)
@@ -81,7 +74,7 @@ def problems(path: Path, text: str) -> list[str]:
     words |= {a + b for a, b in zip(WORD.findall(fold(text)), WORD.findall(fold(text))[1:])}
     hits = {w for w in words if hashlib.sha256(w.encode()).hexdigest() in BLOCKED_NAME_HASHES}
     if hits:
-        found.append(f"{len(hits)} blocked client name(s)")
+        found.append(f"{len(hits)} blocked name(s)")
     return found
 
 

@@ -118,7 +118,7 @@ def build_parser() -> argparse.ArgumentParser:
     r = sub.add_parser("run", help="analyse one export")
     r.add_argument("input", help="CSV or XLSX export")
     r.add_argument("--out", default="output")
-    r.add_argument("--label", help="name used in reports, e.g. 'Brand A' (keeps client names out of outputs)")
+    r.add_argument("--label", help="dataset name shown in reports, e.g. 'BFit post-purchase'")
     r.add_argument("--title", help="report heading")
     r.add_argument("--industry", default="e-commerce")
     r.add_argument("--backend", choices=["rules", "openai"], default="rules")
