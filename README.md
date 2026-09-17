@@ -135,7 +135,7 @@ Real survey answers are messy. `voc/clean.py` runs before coding:
 
 The original answer is always kept next to the cleaned one.
 
-On six real exports (about 7,700 responses and 9,200 open answers), cleaning removed 73 junk answers and repaired typos in 305 answers. Typical fixes: `calidsd` → calidad, `prodcutos` → productos, `etrega` → entrega, `ninguo` → ninguno. An early version was too aggressive (`hago` → pago, `premios` → precios); the rules above came from reviewing those errors.
+On six real exports (about 7,700 responses and 9,200 open answers, a sample of a report that ran every two weeks for two years), cleaning removed 73 junk answers and repaired typos in 305 answers. Typical fixes: `calidsd` → calidad, `prodcutos` → productos, `etrega` → entrega, `ninguo` → ninguno. An early version was too aggressive (`hago` → pago, `premios` → precios); the rules above came from reviewing those errors.
 
 ## Evaluation
 
