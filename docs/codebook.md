@@ -1,10 +1,10 @@
-# Codebook v2.2
+# Codebook v2.3
 
 Twenty-one themes plus `other`, shared by every brand so results can be compared. The themes were consolidated from manual affinity coding of post-purchase surveys, product-page polls and reviews, then extended where `voc diagnose` showed the codebook could not place a brand's answers. Each theme lists its Spanish label because stakeholder reports were delivered in Spanish.
 
 An answer can carry several themes. The **primary** theme is the one mentioned first. `no_concern` applies only when the whole answer means "nothing" ("Ninguno", "nada en especial", "No tenía ningún miedo").
 
-Keywords are accent-insensitive regular expressions matched at word starts. Category vocabulary lives in [../codebooks/](../codebooks/); brand-specific words belong in a brand file passed with `--extra-keywords`, never here.
+Keywords are accent-insensitive regular expressions matched at word starts. Category vocabulary lives in [../codebooks/](../codebooks/). A theme that only one brand needs belongs in a brand file passed with `--extra-themes`: those load with a `local_` prefix and are reported as brand-specific, never mixed into cross-brand comparisons.
 
 | id | Theme | Tema | Definition | Example keywords |
 |---|---|---|---|---|

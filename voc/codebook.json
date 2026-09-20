@@ -1,5 +1,5 @@
 {
-  "version": "2.2",
+  "version": "2.3",
   "notes": "Themes were consolidated from manual affinity coding of post-purchase, product-page, and review data across e-commerce brands (2023-2024). Keywords are accent-folded, lowercase regular expressions matched on word starts. Brand-specific terms (product names, influencer names) belong in an extra-keywords file, never here. Industry packs in codebooks/ add brand- or category-specific vocabulary through --extra-keywords.",
   "themes": [
     {
@@ -154,7 +154,14 @@
         "datos bancarios",
         "que sea real",
         "sea verdad",
-        "burla"
+        "burla",
+        "confio",
+        "confie",
+        "confiar",
+        "confiaba",
+        "me da confianza",
+        "genera confianza",
+        "credibilidad"
       ]
     },
     {
