@@ -313,3 +313,71 @@ def test_eval_excludes_unclear_rows(tmp_path):
     assert result["n"] == 1 and result["coverage_gap"] == 2
     assert result["theme_accuracy"] == 1.0
     assert "unclear or left blank" in evaluate.markdown([result], "t")
+
+
+# --- brand-specific themes ---------------------------------------------------------
+def test_local_themes_are_prefixed_and_marked(tmp_path):
+    path = tmp_path / "themes.json"
+    path.write_text('{"themes":[{"id":"influencer","label":"Influencer","definition":"d","keywords":["bren"]}]}', encoding="utf-8")
+    cb = Codebook.load(extra_themes=path)
+    assert cb.local_ids == ["local_influencer"]
+    assert cb.match("me inspira bren")[0] == "local_influencer"
+    assert cb.match("el precio")[0] == "price_value"  # shared themes still win where they apply
+
+
+def test_local_theme_cannot_collide_with_a_shared_one(tmp_path):
+    path = tmp_path / "themes.json"
+    path.write_text('{"themes":[{"id":"price_value","label":"x","keywords":["y"]}]}', encoding="utf-8")
+    Codebook.load(extra_themes=path)  # local_price_value does not collide
+    path.write_text('{"themes":[{"id":"local_x","keywords":["y"]},{"id":"x","keywords":["z"]}]}', encoding="utf-8")
+    with pytest.raises(ValueError, match="collides"):
+        Codebook.load(extra_themes=path)
+
+
+def test_proposer_prefers_distinctive_phrases():
+    from voc import diagnose as diag
+
+    # "producto" is everywhere; "brenvita" only in the answers nothing matched.
+    uncovered = ["me gusta brenvita y su producto"] * 6 + ["el producto llego"] * 4
+    corpus = uncovered + ["buen producto"] * 200
+    proposals = diag.propose_themes({"uncovered_examples": uncovered, "corpus_examples": corpus}, max_themes=3)
+    ids = [p["id"] for p in proposals]
+    assert any("brenvita" in i for i in ids)   # the distinctive word survives
+    assert "producto" not in ids               # the word that is everywhere does not
+
+
+def test_proposed_themes_file_round_trips_into_a_codebook(tmp_path):
+    from voc import diagnose as diag
+
+    uncovered = ["me encanta brenvita"] * 5
+    proposals = diag.propose_themes({"uncovered_examples": uncovered, "corpus_examples": uncovered}, max_themes=2)
+    path = tmp_path / "themes.json"
+    path.write_text(diag.themes_file(proposals, "Brand"), encoding="utf-8")
+    cb = Codebook.load(extra_themes=path)
+    assert cb.local_ids and cb.match("me encanta brenvita")[0].startswith("local_")
+
+
+def test_claude_proposer_counts_coverage_itself(tmp_path):
+    from voc import propose_claude
+
+    payload = {"themes": [
+        {"id": "influencer_trust", "label": "Influencer trust", "definition": "d", "keywords": ["bren"]},
+        {"id": "price_value", "label": "dup of a shared theme", "definition": "d", "keywords": ["precio"]},
+    ]}
+    messages = _FakeClaudeMessages(payload)
+    client = type("C", (), {"beta": type("B", (), {"messages": messages})()})()
+    uncovered = ["confio en bren", "bren lo recomienda", "nada que ver"]
+    out = propose_claude.propose(uncovered, CB, "wellness", client=client)
+    assert [t["id"] for t in out] == ["influencer_trust"]  # the duplicate is dropped
+    assert out[0]["answers"] == 2  # measured from the answers, not claimed by the model
+    assert messages.calls[0]["output_config"]["format"]["type"] == "json_schema"
+
+
+def test_nothing_is_hidden_by_default(tmp_path):
+    path = tmp_path / "small.csv"
+    pd.DataFrame({"¿Qué te preocupaba?": ["que no llegara", "el precio", "que fuera falso"]}).to_csv(path, index=False)
+    an = pipeline.run(ingest.load(path), RulesClassifier(CB), CB)
+    assert an.themes.reportable.all()
+    html_out = report_html.render(an)
+    assert "not charted" not in html_out
+    assert "small base" in html_out  # marked, not hidden

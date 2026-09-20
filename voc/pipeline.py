@@ -14,8 +14,12 @@ from .codebook import NO_CONCERN, OTHER, Codebook
 from .ingest import Dataset
 from .textfix import fold
 
-MIN_N_DEFAULT = 30       # smallest base for which shares are published
-MIN_CELL_DEFAULT = 5     # smaller counts print as "<5" in public outputs
+# Nothing is hidden by default: every question is charted and every count is shown,
+# always next to its base so a reader can judge it. Set --min-n to flag or hold back
+# small bases, and --mask-small-counts to print tiny counts as "<5".
+MIN_N_DEFAULT = 0
+MIN_CELL_DEFAULT = 0
+SMALL_BASE = 30          # below this a base is marked as small, not hidden
 
 
 @dataclass
@@ -162,4 +166,5 @@ def run(ds: Dataset, classifier, codebook: Codebook, min_n: int = MIN_N_DEFAULT)
 
 
 def public_count(n: int, min_cell: int = MIN_CELL_DEFAULT) -> str:
-    return f"<{min_cell}" if 0 < n < min_cell else str(n)
+    """Counts print as-is unless masking is switched on."""
+    return f"<{min_cell}" if min_cell and 0 < n < min_cell else str(n)

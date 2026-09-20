@@ -85,6 +85,7 @@ def diagnose(ds: Dataset, codebook: Codebook, min_count: int = 3, examples: int 
 
     questions = []
     all_uncovered: list[str] = []
+    all_answers: list[str] = []
     for q in ds.questions:
         values = ds.frame[q.column].dropna().astype(str).str.strip()
         values = values[values != ""]
@@ -112,6 +113,7 @@ def diagnose(ds: Dataset, codebook: Codebook, min_count: int = 3, examples: int 
                 "no_concern_share": round(sum(r.primary == NO_CONCERN for r in results) / len(usable), 3) if usable else 0.0,
             })
             all_uncovered += uncovered
+            all_answers += [c.text for c in usable]
             if usable and len(uncovered) / len(usable) >= 0.25:
                 findings.append(Finding("issue", (
                     f'"{q.text[:60]}": the codebook cannot place {len(uncovered) / len(usable):.0%} of answers '
@@ -125,6 +127,8 @@ def diagnose(ds: Dataset, codebook: Codebook, min_count: int = 3, examples: int 
         candidates.append({"phrase": phrase, "count": n, "examples": sample})
 
     return {
+        "uncovered_examples": all_uncovered,
+        "corpus_examples": all_answers,
         "label": ds.label,
         "rows": int(len(ds.frame)),
         "questions": questions,
@@ -153,6 +157,15 @@ def markdown(report: dict, show_examples: bool = True) -> str:
         lines.append(f"| {q['question'][:60]} | {q['role']} | {q['kind']} | {q['answers']} | "
                      f"{q.get('junk', '-')} | {share} |")
 
+    if report.get("proposals"):
+        lines += ["", "## Proposed brand themes", "",
+                  "Each one groups answers the shared codebook could not place. Accept, rename or delete, "
+                  "then pass the JSON file to `voc run --extra-themes`.", "",
+                  "| Proposed theme | Answers | How distinctive | Example |", "|---|---|---|---|"]
+        for p in report["proposals"]:
+            example = p["examples"][0].replace("|", "/")[:60] if p.get("examples") else ""
+            lines.append(f"| `{p['id']}` | {p['answers']} | {p.get('lift', '-')}x | {example} |")
+
     if report["candidates"]:
         lines += ["", "## Candidate vocabulary", "",
                   "Phrases that recur in answers the codebook could not place. Assign each one to a theme id, or "
@@ -165,6 +178,76 @@ def markdown(report: dict, show_examples: bool = True) -> str:
         lines += ["", "Accept the useful ones into a brand keyword file, then re-run with it:", "",
                   "```bash", "python -m voc run <export> --extra-keywords codebooks/brand-<name>.json", "```"]
     return "\n".join(lines) + "\n"
+
+
+def _stem(phrase: str) -> str:
+    return " ".join(w[:-1] if len(w) > 4 and w.endswith("s") else w for w in phrase.split())
+
+
+def propose_themes(report: dict, max_themes: int = 6, min_answers: int = 4, min_lift: float = 1.6) -> list[dict]:
+    """Group the answers nothing matched into candidate brand-specific themes.
+
+    A candidate phrase has to be *distinctive*, not just common: it must appear in the
+    unplaced answers at least `min_lift` times more often than in the export as a whole.
+    That filters out words like "producto" that show up everywhere and mean nothing on
+    their own, and keeps the ones that point at something the codebook is missing.
+
+    These are proposals. A person accepts or rejects each one; nothing is applied until
+    the file is passed back in with --extra-themes.
+    """
+    pool = list(report.get("uncovered_examples", []))
+    corpus = report.get("corpus_examples") or pool
+    corpus_counts = dict(_phrases(corpus, 1))
+    corpus_total = max(1, len(corpus))
+    # The distinctiveness check needs something to compare against. When almost every
+    # answer is unplaced there is no contrast, so fall back to plain frequency.
+    use_lift = corpus_total > len(pool) * 1.2
+
+    proposals: list[dict] = []
+    seen_stems: set[str] = set()
+    while pool and len(proposals) < max_themes:
+        ranked = []
+        for phrase, n in _phrases(pool, min_answers):
+            if _stem(phrase) in seen_stems:
+                continue
+            in_corpus = corpus_counts.get(phrase, n) / corpus_total
+            lift = (n / max(1, len(pool))) / in_corpus if in_corpus else 0
+            if not use_lift or lift >= min_lift:
+                ranked.append((n, lift, phrase))
+        if not ranked:
+            break
+        ranked.sort(reverse=True)
+        n, lift, phrase = ranked[0]
+        members = [a for a in pool if phrase in fold(a)]
+        if len(members) < min_answers:
+            break
+        extra = [p for p, c in _phrases(members, max(2, len(members) // 3))[1:4]
+                 if _stem(p) != _stem(phrase)]
+        slug = re.sub(r"[^a-z0-9]+", "_", phrase).strip("_")[:40]
+        seen_stems.add(_stem(phrase))
+        proposals.append({
+            "id": slug,
+            "label": phrase[:1].upper() + phrase[1:],
+            "definition": f"Brand-specific theme proposed from {len(members)} answers the shared codebook could not place.",
+            "keywords": [phrase] + extra,
+            "answers": len(members),
+            "lift": round(lift, 1),
+            "examples": members[:3],
+        })
+        pool = [a for a in pool if a not in members]
+    return proposals
+
+
+def themes_file(proposals: list[dict], label: str) -> str:
+    """The file `voc run --extra-themes` expects, with review notes kept in `_review`."""
+    return json.dumps({
+        "_review": (
+            f"Proposed for {label} by `voc diagnose --propose-themes`. Delete the ones that are not "
+            "real themes, rename the rest, then pass this file to `voc run --extra-themes`. "
+            "Every id is prefixed `local_` at load time and reported as brand-specific."
+        ),
+        "themes": [{k: v for k, v in p.items() if k in ("id", "label", "definition", "keywords")} for p in proposals],
+    }, ensure_ascii=False, indent=2) + "\n"
 
 
 def keyword_stub(report: dict) -> str:

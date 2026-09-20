@@ -23,7 +23,7 @@ def _json_default(value):
 
 
 def cmd_run(args) -> int:
-    codebook = Codebook.load(args.codebook, args.extra_keywords)
+    codebook = Codebook.load(args.codebook, args.extra_keywords, getattr(args, "extra_themes", None))
     overrides = json.loads(Path(args.roles).read_text(encoding="utf-8")) if args.roles else None
     ds = ingest.load(args.input, label=args.label, sheet=args.sheet, role_overrides=overrides)
     kwargs = {"model": args.model, "cache_path": args.cache} if args.backend != "rules" else {}
@@ -93,7 +93,26 @@ def cmd_diagnose(args) -> int:
     ds = ingest.load(args.input, label=args.label, sheet=args.sheet)
     report = diagnose_mod.diagnose(ds, codebook, min_count=args.min_count)
     stem = (args.label or Path(args.input).stem).lower().replace(" ", "_")
+    if args.propose_themes:
+        if args.propose_backend == "claude":
+            from . import propose_claude
+
+            try:
+                report["proposals"] = propose_claude.propose(
+                    report["uncovered_examples"], codebook, args.industry,
+                    max_themes=args.propose_themes, model=args.model)
+            except RuntimeError as exc:
+                print(f"[error] {exc}", file=sys.stderr)
+                return 1
+        else:
+            report["proposals"] = diagnose_mod.propose_themes(report, max_themes=args.propose_themes)
     paths = diagnose_mod.write(report, args.out, stem, show_examples=not args.no_examples)
+    if args.propose_themes:
+        themes_path = Path(args.out) / f"{stem}_themes_draft.json"
+        themes_path.write_text(diagnose_mod.themes_file(report["proposals"], ds.label), encoding="utf-8")
+        paths.append(themes_path)
+        print(f"[ok] proposed {len(report['proposals'])} brand theme(s) -> {themes_path}")
+        print("     Review them, then: python -m voc run <export> --extra-themes " + str(themes_path))
     issues = [f for f in report["findings"] if f["level"] == "issue"]
     print(diagnose_mod.markdown(report, show_examples=not args.no_examples).split("## Questions")[0])
     print(f"[ok] wrote {paths[0]} and {paths[1]}")
@@ -154,7 +173,11 @@ def build_parser() -> argparse.ArgumentParser:
     r.add_argument("--roles", help="JSON file mapping column header -> role, for unusual exports")
     r.add_argument("--codebook", help="alternative codebook JSON")
     r.add_argument("--extra-keywords", help="JSON {theme_id: [keywords]} for brand-specific terms")
-    r.add_argument("--min-n", type=int, default=pipeline.MIN_N_DEFAULT, help="smallest base for which shares are charted")
+    r.add_argument("--extra-themes", help="JSON of brand-specific themes from `voc diagnose --propose-themes`")
+    r.add_argument("--min-n", type=int, default=pipeline.MIN_N_DEFAULT,
+                   help="hold back questions with fewer answers than this (default 0: chart everything)")
+    r.add_argument("--mask-small-counts", type=int, default=0, metavar="N",
+                   help="print counts below N as '<N' (default 0: show every count)")
     r.add_argument("--quotes", action="store_true", help="include scrubbed answers in the Excel (internal use only)")
     r.set_defaults(func=cmd_run)
 
@@ -180,6 +203,12 @@ def build_parser() -> argparse.ArgumentParser:
     g.add_argument("--codebook")
     g.add_argument("--extra-keywords")
     g.add_argument("--min-count", type=int, default=3, help="how often a phrase must recur to be a candidate")
+    g.add_argument("--propose-themes", type=int, nargs="?", const=6, default=0, metavar="N",
+                   help="also propose up to N brand-specific themes from the answers nothing matched")
+    g.add_argument("--propose-backend", choices=["phrases", "claude"], default="phrases",
+                   help="how to propose them: offline phrase counting (default) or Claude reading a sample")
+    g.add_argument("--industry", default="e-commerce", help="context passed to the Claude proposer")
+    g.add_argument("--model", help="model id for --propose-backend claude")
     g.add_argument("--no-examples", action="store_true", help="omit example answers (real customer text) from the report")
     g.set_defaults(func=cmd_diagnose)
 

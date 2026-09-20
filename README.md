@@ -45,7 +45,7 @@ flowchart LR
     B --> C[Question roles<br>text · choice · yes/no gate]
     C --> D[Clean<br>junk · shorthand · typos]
     D --> E[Code<br>codebook themes<br>+ sentiment where it applies]
-    E --> F[Summaries<br>small bases suppressed]
+    E --> F[Summaries<br>counts shown beside every share]
     F --> G[Excel workbook]
     F --> H[HTML summary]
     F --> I[Run manifest]
@@ -116,6 +116,25 @@ The report lists what each question actually is, and flags three things that qui
 
 It then proposes vocabulary: the phrases that recur inside the answers nothing matched, with examples, plus a draft keyword file to fill in. Nothing is applied automatically; a researcher accepts or rejects each phrase. Running this on the real exports is how `first_time_trial` ("quiero probar la marca", "nunca había comprado"), `loyalty_rewards` and `site_usability` entered the codebook.
 
+### New themes per brand
+
+Themes differ by business. A supplement brand talks about dosage and results; a jewelry brand talks about karats and whether the store is real. The shared codebook covers what brands have in common; `--propose-themes` drafts the rest, per analysis:
+
+```bash
+# offline: groups unplaced answers by the phrases distinctive to them
+python -m voc diagnose export.csv --label "BFit" --propose-themes 6
+
+# or have Claude read a sample of them and name the themes
+python -m voc diagnose export.csv --label "BFit" --propose-themes 6 --propose-backend claude
+
+# review the draft, delete what is not real, then use it
+python -m voc run export.csv --extra-themes output/bfit_themes_draft.json
+```
+
+A proposal must be *distinctive*, not merely frequent: the phrase has to appear in the unplaced answers well above its rate in the export as a whole, which is what separates "brenvita" from "producto". The Claude proposer may not repeat a theme that already exists, and every proposal's answer count is measured by matching its keywords against the real answers rather than taken from the model's claim.
+
+Accepted themes load with a `local_` prefix and are reported as brand-specific, so one brand's invention is never mistaken for a cross-brand measure. The shared themes stay untouched, which is what keeps brands comparable.
+
 Category vocabulary lives in [codebooks/](codebooks/) (jewelry, footwear, supplements, fragrance, fashion); brand-specific words belong in a brand file. The shared themes never change, so brands stay comparable.
 
 ## Cleaning: typos and junk answers
@@ -180,7 +199,7 @@ examples/output/     reports generated from the synthetic data
 docs/                method, privacy, evaluation, codebook
 legacy/              v1 script and its example input/output, kept for comparison
 scripts/             privacy guard
-tests/               119 tests
+tests/               127 tests
 ```
 
 ## Limitations
