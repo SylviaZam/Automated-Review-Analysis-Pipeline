@@ -1,38 +1,25 @@
-# Listening at Scale: Voice-of-Customer Pipeline v2
+# Listening at Scale: Voice-of-Customer Pipeline
 
 Turn Spanish-language survey and review exports into cleaned, coded themes and a privacy-safe insight report.
 
-I built v1 of this pipeline while working as a UX researcher at an e-commerce consultancy in Monterrey, where post-purchase surveys and reviews from Shopify stores piled up faster than anyone could read them. v2 is the version I rebuilt after testing v1 on the kind of data it was made for and finding that it did not work.
+I built this while working as a UX researcher at an e-commerce consultancy in Monterrey, where post-purchase surveys and reviews from Shopify stores piled up faster than anyone could read them. It packages the customer-feedback workflow I ran for the consultancy's clients, written for the way their customers actually write: in Mexican Spanish, with typos, shorthand and emoji.
 
 [![ci](https://github.com/SylviaZam/Automated-Review-Analysis-Pipeline/actions/workflows/ci.yml/badge.svg)](https://github.com/SylviaZam/Automated-Review-Analysis-Pipeline/actions/workflows/ci.yml)
 
 ---
 
-## Why v2 exists
+## What it does
 
-v1 classified sentiment with VADER, an English-only lexicon, and sorted answers into six keyword buckets. The customers wrote in Mexican Spanish. When I ran v1 on about 1,300 real, published product reviews from BFit, a Mexican wellness brand (every one rated 4 or 5 stars), this is what came back:
-
-| On ~1,300 real 4-5 star reviews | v1 (2025) | v2 |
-|---|---|---|
-| Labelled **Positive** | 15.7% | **80.7%** |
-| Labelled **Negative** (all false alarms) | 17.9% | **2.6%** |
-| Left in the catch-all bucket ("General" / "Other") | 82.6% | 34.1% |
-
-The v1 report looked finished. Its numbers were wrong. v2 fixes the method rather than the formatting:
-
-| Problem in v1 | What v2 does |
-|---|---|
-| English-only sentiment | Spanish-first lexicon with negation ("no funcionó"), contrast ("pero", "aunque") and emoji |
-| Six generic buckets; the API mode invented its own category names, so brands could not be compared | One **codebook** of 21 themes, consolidated from my manual affinity coding across brands and extended by diagnosing each export; the model backend must choose from it |
-| Sentiment forced onto every question | Each question gets a **role** (why they bought, what almost stopped them, product-page blocker...). Only opinion questions get sentiment |
-| Typos, texting shorthand and junk answers counted as data | **Cleaning step**: junk detection, shorthand expansion, typo repair (details below) |
-| Multi-select questions coded as if they were free text, inflating counts and theme shares | Detected and tallied per option instead (`voc diagnose` flags them) |
-| One vocabulary for every industry | Shared themes plus [industry packs](codebooks/) and per-brand keyword files proposed by `voc diagnose` |
-| Broken encodings (`Cu√©ntanos`, `ÀC\x97mo`) | File- and cell-level encoding repair |
-| Names, emails, cities and IPs flowed into outputs and a committed cache | Identifying columns dropped at ingest, contact details masked in free text, spend kept as a band, cache stores hashes only |
-| Failed API calls silently became "Neutral" | Failures are flagged and counted in a run manifest |
-| No way to know if it was right | Evaluation harness with a hand-labelled answer key, per-theme precision/recall and coder agreement (Cohen's kappa) |
-
+- **Spanish-first sentiment** that handles negation ("no funcionó"), contrast ("pero", "aunque") and emoji.
+- **One shared codebook** of 21 themes, built from my manual affinity coding across brands, so results can be compared between stores. The model backends must choose from it.
+- **Question roles**: each question is recognised for what it asks (why they bought, what almost stopped them, product-page blocker...). Only opinion questions get sentiment.
+- **Cleaning**: junk detection, shorthand expansion and conservative typo repair (details below).
+- **Multi-select detection**: pick-list questions are tallied per option instead of being read as free text (`voc diagnose` flags them).
+- **Industry vocabulary**: shared themes plus [industry packs](codebooks/) and per-brand keyword files proposed by `voc diagnose`.
+- **Encoding repair** for broken exports (`Cu√©ntanos`, `ÀC\x97mo`), at file and cell level.
+- **Privacy**: identifying columns dropped at ingest, contact details masked in free text, spend kept as a band, cache stores hashes only.
+- **Honest failures**: failed API calls are flagged and counted in a run manifest, never silently turned into "Neutral".
+- **Evaluation harness** with a hand-labelled answer key and per-theme precision and recall.
 ## What it produces
 
 For each export: an Excel workbook for analysts, a one-page HTML summary that is safe to share, and a JSON run manifest.
@@ -59,7 +46,7 @@ pip install -r requirements.txt
 
 python -m voc synth                     # writes synthetic demo data to data/synthetic
 python -m voc run data/synthetic/wellness_post_purchase.csv --label "Demo wellness" --out output
-python -m voc eval data/synthetic/gold_labels.csv   # v1 vs v2 on the synthetic answer key
+python -m voc eval data/synthetic/gold_labels.csv   # score against the synthetic answer key
 ```
 
 Commands:
@@ -79,7 +66,7 @@ Keyword rules miss answers that carry meaning without trigger words. For those, 
 ```bash
 pip install anthropic          # or: pip install openai
 python -m voc run export.csv --backend claude --label "BFit post-purchase"
-python -m voc eval gold.csv --backends v1 rules claude   # measure before trusting it
+python -m voc eval gold.csv --backends rules claude   # measure before trusting it
 ```
 
 | Backend | Credentials | Default model | Notes |
@@ -160,17 +147,16 @@ On six real exports (about 7,700 responses and 9,200 open answers, a sample of a
 
 Two layers, reported separately on purpose:
 
-1. **Real exports, aggregate only** (the table at the top). Star ratings act as a partial answer key for sentiment. For themes, I compared v2 against my own manual tally of Divain's post-purchase survey (113 buyers). v2 agreed with me on the top two reasons for choosing the brand (quality and longevity, then price) and on the top two worries (quality and longevity, then not knowing or trusting the brand). It undercounted product variety (5 answers against my 13) and left about a quarter of answers as "Other" (curiosity, a specific scent). Closing those gaps is what the model backend and codebook extensions are for.
+1. **Real exports, aggregate only.** For themes, I compared the pipeline against my own manual tally of Divain's post-purchase survey (113 buyers). It agreed with me on the top two reasons for choosing the brand (quality and longevity, then price) and on the top two worries (quality and longevity, then not knowing or trusting the brand). It undercounted product variety (5 answers against my 13) and left about a quarter of answers as "Other" (curiosity, a specific scent). Closing those gaps is what the model backend and codebook extensions are for.
 2. **Synthetic development set** ([docs/evaluation_synthetic.md](docs/evaluation_synthetic.md)): 400 generated answers with known labels.
 
    | | Theme accuracy | Theme macro-F1 | Sentiment accuracy |
    |---|---|---|---|
-   | v1 | 20.0% | 0.16 | 37.5% |
-   | v2 rules | 93.0% | 0.86 | 100% (n=56) |
+   | rules | 93.0% | 0.86 | 100% (n=56) |
 
-   These v2 numbers are optimistic. I wrote both the templates and the rules, and I fixed general gaps after reading the errors. Treat this as a regression test, not a benchmark.
+   These numbers are optimistic. I wrote both the templates and the rules, and I fixed general gaps after reading the errors. Treat this as a regression test, not a benchmark.
 
-The benchmark that matters is a **hand-labelled sample of real answers**, and it is the next step: `voc label-kit` has sampled 200 real answers, which I am labelling blind. I will then re-label 50 of them a week later to measure my own consistency (Cohen's kappa), and `voc eval` will score each backend against those labels. Results will be added here as aggregates. See [docs/evaluation.md](docs/evaluation.md).
+The benchmark that matters is a **hand-labelled sample of real answers**: `voc label-kit` samples real answers into a labelling sheet that stays on your machine, and `voc eval` scores each backend against those labels. See [docs/evaluation.md](docs/evaluation.md).
 
 ## Privacy by design
 
@@ -197,7 +183,7 @@ codebooks/           industry keyword packs
 data/synthetic/      generated demo exports + answer key (no real people)
 examples/output/     reports generated from the synthetic data
 docs/                method, privacy, evaluation, codebook
-legacy/              v1 script and its example input/output, kept for comparison
+legacy/              the 2025 public script and its example input/output
 scripts/             privacy guard
 tests/               127 tests
 ```
@@ -212,7 +198,7 @@ tests/               127 tests
 ## History
 
 - **2023-2024**: manual affinity coding in spreadsheets, then prompt prototypes, while running customer-data analysis for e-commerce clients.
-- **2025, v1**: packaged the workflow as a public script (see `legacy/`).
-- **2026, v2**: audited v1 on real data, then rebuilt the method and added cleaning, privacy controls and evaluation. v2 was built with AI coding assistance (Claude). The codebook themes come from my manual coding of client data.
+- **2025**: packaged the workflow as a public script (see `legacy/`).
+- **2026**: extended it with a Spanish-first method, cleaning, privacy controls and evaluation, built with AI coding assistance (Claude). The codebook themes come from my manual coding of client data.
 
 MIT License.
